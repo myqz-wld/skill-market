@@ -7,6 +7,8 @@ disable-model-invocation: true
 
 Use this skill to remove local installations. This does not remove anything from the remote marketplace repository.
 
+If the user wants to preserve local files, use `skill-disable` instead of uninstalling.
+
 ## Uninstall
 
 - Plugin: run `claude plugin remove <plugin-name>@skill-market`.

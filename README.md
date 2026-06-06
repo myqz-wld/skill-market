@@ -16,6 +16,7 @@ plugins/
       skill-market/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
+      skill-disable/SKILL.md
       skill-uninstall/SKILL.md
       skill-update/SKILL.md
       skill-upload/SKILL.md
@@ -25,6 +26,7 @@ plugins/
       skill-market/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
+      skill-disable/SKILL.md
       skill-uninstall/SKILL.md
       skill-update/SKILL.md
       skill-upload/SKILL.md
@@ -87,8 +89,8 @@ Example config:
 After installation, the management skills are available from the installed plugin namespace:
 
 ```text
-Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
-Codex:  skill-market, skill-search, skill-download, skill-uninstall, skill-update, skill-upload
+Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
+Codex:  skill-market, skill-search, skill-download, skill-disable, skill-uninstall, skill-update, skill-upload
 ```
 
 ## What the Built-in Skills Do
@@ -97,6 +99,7 @@ After installing the plugin, use the management skills to:
 
 - search marketplace plugins and standalone skills
 - download plugin or skill packages without installing
+- disable installed plugins or standalone skills without deleting their files
 - uninstall installed plugins or standalone skills
 - update installed plugins or standalone skills
 - upload new or updated skills/plugins by creating a branch and PR
