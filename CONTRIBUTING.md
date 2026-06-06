@@ -8,6 +8,8 @@ Default remote repository:
 git@github.com:myqz-wld/skill-market.git
 ```
 
+Bootstrap plugins `skill-market-claude` and `skill-market-codex` are developer-maintained. Do not upload, delete, or modify them through Skill Market management skills.
+
 ## Claude Plugin Upload
 
 Claude plugins live under:
