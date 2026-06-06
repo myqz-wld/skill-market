@@ -109,7 +109,26 @@ After installing the plugin, use the management skills to:
 
 Upload is not publish. A skill or plugin is published only after the PR is merged.
 
-`skills/INDEX.md` is the managed skill ledger. A local skill absent from that file is unmanaged; management skills must ask before disabling, updating, uninstalling, or overwriting it.
+`skills/INDEX.md` is the remote skill catalog index. Local management state is stored in `~/.skill-market/managed-skills.json`.
+
+Local state example:
+
+```json
+{
+  "version": 1,
+  "skills": [
+    {
+      "adapter": "codex",
+      "name": "example-skill",
+      "catalogPath": "skills/codex/example-skill",
+      "localPath": "~/.codex/skills/example-skill",
+      "status": "installed"
+    }
+  ]
+}
+```
+
+Only skills installed through Skill Market or explicitly adopted by the user are managed. `skill-list` must not list unrelated local skills. When a requested operation touches a local skill absent from `managed-skills.json`, ask the user before adopting or modifying it.
 
 ## Upload Policy
 

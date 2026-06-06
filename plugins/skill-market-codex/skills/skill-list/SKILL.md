@@ -1,11 +1,11 @@
 ---
 name: skill-list
-description: List managed Codex Skill Market skills and identify local Codex skills that are not managed.
+description: List Codex skills managed by Skill Market without listing unrelated local skills.
 ---
 
 # Skill List for Codex
 
-Use this skill to list managed Skill Market entries and local unmanaged Codex skills.
+Use this skill to list Codex skills managed by Skill Market.
 
 ## Repository Source
 
@@ -15,9 +15,9 @@ Use the cache as-is when it exists. Clone the remote only when the cache is miss
 
 ## List
 
-1. Read `skills/INDEX.md`; this is the managed skill ledger.
-2. Report each Codex row with skill name, path, status, and description.
-3. Scan `~/.codex/skills/` and `~/.codex/skills.disabled/` when the user asks for local state.
-4. Mark local skills absent from `skills/INDEX.md` as `unmanaged`.
+1. Read `~/.skill-market/managed-skills.json`; this is the local managed state file.
+2. Report only Codex entries from that state file, including name, local status, local path, and catalog path.
+3. Read `skills/INDEX.md` only to enrich managed entries with remote catalog status and description.
+4. If the state file is missing or has no Codex entries, report that no Codex skills are currently managed.
 
-Do not disable, update, uninstall, or overwrite unmanaged local skills without explicit user confirmation.
+Do not scan or list unrelated local skills from `~/.codex/skills/` by default. If the user names a specific local skill and asks to manage it, ask for confirmation before adding it to `managed-skills.json`.
