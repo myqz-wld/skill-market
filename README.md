@@ -39,6 +39,22 @@ codex plugin add skill-market-codex@skill-market
 codex plugin marketplace upgrade skill-market
 ```
 
+## Repository Path Configuration
+
+The installed `skill-market` skill resolves the marketplace repository path in this order:
+
+1. `SKILL_MARKET_REPO` environment variable.
+2. `~/.skill-market/config.json` with a `repoPath` string.
+3. Default: `.`.
+
+Example config:
+
+```json
+{
+  "repoPath": "."
+}
+```
+
 After installation, the built-in skill is available from the installed plugin namespace:
 
 ```text
