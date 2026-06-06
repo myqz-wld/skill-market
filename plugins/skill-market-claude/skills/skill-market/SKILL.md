@@ -10,6 +10,7 @@ Use this skill as the entry point for Skill Market. Prefer the focused skills fo
 - `skill-list`: list skills already managed by Skill Market.
 - `skill-search`: search plugins and standalone Claude skills.
 - `skill-download`: download a package without installing it.
+- `skill-install`: install a plugin or standalone Claude skill.
 - `skill-disable`: disable a local installation without deleting its files.
 - `skill-uninstall`: remove a local installation.
 - `skill-update`: update a local installation from the remote catalog.
