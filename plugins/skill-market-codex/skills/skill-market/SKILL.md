@@ -34,9 +34,12 @@ Configuration overrides:
 
 - `SKILL_MARKET_REPO_URL` or `~/.skill-market/config.json` field `repoUrl`.
 - `SKILL_MARKET_CACHE` or `~/.skill-market/config.json` field `cachePath`.
+- `SKILL_MARKET_CACHE_TTL_SECONDS` or config field `cacheTtlSeconds`; default `86400` seconds.
 - `SKILL_MARKET_REPO` or config field `repoPath` only for explicit local development.
 
 Do not treat the current directory as the default repository.
+
+For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, clone the cache when missing and fetch when the user asks for latest or the cache marker is missing or older than `cacheTtlSeconds`. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. `cacheTtlSeconds: 0` disables automatic TTL refresh. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs.
 
 ## Storage
 

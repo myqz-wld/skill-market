@@ -23,7 +23,7 @@ Use the local cache only as a working copy:
 
 Only use `SKILL_MARKET_REPO` or config field `repoPath` when the user explicitly wants a local development checkout. Do not treat the current directory as the default repository.
 
-For search, use the cache as-is when it exists. Clone the remote only when the cache is missing, and fetch only when the user asks for latest results.
+For search, clone the cache when missing. Fetch when the user asks for latest results or the cache marker is missing or older than `cacheTtlSeconds`. TTL comes from `SKILL_MARKET_CACHE_TTL_SECONDS`, config field `cacheTtlSeconds`, then default `86400` seconds. `cacheTtlSeconds: 0` disables automatic TTL refresh. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. If fetch fails and cache exists, use the stale cache and report that it may be stale.
 
 ## Search Targets
 
