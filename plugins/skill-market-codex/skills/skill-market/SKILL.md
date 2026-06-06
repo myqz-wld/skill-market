@@ -5,11 +5,15 @@ description: Manage this Codex plugin marketplace repository: browse, install, u
 
 # Skill Market for Codex
 
-Use this skill to manage the native Codex plugin marketplace repository at:
+Use this skill to manage the native Codex plugin marketplace repository. Resolve the repository path in this order:
 
-```text
-/Users/wanglidong/Repository/skill-market
-```
+1. `SKILL_MARKET_REPO` environment variable.
+2. `~/.skill-market/config.json` with a `repoPath` string.
+3. Default: `/Users/wanglidong/Repository/skill-market`.
+
+If a configured path does not exist or is not a directory, report the bad value and use the next source in the list.
+
+After resolving the repository path, refer to it as `<repo-path>` and run repository file and git operations from that path.
 
 The repository is the market. It provides no service, API, or custom installer. Use Codex's plugin marketplace structure and normal git operations.
 
@@ -33,7 +37,7 @@ List available Codex plugins by reading `.agents/plugins/marketplace.json`, then
 Use native Codex plugin commands when the user asks to manage installed marketplace plugins:
 
 ```bash
-codex plugin marketplace add /Users/wanglidong/Repository/skill-market
+codex plugin marketplace add <repo-path>
 codex plugin add <plugin-name>@skill-market
 codex plugin marketplace upgrade skill-market
 codex plugin remove <plugin-name>@skill-market

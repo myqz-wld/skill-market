@@ -5,11 +5,15 @@ disable-model-invocation: true
 
 # Skill Market for Claude
 
-Use this skill to manage the native Claude plugin marketplace repository at:
+Use this skill to manage the native Claude plugin marketplace repository. Resolve the repository path in this order:
 
-```text
-/Users/wanglidong/Repository/skill-market
-```
+1. `SKILL_MARKET_REPO` environment variable.
+2. `~/.skill-market/config.json` with a `repoPath` string.
+3. Default: `/Users/wanglidong/Repository/skill-market`.
+
+If a configured path does not exist or is not a directory, report the bad value and use the next source in the list.
+
+After resolving the repository path, refer to it as `<repo-path>` and run repository file and git operations from that path.
 
 The repository is the market. It provides no service, API, or custom installer. Use Claude Code's plugin marketplace mechanism and normal git operations.
 
@@ -33,7 +37,7 @@ List available Claude plugins by reading `.claude-plugin/marketplace.json`, then
 Prefer native Claude plugin commands when the user asks to manage installed marketplace plugins:
 
 ```bash
-claude plugin marketplace add /Users/wanglidong/Repository/skill-market
+claude plugin marketplace add <repo-path>
 claude plugin install <plugin-name>@skill-market
 claude plugin marketplace update skill-market
 claude plugin update <plugin-name>@skill-market
