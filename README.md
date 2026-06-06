@@ -17,6 +17,7 @@ plugins/
       skill-list/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
+      skill-install/SKILL.md
       skill-disable/SKILL.md
       skill-uninstall/SKILL.md
       skill-update/SKILL.md
@@ -28,6 +29,7 @@ plugins/
       skill-list/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
+      skill-install/SKILL.md
       skill-disable/SKILL.md
       skill-uninstall/SKILL.md
       skill-update/SKILL.md
@@ -95,17 +97,18 @@ Example config:
 After installation, the management skills are available from the installed plugin namespace:
 
 ```text
-Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-list, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
-Codex:  skill-market, skill-list, skill-search, skill-download, skill-disable, skill-uninstall, skill-update, skill-upload
+Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-list, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-install, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
+Codex:  skill-market, skill-list, skill-search, skill-download, skill-install, skill-disable, skill-uninstall, skill-update, skill-upload
 ```
 
 ## What the Built-in Skills Do
 
 After installing the plugin, use the management skills to:
 
-- list managed skills and their catalog status from `skills/INDEX.md`
+- list managed skills from `~/.skill-market/managed-skills.json` and enrich them with catalog status from `skills/INDEX.md`
 - search marketplace plugins and standalone skills
 - download plugin or skill packages without installing
+- install plugins or standalone skills and record standalone skills in local managed state
 - disable Claude plugins and standalone skills without deleting their files
 - disable Codex standalone skills without deleting their files; Codex plugin disable is unsupported by the current CLI
 - uninstall installed plugins or standalone skills
@@ -115,6 +118,8 @@ After installing the plugin, use the management skills to:
 Upload is not publish. A skill or plugin is published only after the PR is merged.
 
 `skills/INDEX.md` is the remote skill catalog index. Local management state is stored in `~/.skill-market/managed-skills.json`.
+
+`skill-download` exports packages without installing them. If the user does not provide a destination, use `~/.skill-market/downloads/<adapter>/<name>/`.
 
 Local state example:
 

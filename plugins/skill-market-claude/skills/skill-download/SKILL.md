@@ -18,4 +18,6 @@ Use the cache as-is when it exists. Clone the remote only when the cache is miss
 - Plugin package: copy or archive `plugins/<plugin-name>/`.
 - Standalone Claude skill package: copy or archive `skills/claude/<skill-name>/`.
 
+If the user does not provide a destination, copy to `~/.skill-market/downloads/claude/<name>/`.
+
 Download never installs or updates local Claude state. Do not overwrite an existing destination unless the user explicitly asks.
