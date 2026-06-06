@@ -81,14 +81,23 @@ They use a local cache to avoid fetching the network on every operation:
 2. `~/.skill-market/config.json` with a `cachePath` string.
 3. Default cache: `~/.skill-market/cache/skill-market`.
 
-`SKILL_MARKET_REPO` or config field `repoPath` is only an explicit local development override. It is not the default.
+For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, cache freshness is controlled by:
+
+1. `SKILL_MARKET_CACHE_TTL_SECONDS` environment variable.
+2. `~/.skill-market/config.json` with a `cacheTtlSeconds` number.
+3. Default TTL: `86400` seconds.
+
+A positive TTL refreshes the cache when the freshness marker is missing or older than the TTL. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. Set `cacheTtlSeconds` to `0` to disable automatic TTL refresh; explicit latest requests still fetch. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs.
+
+`SKILL_MARKET_REPO` or config field `repoPath` is only an explicit local development override. It is not the default and bypasses cache TTL.
 
 Example config:
 
 ```json
 {
   "repoUrl": "git@github.com:myqz-wld/skill-market.git",
-  "cachePath": "~/.skill-market/cache/skill-market"
+  "cachePath": "~/.skill-market/cache/skill-market",
+  "cacheTtlSeconds": 86400
 }
 ```
 
