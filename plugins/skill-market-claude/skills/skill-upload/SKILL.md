@@ -15,6 +15,8 @@ For upload, clone the remote into the cache when missing, fetch `main`, and crea
 
 ## Upload Through PR
 
+Reject `skill-market-claude` and `skill-market-codex` as upload or deletion targets. Bootstrap plugin changes are developer-only repository changes and must not be proposed through Skill Market management skills.
+
 1. Confirm whether the target is a Claude plugin, standalone Claude skill, or deletion.
 2. Create branch `market/<type>/claude/<name>`.
 3. For plugin uploads, add or update `plugins/<plugin-name>/`, ensure `.claude-plugin/plugin.json` exists, and update `.claude-plugin/marketplace.json`.

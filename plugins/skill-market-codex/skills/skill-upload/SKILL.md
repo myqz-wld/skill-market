@@ -15,6 +15,8 @@ For upload, clone the remote into the cache when missing, fetch `main`, and crea
 
 ## Upload Through PR
 
+Reject `skill-market-claude` and `skill-market-codex` as upload or deletion targets. Bootstrap plugin changes are developer-only repository changes and must not be proposed through Skill Market management skills.
+
 1. Confirm whether the target is a Codex plugin, standalone Codex skill, or deletion.
 2. Create branch `market/<type>/codex/<name>`.
 3. For plugin uploads, add or update `plugins/<plugin-name>/`, ensure `.codex-plugin/plugin.json` exists, and update `.agents/plugins/marketplace.json`.

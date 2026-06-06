@@ -1,6 +1,6 @@
 {
   "name": "skill-market-codex",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Provides Codex skills for listing, searching, downloading, disabling, uninstalling, updating, and uploading Skill Market entries through git and pull requests.",
   "author": {
     "name": "Skill Market"

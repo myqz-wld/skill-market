@@ -16,7 +16,7 @@ Use the cache as-is when it exists. Clone the remote only when the cache is miss
 ## List
 
 1. Read `~/.skill-market/managed-skills.json`; this is the local managed state file.
-2. Report only Claude entries from that state file, including name, local status, local path, and catalog path.
+2. Report only Claude entries from that state file, including name, local status, `activePath`, `disabledPath`, and catalog path.
 3. Read `skills/INDEX.md` only to enrich managed entries with remote catalog status and description.
 4. If the state file is missing or has no Claude entries, report that no Claude skills are currently managed.
 

@@ -40,7 +40,9 @@ skills/
 
 Claude and Codex plugins are independent. Claude and Codex managed skills are also independent. If the same workflow needs both platforms, publish two variants and keep their manifests and skills separate.
 
-The `plugins/skill-market-*` directories contain only the bootstrap management skill needed for native plugin installation. Marketplace-managed skills live under the top-level `skills/` directory, not inside the bootstrap plugin.
+The `plugins/skill-market-*` directories contain only the bootstrap management skills needed for native plugin installation. Marketplace-managed skills live under the top-level `skills/` directory, not inside the bootstrap plugin.
+
+Management skills must not upload, delete, or modify `skill-market-claude` or `skill-market-codex`. Bootstrap plugin changes are developer-only repository changes.
 
 ## Register Marketplace
 
@@ -61,7 +63,7 @@ codex plugin add skill-market-codex@skill-market
 codex plugin marketplace upgrade skill-market
 ```
 
-For local plugin development only, register `/Users/wanglidong/Repository/skill-market` instead of the remote URL.
+For local plugin development only, register `/path/to/skill-market` instead of the remote URL.
 
 ## Repository Configuration
 
@@ -102,7 +104,8 @@ After installing the plugin, use the management skills to:
 - list managed skills and their catalog status from `skills/INDEX.md`
 - search marketplace plugins and standalone skills
 - download plugin or skill packages without installing
-- disable installed plugins or standalone skills without deleting their files
+- disable Claude plugins and standalone skills without deleting their files
+- disable Codex standalone skills without deleting their files; Codex plugin disable is unsupported by the current CLI
 - uninstall installed plugins or standalone skills
 - update installed plugins or standalone skills
 - upload new or updated skills/plugins by creating a branch and PR
@@ -121,7 +124,8 @@ Local state example:
       "adapter": "codex",
       "name": "example-skill",
       "catalogPath": "skills/codex/example-skill",
-      "localPath": "~/.codex/skills/example-skill",
+      "activePath": "~/.codex/skills/example-skill",
+      "disabledPath": "~/.codex/skills.disabled/example-skill",
       "status": "installed"
     }
   ]
