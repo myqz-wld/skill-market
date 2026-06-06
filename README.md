@@ -1,91 +1,74 @@
 # Skill Market
 
-Skill Market 是一个仓库型市场，不提供服务、CLI、API 或安装器。Claude / Codex 通过安装后的
-`skill-market` skill 直接读写这个仓库：浏览 registry、复制安装包、创建上传 PR。
+Skill Market is a native plugin marketplace repository for Claude and Codex.
 
-## 核心原则
+It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The only built-in capability in this repository is a `skill-market` skill packaged as native plugins for each platform.
 
-- 市场自身只保存 registry 和规则，不执行任何能力。
-- Claude 和 Codex 的 skill / plugin 独立维护。
-- 同名条目可以同时有 Claude variant 和 Codex variant，但内容不自动同步。
-- 上传必须通过 PR 合并。PR 合并前，条目不算进入市场。
-
-## 目录
+## Marketplace Layout
 
 ```text
-market.json
-registry/
-  INDEX.md
-  skills/
-    claude/<skill-name>/SKILL.md
-    codex/<skill-name>/SKILL.md
-  plugins/
-    claude/<plugin-name>/
-    codex/<plugin-name>/
-
-market-skills/
-  claude/skill-market/SKILL.md
-  codex/skill-market/SKILL.md
+.claude-plugin/marketplace.json          # Claude marketplace catalog
+.agents/plugins/marketplace.json        # Codex marketplace catalog
+plugins/
+  skill-market-claude/
+    .claude-plugin/plugin.json
+    skills/skill-market/SKILL.md
+  skill-market-codex/
+    .codex-plugin/plugin.json
+    skills/skill-market/SKILL.md
 ```
 
-## Market 注册
+Claude and Codex plugins are independent. If the same workflow needs both platforms, publish two plugin variants and keep their manifests and skills separate.
 
-根目录的 [market.json](market.json) 是 market 注册清单。它声明：
+## Register Locally
 
-- 支持的 adapter：`claude`、`codex`
-- registry 索引：`registry/INDEX.md`
-- skill registry 路径
-- plugin registry 路径
-- Claude / Codex market skill 路径
-- 发布策略：必须通过 PR 合并
-
-注册这个 market 时，以仓库根目录和 `market.json` 为入口即可。
-
-## 安装 Market Skill
-
-把对应 adapter 的 market skill 复制到用户 skill 目录：
+Claude:
 
 ```bash
-mkdir -p ~/.claude/skills ~/.codex/skills
-cp -R /Users/wanglidong/Repository/skill-market/market-skills/claude/skill-market ~/.claude/skills/
-cp -R /Users/wanglidong/Repository/skill-market/market-skills/codex/skill-market ~/.codex/skills/
+claude plugin marketplace add /Users/wanglidong/Repository/skill-market
+claude plugin install skill-market-claude@skill-market
+claude plugin marketplace update skill-market
+claude plugin update skill-market-claude@skill-market
 ```
 
-新开的 Claude / Codex 会话会读取各自的 `skill-market` skill。之后用户可以让 agent 使用
-`skill-market` 完成浏览、安装、更新、下载、上传 PR。
+Codex:
 
-## 管理流程
+```bash
+codex plugin marketplace add /Users/wanglidong/Repository/skill-market
+codex plugin add skill-market-codex@skill-market
+codex plugin marketplace upgrade skill-market
+```
 
-### 浏览
-
-读 `registry/INDEX.md`，再按需查看 `registry/skills/<adapter>/<name>/` 或
-`registry/plugins/<adapter>/<name>/`。
-
-### 安装 / 更新
-
-安装 skill 时复制对应目录：
+After installation, the built-in skill is available from the installed plugin namespace:
 
 ```text
-registry/skills/claude/<name>/ -> ~/.claude/skills/<name>/
-registry/skills/codex/<name>/  -> ~/.codex/skills/<name>/
+Claude: /skill-market-claude:skill-market
+Codex:  skill-market
 ```
 
-更新就是重新复制市场里的当前版本，替换本地同名目录。
+## What the Built-in Skill Does
 
-### 下载
+After installing the plugin, use the `skill-market` skill to:
 
-下载是不安装，只把 registry 中对应目录复制或打包到用户指定位置。
+- browse marketplace plugins
+- install/update/delete installed marketplace plugins using the environment's native plugin permissions
+- download plugin or skill packages by copying/archiving repository directories
+- upload new or updated skills/plugins by creating a branch and PR
+- delete marketplace entries by creating a branch and PR
 
-### 上传
+Upload is not publish. A skill or plugin is published only after the PR is merged.
 
-上传必须走 PR：
+## Upload Policy
 
-1. 从 main 创建分支：`market/<type>/<adapter>/<name>`。
-2. 把包放入对应 registry 目录。
-3. 更新 `registry/INDEX.md`。
-4. 提交 commit。
-5. push 分支。
-6. 创建 PR。
-7. PR 合并后才算进入市场。
+All uploads must go through PR:
 
-详见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+1. Create branch `market/<type>/<adapter>/<name>`.
+2. Add or update the plugin under `plugins/<plugin-name>/`.
+3. Update the corresponding marketplace catalog.
+4. Commit and push.
+5. Open a PR.
+6. Merge the PR to publish.
+
+Marketplace deletion follows the same rule: remove or retire the plugin through a PR, then publish only after merge.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md).
