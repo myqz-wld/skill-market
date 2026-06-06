@@ -14,6 +14,6 @@ If the user wants to preserve local files, use `skill-disable` instead of uninst
 - Plugin: run `claude plugin remove <plugin-name>@skill-market`.
 - Standalone Claude skill: remove `~/.claude/skills/<skill-name>/`.
 
-Before uninstalling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before deleting it. When uninstalling a managed skill, remove `activePath` when status is `installed`, remove `disabledPath` when status is `disabled`, and set status to `uninstalled` instead of dropping the record.
+Before uninstalling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before deleting it. When uninstalling a managed skill, remove both `activePath` and `disabledPath` when either exists, then set status to `uninstalled` instead of dropping the record.
 
 If the user wants the item removed from Skill Market itself, route that to `skill-upload` as a deletion PR.

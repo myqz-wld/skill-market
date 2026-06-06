@@ -90,6 +90,8 @@ Example config:
 }
 ```
 
+`activePath` is the active install location. `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`.
+
 After installation, the management skills are available from the installed plugin namespace:
 
 ```text
