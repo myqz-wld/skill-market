@@ -1,0 +1,8 @@
+{
+  "name": "skill-market-claude",
+  "description": "Provides a Claude skill for managing this plugin marketplace repository through git and pull requests.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Skill Market"
+  }
+}
