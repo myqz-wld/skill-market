@@ -2,7 +2,7 @@
 
 Skill Market is a native plugin marketplace repository for Claude and Codex.
 
-It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The only built-in capability in this repository is a `skill-market` skill packaged as native plugins for each platform.
+It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The only built-in capability in this repository is a bootstrap `skill-market` skill packaged as native plugins for each platform.
 
 ## Marketplace Layout
 
@@ -16,9 +16,15 @@ plugins/
   skill-market-codex/
     .codex-plugin/plugin.json
     skills/skill-market/SKILL.md
+skills/
+  INDEX.md
+  claude/<skill-name>/SKILL.md
+  codex/<skill-name>/SKILL.md
 ```
 
-Claude and Codex plugins are independent. If the same workflow needs both platforms, publish two plugin variants and keep their manifests and skills separate.
+Claude and Codex plugins are independent. Claude and Codex managed skills are also independent. If the same workflow needs both platforms, publish two variants and keep their manifests and skills separate.
+
+The `plugins/skill-market-*` directories contain only the bootstrap management skill needed for native plugin installation. Marketplace-managed skills live under the top-level `skills/` directory, not inside the bootstrap plugin.
 
 ## Register Locally
 
@@ -67,7 +73,9 @@ Codex:  skill-market
 After installing the plugin, use the `skill-market` skill to:
 
 - browse marketplace plugins
+- browse standalone managed skills under `skills/`
 - install/update/delete installed marketplace plugins using the environment's native plugin permissions
+- install/update/delete standalone skills by copying/removing the adapter-specific skill directory
 - download plugin or skill packages by copying/archiving repository directories
 - upload new or updated skills/plugins by creating a branch and PR
 - delete marketplace entries by creating a branch and PR
@@ -79,8 +87,8 @@ Upload is not publish. A skill or plugin is published only after the PR is merge
 All uploads must go through PR:
 
 1. Create branch `market/<type>/<adapter>/<name>`.
-2. Add or update the plugin under `plugins/<plugin-name>/`.
-3. Update the corresponding marketplace catalog.
+2. For plugin uploads, add or update `plugins/<plugin-name>/` and the corresponding marketplace catalog.
+3. For standalone skill uploads, add or update `skills/<adapter>/<skill-name>/` and `skills/INDEX.md`.
 4. Commit and push.
 5. Open a PR.
 6. Merge the PR to publish.

@@ -9,7 +9,7 @@
       "name": "skill-market-claude",
       "source": "./plugins/skill-market-claude",
       "description": "Claude plugin that provides the skill-market management skill.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "author": {
         "name": "Skill Market"
       }

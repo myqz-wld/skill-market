@@ -17,24 +17,29 @@ After resolving the repository path, refer to it as `<repo-path>` and run reposi
 
 The repository is the market. It provides no service, API, or custom installer. Use Claude Code's plugin marketplace mechanism and normal git operations.
 
-## Marketplace Files
+## Catalog Files
 
 Read these first:
 
 ```text
 .claude-plugin/marketplace.json
 plugins/
+skills/INDEX.md
+skills/claude/
 ```
 
 For Claude plugins, source paths come from `.claude-plugin/marketplace.json`.
+For standalone Claude skills, source paths live under `skills/claude/<skill-name>/`.
+Do not place managed standalone skills under `plugins/skill-market-claude/`; that plugin contains only this bootstrap management skill.
 
 ## Browse
 
 List available Claude plugins by reading `.claude-plugin/marketplace.json`, then inspect each `plugins/<name>/` directory.
+List available standalone Claude skills by reading `skills/INDEX.md`, then inspect `skills/claude/<skill-name>/`.
 
 ## Install / Update / Delete
 
-Prefer native Claude plugin commands when the user asks to manage installed marketplace plugins:
+Use native Claude plugin commands when the user asks to manage installed marketplace plugins:
 
 ```bash
 claude plugin marketplace add <repo-path>
@@ -44,35 +49,36 @@ claude plugin update <plugin-name>@skill-market
 claude plugin remove <plugin-name>@skill-market
 ```
 
-Deleting an installed plugin means uninstalling it with Claude's plugin command. Deleting a marketplace plugin means opening a PR that removes or retires the marketplace entry and associated plugin files.
+For standalone Claude skills, install and update by copying `<repo-path>/skills/claude/<skill-name>/` to `~/.claude/skills/<skill-name>/`. Delete an installed standalone skill by removing `~/.claude/skills/<skill-name>/`.
+
+Deleting an installed plugin means uninstalling it with Claude's plugin command. Deleting a marketplace plugin or standalone skill from this repository means opening a PR that removes or retires the catalog entry and associated files.
 
 If the user asks to inspect or copy files instead of installing through Claude, operate on the repository files directly.
 
 ## Download
 
-Download means export a plugin or skill package without installing it. Copy or archive the selected `plugins/<name>/` directory to the destination requested by the user.
+Download means export a plugin or skill package without installing it. Copy or archive the selected `plugins/<name>/` or `skills/claude/<skill-name>/` directory to the destination requested by the user.
 
 ## Upload Through PR
 
 Uploading means proposing a marketplace change. It is not published until PR merge.
 
-1. Confirm the target is Claude or cross-adapter.
+1. Confirm the target is a Claude plugin, Claude standalone skill, or cross-adapter upload.
 2. Check `git status`; do not mix unrelated dirty changes.
 3. Create a branch named `market/<type>/claude/<name>`.
-4. Add or update the plugin under `plugins/<plugin-name>/`.
-5. Ensure `.claude-plugin/plugin.json` exists for Claude plugins.
-6. Add or update skills under `plugins/<plugin-name>/skills/<skill-name>/SKILL.md`.
-7. Update `.claude-plugin/marketplace.json`.
-8. Commit, push, and create a PR.
+4. For plugin uploads, add or update `plugins/<plugin-name>/`, ensure `.claude-plugin/plugin.json` exists, and update `.claude-plugin/marketplace.json`.
+5. For standalone skill uploads, add or update `skills/claude/<skill-name>/SKILL.md` and update `skills/INDEX.md`.
+6. Commit, push, and create a PR.
 
 Before PR merge, tell the user the upload is proposed, not published.
 
 ## Delete From Marketplace Through PR
 
-1. Confirm the target is a Claude marketplace deletion.
+1. Confirm the target is a Claude plugin or standalone skill marketplace deletion.
 2. Create a branch named `market/delete/claude/<name>`.
-3. Remove or retire the plugin entry in `.claude-plugin/marketplace.json`.
-4. Remove plugin files only when the user explicitly wants the repository copy deleted.
-5. Commit, push, and create a PR.
+3. For plugin deletion, remove or retire the plugin entry in `.claude-plugin/marketplace.json`.
+4. For standalone skill deletion, remove or retire the skill row in `skills/INDEX.md`.
+5. Remove repository files only when the user explicitly wants the repository copy deleted.
+6. Commit, push, and create a PR.
 
 Before PR merge, tell the user the deletion is proposed, not published.

@@ -17,20 +17,25 @@ After resolving the repository path, refer to it as `<repo-path>` and run reposi
 
 The repository is the market. It provides no service, API, or custom installer. Use Codex's plugin marketplace structure and normal git operations.
 
-## Marketplace Files
+## Catalog Files
 
 Read these first:
 
 ```text
 .agents/plugins/marketplace.json
 plugins/
+skills/INDEX.md
+skills/codex/
 ```
 
 For Codex plugins, source paths come from `.agents/plugins/marketplace.json`.
+For standalone Codex skills, source paths live under `skills/codex/<skill-name>/`.
+Do not place managed standalone skills under `plugins/skill-market-codex/`; that plugin contains only this bootstrap management skill.
 
 ## Browse
 
 List available Codex plugins by reading `.agents/plugins/marketplace.json`, then inspect each `plugins/<name>/` directory.
+List available standalone Codex skills by reading `skills/INDEX.md`, then inspect `skills/codex/<skill-name>/`.
 
 ## Install / Update / Delete
 
@@ -43,35 +48,36 @@ codex plugin marketplace upgrade skill-market
 codex plugin remove <plugin-name>@skill-market
 ```
 
-Deleting an installed plugin means uninstalling it with Codex's plugin command. Deleting a marketplace plugin means opening a PR that removes or retires the marketplace entry and associated plugin files.
+For standalone Codex skills, install and update by copying `<repo-path>/skills/codex/<skill-name>/` to `~/.codex/skills/<skill-name>/`. Delete an installed standalone skill by removing `~/.codex/skills/<skill-name>/`.
+
+Deleting an installed plugin means uninstalling it with Codex's plugin command. Deleting a marketplace plugin or standalone skill from this repository means opening a PR that removes or retires the catalog entry and associated files.
 
 If the current Codex environment cannot run plugin commands, explain the exact marketplace/plugin entry that should be installed and keep changes inside the repository.
 
 ## Download
 
-Download means export a plugin or skill package without installing it. Copy or archive the selected `plugins/<name>/` directory to the destination requested by the user.
+Download means export a plugin or skill package without installing it. Copy or archive the selected `plugins/<name>/` or `skills/codex/<skill-name>/` directory to the destination requested by the user.
 
 ## Upload Through PR
 
 Uploading means proposing a marketplace change. It is not published until PR merge.
 
-1. Confirm the target is Codex or cross-adapter.
+1. Confirm the target is a Codex plugin, Codex standalone skill, or cross-adapter upload.
 2. Check `git status`; do not mix unrelated dirty changes.
 3. Create a branch named `market/<type>/codex/<name>`.
-4. Add or update the plugin under `plugins/<plugin-name>/`.
-5. Ensure `.codex-plugin/plugin.json` exists for Codex plugins.
-6. Add or update skills under `plugins/<plugin-name>/skills/<skill-name>/SKILL.md`.
-7. Update `.agents/plugins/marketplace.json`.
-8. Commit, push, and create a PR.
+4. For plugin uploads, add or update `plugins/<plugin-name>/`, ensure `.codex-plugin/plugin.json` exists, and update `.agents/plugins/marketplace.json`.
+5. For standalone skill uploads, add or update `skills/codex/<skill-name>/SKILL.md` and update `skills/INDEX.md`.
+6. Commit, push, and create a PR.
 
 Before PR merge, tell the user the upload is proposed, not published.
 
 ## Delete From Marketplace Through PR
 
-1. Confirm the target is a Codex marketplace deletion.
+1. Confirm the target is a Codex plugin or standalone skill marketplace deletion.
 2. Create a branch named `market/delete/codex/<name>`.
-3. Remove or retire the plugin entry in `.agents/plugins/marketplace.json`.
-4. Remove plugin files only when the user explicitly wants the repository copy deleted.
-5. Commit, push, and create a PR.
+3. For plugin deletion, remove or retire the plugin entry in `.agents/plugins/marketplace.json`.
+4. For standalone skill deletion, remove or retire the skill row in `skills/INDEX.md`.
+5. Remove repository files only when the user explicitly wants the repository copy deleted.
+6. Commit, push, and create a PR.
 
 Before PR merge, tell the user the deletion is proposed, not published.
