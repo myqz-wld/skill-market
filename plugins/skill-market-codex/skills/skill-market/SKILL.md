@@ -7,6 +7,7 @@ description: Entry point for the Codex Skill Market management skills.
 
 Use this skill as the entry point for Skill Market. Prefer the focused skills for actual work:
 
+- `skill-list`: list managed skills and local unmanaged skills.
 - `skill-search`: search plugins and standalone Codex skills.
 - `skill-download`: download a package without installing it.
 - `skill-disable`: disable a local installation without deleting its files.
@@ -43,3 +44,5 @@ Do not treat the current directory as the default repository.
 - Codex plugins are listed in `.agents/plugins/marketplace.json` and live under `plugins/`.
 
 Upload is not publish. A skill or plugin is published only after its PR is merged.
+
+`skills/INDEX.md` is the managed skill ledger. If a local Codex skill is not listed there, it is unmanaged; ask the user before disabling, updating, uninstalling, or overwriting it.

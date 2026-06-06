@@ -14,6 +14,7 @@ plugins/
     .claude-plugin/plugin.json
     skills/
       skill-market/SKILL.md
+      skill-list/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
       skill-disable/SKILL.md
@@ -24,6 +25,7 @@ plugins/
     .codex-plugin/plugin.json
     skills/
       skill-market/SKILL.md
+      skill-list/SKILL.md
       skill-search/SKILL.md
       skill-download/SKILL.md
       skill-disable/SKILL.md
@@ -89,14 +91,15 @@ Example config:
 After installation, the management skills are available from the installed plugin namespace:
 
 ```text
-Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
-Codex:  skill-market, skill-search, skill-download, skill-disable, skill-uninstall, skill-update, skill-upload
+Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-list, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
+Codex:  skill-market, skill-list, skill-search, skill-download, skill-disable, skill-uninstall, skill-update, skill-upload
 ```
 
 ## What the Built-in Skills Do
 
 After installing the plugin, use the management skills to:
 
+- list managed skills and their catalog status from `skills/INDEX.md`
 - search marketplace plugins and standalone skills
 - download plugin or skill packages without installing
 - disable installed plugins or standalone skills without deleting their files
@@ -105,6 +108,8 @@ After installing the plugin, use the management skills to:
 - upload new or updated skills/plugins by creating a branch and PR
 
 Upload is not publish. A skill or plugin is published only after the PR is merged.
+
+`skills/INDEX.md` is the managed skill ledger. A local skill absent from that file is unmanaged; management skills must ask before disabling, updating, uninstalling, or overwriting it.
 
 ## Upload Policy
 
