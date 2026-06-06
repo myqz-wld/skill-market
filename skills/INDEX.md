@@ -1,10 +1,10 @@
 # Skill Catalog
 
-Standalone skills managed by Skill Market live under this directory. The bootstrap `skill-market` management skills stay in `plugins/skill-market-*` so Claude and Codex can install them through their native plugin marketplaces.
+Standalone skills published by Skill Market live under this directory. The bootstrap `skill-market` management skills stay in `plugins/skill-market-*` so Claude and Codex can install them through their native plugin marketplaces.
 
-This file is the managed skill ledger. A skill listed here is managed by Skill Market; a local skill absent from this ledger is unmanaged and requires user confirmation before disable, update, uninstall, or overwrite operations.
+This file is the remote skill catalog index. It records market entries and catalog status only. Local install/disable/update state is stored on the user's machine in `~/.skill-market/managed-skills.json`.
 
-Status values:
+Catalog status values:
 
 - `active`: available for install/update.
 - `disabled`: retained in the catalog but not offered for normal install.

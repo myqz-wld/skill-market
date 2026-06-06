@@ -12,7 +12,7 @@ Use this skill to disable a local installation while preserving files. This does
 - Plugin: run `claude plugin disable <plugin-name>@skill-market`.
 - Standalone Claude skill: move `~/.claude/skills/<skill-name>/` to `~/.claude/skills.disabled/<skill-name>/`.
 
-Before disabling a standalone skill, check `skills/INDEX.md`. If the skill is not listed there, it is unmanaged; ask the user to confirm before moving it.
+Before disabling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before adopting or moving it. When disabling a managed skill, update its local status to `disabled`.
 
 Create `~/.claude/skills.disabled/` if it does not exist. Do not overwrite an existing disabled copy unless the user explicitly asks.
 

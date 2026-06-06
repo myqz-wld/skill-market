@@ -19,6 +19,6 @@ For update, fetch the remote and fast-forward the cache before copying files.
 - Plugin from a local marketplace source: run `codex plugin remove <plugin-name>@skill-market`, then `codex plugin add <plugin-name>@skill-market`.
 - Standalone Codex skill: copy `skills/codex/<skill-name>/` from the cache to `~/.codex/skills/<skill-name>/`.
 
-Before updating a standalone skill already present under `~/.codex/skills/`, check `skills/INDEX.md`. If the skill is not listed there, it is unmanaged; ask the user to confirm before overwriting it.
+Before updating a standalone skill already present under `~/.codex/skills/`, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before adopting or overwriting it. When updating a managed skill, update its local status to `installed`.
 
 Report when Codex requires a new session before the updated plugin takes effect.
