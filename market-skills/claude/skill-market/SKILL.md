@@ -13,6 +13,9 @@ Use this skill to manage the Skill Market repository. The market provides no ser
 /Users/wanglidong/Repository/skill-market
 ```
 
+Before any operation, read `market.json` from the repository root and use its `registry.skills.claude`,
+`registry.plugins.claude`, and `publish` fields as the source of truth.
+
 ## When to Use
 
 Use this skill when the user asks to:
@@ -27,6 +30,7 @@ Use this skill when the user asks to:
 Read:
 
 ```text
+market.json
 registry/INDEX.md
 registry/skills/claude/
 registry/plugins/claude/

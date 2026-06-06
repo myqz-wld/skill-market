@@ -13,6 +13,7 @@ Skill Market 是一个仓库型市场，不提供服务、CLI、API 或安装器
 ## 目录
 
 ```text
+market.json
 registry/
   INDEX.md
   skills/
@@ -26,6 +27,19 @@ market-skills/
   claude/skill-market/SKILL.md
   codex/skill-market/SKILL.md
 ```
+
+## Market 注册
+
+根目录的 [market.json](market.json) 是 market 注册清单。它声明：
+
+- 支持的 adapter：`claude`、`codex`
+- registry 索引：`registry/INDEX.md`
+- skill registry 路径
+- plugin registry 路径
+- Claude / Codex market skill 路径
+- 发布策略：必须通过 PR 合并
+
+注册这个 market 时，以仓库根目录和 `market.json` 为入口即可。
 
 ## 安装 Market Skill
 
