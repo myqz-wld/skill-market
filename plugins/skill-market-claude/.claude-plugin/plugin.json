@@ -1,7 +1,7 @@
 {
   "name": "skill-market-claude",
-  "description": "Provides Claude skills for searching, downloading, uninstalling, updating, and uploading Skill Market entries through git and pull requests.",
-  "version": "0.2.0",
+  "description": "Provides Claude skills for searching, downloading, disabling, uninstalling, updating, and uploading Skill Market entries through git and pull requests.",
+  "version": "0.2.1",
   "author": {
     "name": "Skill Market"
   }

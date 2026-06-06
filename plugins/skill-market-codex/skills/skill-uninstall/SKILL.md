@@ -7,6 +7,8 @@ description: Uninstall an installed Codex Skill Market plugin or standalone Code
 
 Use this skill to remove local installations. This does not remove anything from the remote marketplace repository.
 
+If the user wants to preserve local files, use `skill-disable` instead of uninstalling.
+
 ## Uninstall
 
 - Plugin: run `codex plugin remove <plugin-name>@skill-market`.

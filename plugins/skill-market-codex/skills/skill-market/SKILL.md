@@ -9,6 +9,7 @@ Use this skill as the entry point for Skill Market. Prefer the focused skills fo
 
 - `skill-search`: search plugins and standalone Codex skills.
 - `skill-download`: download a package without installing it.
+- `skill-disable`: disable a local installation without deleting its files.
 - `skill-uninstall`: remove a local installation.
 - `skill-update`: update a local installation from the remote catalog.
 - `skill-upload`: create a branch and PR for uploads or marketplace deletions.
