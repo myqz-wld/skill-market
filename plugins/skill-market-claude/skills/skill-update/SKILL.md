@@ -18,4 +18,6 @@ For update, fetch the remote and fast-forward the cache before copying files.
 - Plugin: run `claude plugin marketplace update skill-market`, then `claude plugin update <plugin-name>@skill-market`.
 - Standalone Claude skill: copy `skills/claude/<skill-name>/` from the cache to `~/.claude/skills/<skill-name>/`.
 
+Before updating a standalone skill already present under `~/.claude/skills/`, check `skills/INDEX.md`. If the skill is not listed there, it is unmanaged; ask the user to confirm before overwriting it.
+
 Report when Claude requires a new session or restart before the updated plugin takes effect.

@@ -7,6 +7,7 @@ disable-model-invocation: true
 
 Use this skill as the entry point for Skill Market. Prefer the focused skills for actual work:
 
+- `skill-list`: list managed skills and local unmanaged skills.
 - `skill-search`: search plugins and standalone Claude skills.
 - `skill-download`: download a package without installing it.
 - `skill-disable`: disable a local installation without deleting its files.
@@ -43,3 +44,5 @@ Do not treat the current directory as the default repository.
 - Claude plugins are listed in `.claude-plugin/marketplace.json` and live under `plugins/`.
 
 Upload is not publish. A skill or plugin is published only after its PR is merged.
+
+`skills/INDEX.md` is the managed skill ledger. If a local Claude skill is not listed there, it is unmanaged; ask the user before disabling, updating, uninstalling, or overwriting it.
