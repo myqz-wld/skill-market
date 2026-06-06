@@ -8,8 +8,8 @@
     {
       "name": "skill-market-claude",
       "source": "./plugins/skill-market-claude",
-      "description": "Claude plugin that provides the skill-market management skill.",
-      "version": "0.1.1",
+      "description": "Claude plugin that provides Skill Market search, download, uninstall, update, and upload skills.",
+      "version": "0.2.0",
       "author": {
         "name": "Skill Market"
       }

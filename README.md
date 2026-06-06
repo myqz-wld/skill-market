@@ -2,7 +2,7 @@
 
 Skill Market is a native plugin marketplace repository for Claude and Codex.
 
-It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The only built-in capability in this repository is a bootstrap `skill-market` skill packaged as native plugins for each platform.
+It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The built-in capabilities are management skills packaged as native plugins for each platform.
 
 ## Marketplace Layout
 
@@ -12,10 +12,22 @@ It does not provide a service, API, custom CLI, or custom installer. Claude and 
 plugins/
   skill-market-claude/
     .claude-plugin/plugin.json
-    skills/skill-market/SKILL.md
+    skills/
+      skill-market/SKILL.md
+      skill-search/SKILL.md
+      skill-download/SKILL.md
+      skill-uninstall/SKILL.md
+      skill-update/SKILL.md
+      skill-upload/SKILL.md
   skill-market-codex/
     .codex-plugin/plugin.json
-    skills/skill-market/SKILL.md
+    skills/
+      skill-market/SKILL.md
+      skill-search/SKILL.md
+      skill-download/SKILL.md
+      skill-uninstall/SKILL.md
+      skill-update/SKILL.md
+      skill-upload/SKILL.md
 skills/
   INDEX.md
   claude/<skill-name>/SKILL.md
@@ -26,12 +38,12 @@ Claude and Codex plugins are independent. Claude and Codex managed skills are al
 
 The `plugins/skill-market-*` directories contain only the bootstrap management skill needed for native plugin installation. Marketplace-managed skills live under the top-level `skills/` directory, not inside the bootstrap plugin.
 
-## Register Locally
+## Register Marketplace
 
 Claude:
 
 ```bash
-claude plugin marketplace add /Users/wanglidong/Repository/skill-market
+claude plugin marketplace add git@github.com:myqz-wld/skill-market.git
 claude plugin install skill-market-claude@skill-market
 claude plugin marketplace update skill-market
 claude plugin update skill-market-claude@skill-market
@@ -40,45 +52,54 @@ claude plugin update skill-market-claude@skill-market
 Codex:
 
 ```bash
-codex plugin marketplace add /Users/wanglidong/Repository/skill-market
+codex plugin marketplace add git@github.com:myqz-wld/skill-market.git
 codex plugin add skill-market-codex@skill-market
 codex plugin marketplace upgrade skill-market
 ```
 
-## Repository Path Configuration
+For local plugin development only, register `/Users/wanglidong/Repository/skill-market` instead of the remote URL.
 
-The installed `skill-market` skill resolves the marketplace repository path in this order:
+## Repository Configuration
 
-1. `SKILL_MARKET_REPO` environment variable.
-2. `~/.skill-market/config.json` with a `repoPath` string.
-3. Default: `/Users/wanglidong/Repository/skill-market`.
+The installed management skills use the remote repository as the source of truth:
+
+1. `SKILL_MARKET_REPO_URL` environment variable.
+2. `~/.skill-market/config.json` with a `repoUrl` string.
+3. Default remote: `git@github.com:myqz-wld/skill-market.git`.
+
+They use a local cache to avoid fetching the network on every operation:
+
+1. `SKILL_MARKET_CACHE` environment variable.
+2. `~/.skill-market/config.json` with a `cachePath` string.
+3. Default cache: `~/.skill-market/cache/skill-market`.
+
+`SKILL_MARKET_REPO` or config field `repoPath` is only an explicit local development override. It is not the default.
 
 Example config:
 
 ```json
 {
-  "repoPath": "/Users/wanglidong/Repository/skill-market"
+  "repoUrl": "git@github.com:myqz-wld/skill-market.git",
+  "cachePath": "~/.skill-market/cache/skill-market"
 }
 ```
 
-After installation, the built-in skill is available from the installed plugin namespace:
+After installation, the management skills are available from the installed plugin namespace:
 
 ```text
-Claude: /skill-market-claude:skill-market
-Codex:  skill-market
+Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
+Codex:  skill-market, skill-search, skill-download, skill-uninstall, skill-update, skill-upload
 ```
 
-## What the Built-in Skill Does
+## What the Built-in Skills Do
 
-After installing the plugin, use the `skill-market` skill to:
+After installing the plugin, use the management skills to:
 
-- browse marketplace plugins
-- browse standalone managed skills under `skills/`
-- install/update/delete installed marketplace plugins using the environment's native plugin permissions
-- install/update/delete standalone skills by copying/removing the adapter-specific skill directory
-- download plugin or skill packages by copying/archiving repository directories
+- search marketplace plugins and standalone skills
+- download plugin or skill packages without installing
+- uninstall installed plugins or standalone skills
+- update installed plugins or standalone skills
 - upload new or updated skills/plugins by creating a branch and PR
-- delete marketplace entries by creating a branch and PR
 
 Upload is not publish. A skill or plugin is published only after the PR is merged.
 

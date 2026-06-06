@@ -2,6 +2,12 @@
 
 All marketplace uploads must go through pull requests. Do not publish by editing `main` directly.
 
+Default remote repository:
+
+```text
+git@github.com:myqz-wld/skill-market.git
+```
+
 ## Claude Plugin Upload
 
 Claude plugins live under:

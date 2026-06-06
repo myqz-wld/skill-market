@@ -1,7 +1,7 @@
 {
   "name": "skill-market-codex",
-  "version": "0.1.1",
-  "description": "Provides a Codex skill for managing this plugin marketplace repository through git and pull requests.",
+  "version": "0.2.0",
+  "description": "Provides Codex skills for searching, downloading, uninstalling, updating, and uploading Skill Market entries through git and pull requests.",
   "author": {
     "name": "Skill Market"
   },
@@ -10,15 +10,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Skill Market",
-    "shortDescription": "Manage skills and plugins through a PR-based marketplace.",
-    "longDescription": "Browse, install, update, delete, download, and propose skill/plugin uploads in this marketplace repository.",
+    "shortDescription": "Search, download, update, uninstall, and upload marketplace skills.",
+    "longDescription": "Manage Skill Market entries from a remote Git repository with local cache support and PR-based uploads.",
     "developerName": "Skill Market",
     "category": "Productivity",
     "capabilities": ["Workflow", "Git"],
     "defaultPrompt": [
-      "List available marketplace skills.",
-      "Upload this skill through a PR.",
-      "Install the latest version of a skill."
+      "Search Skill Market for a skill.",
+      "Download a Skill Market package.",
+      "Upload this skill through a PR."
     ],
     "brandColor": "#4F7CFF"
   }
