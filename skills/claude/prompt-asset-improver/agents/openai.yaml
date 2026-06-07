@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prompt Asset Improver"
+  short_description: "Improve durable agent prompt assets"
+  default_prompt: "Use $prompt-asset-improver to inventory, back up, review, and improve this durable prompt asset safely."

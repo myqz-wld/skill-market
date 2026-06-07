@@ -1,0 +1,4 @@
+interface:
+  display_name: "Complex Plan Workflow"
+  short_description: "Plan risky multi-session work"
+  default_prompt: "Use $complex-plan-workflow to create or update the durable plan/RFC/spike workflow before implementation."
