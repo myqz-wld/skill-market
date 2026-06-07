@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Engineering Foundation"
+  short_description: "Set up AI-coding project foundations"
+  default_prompt: "Use $project-engineering-foundation to set up or refresh this repository's AI-coding entry points, ref records, conventions, and guardrails."
