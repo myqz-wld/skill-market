@@ -1,11 +1,11 @@
 ---
 name: skill-list
-description: List Codex skills managed by Skill Market without listing unrelated local skills.
+description: List Codex skills managed by Skill Market without scanning unrelated local skills.
 ---
 
 # Skill List for Codex
 
-Use this skill to list Codex skills managed by Skill Market.
+Use this skill when the user wants Codex entries managed by Skill Market, not a scan of every local Codex skill.
 
 ## Repository Source
 

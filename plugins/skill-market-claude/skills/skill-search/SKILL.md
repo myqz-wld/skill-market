@@ -1,11 +1,12 @@
 ---
-description: Search the remote Skill Market catalog for Claude plugins and standalone Claude skills, using a local cache when available.
+name: skill-search
+description: Search the remote Skill Market catalog for Claude plugins and standalone Claude skills without installing anything.
 disable-model-invocation: true
 ---
 
 # Skill Search for Claude
 
-Use this skill to search Skill Market without installing anything.
+Use this skill when the user wants to find Claude catalog entries without installing or changing local state.
 
 ## Repository Source
 

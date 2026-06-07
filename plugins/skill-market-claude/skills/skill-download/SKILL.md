@@ -1,11 +1,12 @@
 ---
-description: Download a Claude Skill Market plugin or standalone Claude skill package without installing it.
+name: skill-download
+description: Download a Claude Skill Market plugin or standalone Claude skill package without installing or changing local state.
 disable-model-invocation: true
 ---
 
 # Skill Download for Claude
 
-Use this skill to export a package from Skill Market without installing it.
+Use this skill when the user wants a Skill Market package exported without installing it or changing local Claude state.
 
 ## Repository Source
 

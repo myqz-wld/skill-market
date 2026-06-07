@@ -1,11 +1,11 @@
 ---
 name: skill-upload
-description: Upload a Codex Skill Market plugin or standalone Codex skill by creating a branch and pull request.
+description: Propose a Codex Skill Market plugin, standalone Codex skill, or deletion by creating a branch and pull request.
 ---
 
 # Skill Upload for Codex
 
-Use this skill to propose changes to Skill Market. Upload is not publish; publish happens only after the PR is merged.
+Use this skill when the user wants to propose Codex catalog changes through a pull request. Upload is not publish; publish happens only after the PR is merged.
 
 ## Repository Source
 

@@ -1,11 +1,12 @@
 ---
+name: skill-update
 description: Update an installed Claude Skill Market plugin or standalone Claude skill from the remote catalog.
 disable-model-invocation: true
 ---
 
 # Skill Update for Claude
 
-Use this skill to update local installations from Skill Market.
+Use this skill when the user wants an installed Claude Skill Market item refreshed from the remote catalog.
 
 ## Repository Source
 

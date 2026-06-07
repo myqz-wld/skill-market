@@ -5,7 +5,7 @@ description: Update an installed Codex Skill Market plugin or standalone Codex s
 
 # Skill Update for Codex
 
-Use this skill to update local installations from Skill Market.
+Use this skill when the user wants an installed Codex Skill Market item refreshed from the remote catalog.
 
 ## Repository Source
 

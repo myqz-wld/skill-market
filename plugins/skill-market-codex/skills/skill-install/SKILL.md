@@ -1,11 +1,11 @@
 ---
 name: skill-install
-description: Install a Codex Skill Market plugin or standalone Codex skill and record standalone skill management state.
+description: Install a Codex Skill Market plugin or standalone Codex skill and record managed standalone skill state.
 ---
 
 # Skill Install for Codex
 
-Use this skill to install a Skill Market entry. Download is separate; install changes local Codex state.
+Use this skill when the user wants a Skill Market entry installed locally. Download-only requests belong to `skill-download`; install changes local Codex state.
 
 ## Repository Source
 
