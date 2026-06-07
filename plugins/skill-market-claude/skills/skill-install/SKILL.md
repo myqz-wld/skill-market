@@ -1,11 +1,12 @@
 ---
-description: Install a Claude Skill Market plugin or standalone Claude skill and record standalone skill management state.
+name: skill-install
+description: Install a Claude Skill Market plugin or standalone Claude skill and record managed standalone skill state.
 disable-model-invocation: true
 ---
 
 # Skill Install for Claude
 
-Use this skill to install a Skill Market entry. Download is separate; install changes local Claude state.
+Use this skill when the user wants a Skill Market entry installed locally. Download-only requests belong to `skill-download`; install changes local Claude state.
 
 ## Repository Source
 

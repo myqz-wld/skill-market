@@ -1,11 +1,11 @@
 ---
 name: skill-search
-description: Search the remote Skill Market catalog for Codex plugins and standalone Codex skills, using a local cache when available.
+description: Search the remote Skill Market catalog for Codex plugins and standalone Codex skills without installing anything.
 ---
 
 # Skill Search for Codex
 
-Use this skill to search Skill Market without installing anything.
+Use this skill when the user wants to find Codex catalog entries without installing or changing local state.
 
 ## Repository Source
 

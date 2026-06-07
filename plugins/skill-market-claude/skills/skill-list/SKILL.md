@@ -1,11 +1,12 @@
 ---
-description: List Claude skills managed by Skill Market without listing unrelated local skills.
+name: skill-list
+description: List Claude skills managed by Skill Market without scanning unrelated local skills.
 disable-model-invocation: true
 ---
 
 # Skill List for Claude
 
-Use this skill to list Claude skills managed by Skill Market.
+Use this skill when the user wants Claude entries managed by Skill Market, not a scan of every local Claude skill.
 
 ## Repository Source
 

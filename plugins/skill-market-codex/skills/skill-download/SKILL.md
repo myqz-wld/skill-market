@@ -1,11 +1,11 @@
 ---
 name: skill-download
-description: Download a Codex Skill Market plugin or standalone Codex skill package without installing it.
+description: Download a Codex Skill Market plugin or standalone Codex skill package without installing or changing local state.
 ---
 
 # Skill Download for Codex
 
-Use this skill to export a package from Skill Market without installing it.
+Use this skill when the user wants a Skill Market package exported without installing it or changing local Codex state.
 
 ## Repository Source
 

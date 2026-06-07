@@ -1,11 +1,12 @@
 ---
-description: Disable an installed Claude Skill Market plugin or standalone Claude skill without deleting its files.
+name: skill-disable
+description: Disable a Claude Skill Market plugin or standalone Claude skill while preserving local files.
 disable-model-invocation: true
 ---
 
 # Skill Disable for Claude
 
-Use this skill to disable a local installation while preserving files. This does not remove anything from the remote marketplace repository.
+Use this skill when the user wants a local Claude Skill Market installation disabled but kept on disk. Do not mutate the remote marketplace repository.
 
 ## Disable
 

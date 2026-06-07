@@ -1,17 +1,18 @@
 ---
-description: Entry point for the Claude Skill Market management skills.
+name: skill-market
+description: Route general Claude Skill Market requests to the focused list, search, download, install, disable, uninstall, update, or upload skills.
 disable-model-invocation: true
 ---
 
 # Skill Market for Claude
 
-Use this skill as the entry point for Skill Market. Prefer the focused skills for actual work:
+Use this entry point to choose the focused Claude Skill Market management skill. Dispatch actual work to one of these skills:
 
 - `skill-list`: list skills already managed by Skill Market.
 - `skill-search`: search plugins and standalone Claude skills.
 - `skill-download`: download a package without installing it.
 - `skill-install`: install a plugin or standalone Claude skill.
-- `skill-disable`: disable a local installation without deleting its files.
+- `skill-disable`: disable a local installation while preserving files.
 - `skill-uninstall`: remove a local installation.
 - `skill-update`: update a local installation from the remote catalog.
 - `skill-upload`: create a branch and PR for uploads or marketplace deletions.

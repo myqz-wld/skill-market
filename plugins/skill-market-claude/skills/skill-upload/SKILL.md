@@ -1,11 +1,12 @@
 ---
-description: Upload a Claude Skill Market plugin or standalone Claude skill by creating a branch and pull request.
+name: skill-upload
+description: Propose a Claude Skill Market plugin, standalone Claude skill, or deletion by creating a branch and pull request.
 disable-model-invocation: true
 ---
 
 # Skill Upload for Claude
 
-Use this skill to propose changes to Skill Market. Upload is not publish; publish happens only after the PR is merged.
+Use this skill when the user wants to propose Claude catalog changes through a pull request. Upload is not publish; publish happens only after the PR is merged.
 
 ## Repository Source
 

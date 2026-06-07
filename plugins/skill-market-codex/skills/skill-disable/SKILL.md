@@ -1,11 +1,11 @@
 ---
 name: skill-disable
-description: Disable an installed Codex Skill Market standalone skill without deleting its files.
+description: Disable a Codex Skill Market standalone skill while preserving local files, or explain that Codex plugins cannot be disabled.
 ---
 
 # Skill Disable for Codex
 
-Use this skill to disable a local standalone skill while preserving files. This does not remove anything from the remote marketplace repository.
+Use this skill when the user wants a local Codex Skill Market installation disabled but kept on disk. Do not mutate the remote marketplace repository.
 
 ## Disable
 
