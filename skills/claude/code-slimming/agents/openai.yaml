@@ -1,0 +1,4 @@
+interface:
+  display_name: "Code Slimming"
+  short_description: "Audit and reduce unused or duplicate code"
+  default_prompt: "Use $code-slimming to scan this repository for unused files, dead functions/classes, duplicate code, and consolidation opportunities, then report candidates for my decision before editing."
