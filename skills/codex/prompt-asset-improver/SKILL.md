@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, refreshes inventory, creates local backups, removes stale/duplicated/vague rules, aligns language within each asset type or domain, keeps paired Claude/Codex assets aligned, records only durable custom criteria, and validates with a review agent."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, refreshes inventory, creates local backups, groups scan findings into small same-domain edit batches, delegates supported batches to editing agents, aggregates the final patch, records only durable custom criteria, and validates with a review agent."
 ---
 
 # Prompt Asset Improver
@@ -94,7 +94,7 @@ When review work reveals a weakness in this skill itself, queue it instead of si
 
 ## Editing Rules
 
-1. Keep one source of truth for each rule. Replace duplicated copies with cross-references unless the duplicate is intentionally self-contained for a separately loaded agent or skill.
+1. Keep one source of truth for each rule. Replace duplicated copies with cross-references only when the target reader is guaranteed to load the referenced asset or the current asset still contains the executable rule needed at task time. For separately loaded runtime assets, replace broad config-section pointers with the local executable rule or a narrow reference to a guaranteed loaded source.
 2. Write current facts only. Remove deprecated, transitional, future-looking, compatibility, old-structure, or migration prose. Do not keep "before directory X existed", "old path still works", or "migrate later" notes. If an old behavior still affects the agent's next action, rewrite it as a current executable rule without historical framing.
 3. Use executable language: "do X", "reject Y", "run Z". Replace vague advice with explicit boundaries.
 4. Keep fallback handling only when it changes the agent's next action. Move defensive implementation details back to code comments.
@@ -107,8 +107,9 @@ When review work reveals a weakness in this skill itself, queue it instead of si
 11. Put trigger information in skill or agent frontmatter descriptions, not only in the body. The body loads after trigger selection.
 12. Write frontmatter descriptions as positive trigger and capability signals. Omit mentions of unrelated tools, products, environments, or excluded capabilities unless that boundary changes trigger selection; when the boundary matters, state the active scope instead of listing incidental exclusions.
 13. Do not make a general prompt asset assume another skill, plugin, product, or tool exists. Name another capability only when this asset is the integration point, the user scoped the edit to that environment, or the dependency changes trigger selection; otherwise describe the capability contract generically.
-14. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
-15. For paired Claude/Codex assets, find the counterpart before editing one side. Edit both sides in the same pass or record that no counterpart exists; keep behavior, triggers, validation, and failure handling aligned while allowing differences only for adapter tools, turn boundaries, and file-edit mechanics. Do not label one side as a Claude or Codex perspective; let the file path and load path imply the adapter, and state only actionable adapter-specific mechanics.
+14. Do not make a reusable or non-project-specific prompt asset read like it belongs to one repository, product, vendor, file layout, or incident. Keep project names, file names, regexes, and incident details in project-level custom points, local reports, or assets whose confirmed scope is that project.
+15. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
+16. For paired Claude/Codex assets, find the counterpart before editing one side. Edit both sides in the same pass or record that no counterpart exists; keep behavior, triggers, validation, and failure handling aligned while allowing differences only for adapter tools, turn boundaries, and file-edit mechanics. Do not label one side as a Claude or Codex perspective; let the file path and load path imply the adapter, and state only actionable adapter-specific mechanics.
 
 ## Asset-Specific Focus
 
@@ -150,9 +151,21 @@ Before changing a prompt asset, run a targeted audit and carry the results into 
    - repeated examples that do not teach a different decision;
    - pitfall notes without evidence;
    - local references, bundled resource paths, external links, and stale skill invocation names;
+   - broad section-level references from independently loaded assets to repository-local config, policy, or runtime files that can hide missing executable rules. Use target-specific search terms from the changed asset, then fix hits by keeping the actionable rule local or documenting that the referenced source is guaranteed loaded;
    - prompt-template references that must be validated against a generated output path instead of the template source path.
 5. Fix local dead links before finishing. Report unchecked external links.
 6. If `rg` is unavailable, use the nearest search tool and record that the search check was manual.
+
+## Agent Edit Batches
+
+After the pre-edit audit, turn findings into same-domain edit batches before changing prompt assets.
+
+1. Group findings by asset domain and issue type. Keep each batch small enough for one editing agent to finish without owning the whole prompt set.
+2. Assign disjoint write sets. If one file contains multiple issue domains, pick one owner for that file or keep the file with the lead agent.
+3. Spawn one editing agent for each batch when the environment supports sub-agents and the batch has a disjoint write set with no dependency on another batch. Give the agent the confirmed scope, exact files, audit evidence, backup location, editing rules, and required final summary.
+4. Tell each editing agent to preserve unrelated changes, avoid reverting nearby assets, and report every changed path and unresolved concern.
+5. Keep scope confirmation, backups, inventory writes, conflict resolution, final validation, and the optimization report with the lead agent. The lead agent reviews every agent result, integrates or rejects changes, and produces the final summary.
+6. If agent spawning is unavailable or the confirmed scope cannot be split safely, the lead agent edits locally and reports that delegation was skipped.
 
 ## Skill Extraction
 
@@ -178,6 +191,7 @@ The review agent must check:
 - General assets do not assume unrelated skills, plugins, products, or tools exist.
 - Paired assets avoid perspective labels and preserve only actionable adapter-specific mechanics.
 - Local links, bundled resource paths, frontmatter, inventory, backups, backup retention pruning, and manifests are valid.
+- Agent edit batches were scoped, delegated, and aggregated correctly, or skipped with a concrete reason.
 - The self-improvement audit is complete and any needed candidate is queued instead of silently applied.
 
 If no review agent is available in the current environment, run the manual validation yourself, mark the validation as self-reviewed in the optimization report, and state what review-agent coverage is missing.
@@ -187,7 +201,7 @@ If no review agent is available in the current environment, run the manual valid
 After every prompt-asset optimization, deliver a final optimization report.
 
 1. Start the report with `User Custom Points`. List active shared and local custom points first. If none exist, write `None recorded`.
-2. Include scope confirmation method, inventory freshness, confirmed assets, backup id/path, backup pruning result, changed files, pitfall-note decisions, dead-link results, review-agent validation results, pending self-improvement candidates, and any self-improvement decisions made in the current run.
+2. Include scope confirmation method, inventory freshness, confirmed assets, backup id/path, backup pruning result, agent edit batch assignments and aggregation result, changed files, pitfall-note decisions, dead-link results, review-agent validation results, pending self-improvement candidates, and any self-improvement decisions made in the current run.
 3. For each changed asset, include a compact but specific change summary that is detailed enough to be useful, not overly brief: name the changed sections or rule names, summarize the actual rule/content changes, explain why the change improves the prompt for its intended reader, and note any adapter-specific divergence preserved.
 4. If no file changed, still report the inventory/custom-point decisions and the reason no edit was made.
 5. Keep the report short enough to scan; do not paste full prompt files.
@@ -208,6 +222,7 @@ Before finishing:
 - Confirm no general asset assumes another unrelated skill, plugin, product, or tool exists.
 - Confirm custom points contain only standing preferences, not one-time task directions.
 - Confirm processed self-improvement candidates were removed from the queue document.
+- Confirm agent edit batches were created after scanning, each editing agent owned a small same-domain batch, and the lead agent aggregated the results; if skipped, confirm the report gives the reason.
 - For paired Claude/Codex assets, check both sides, remove perspective labels, and keep protocol semantics aligned while preserving actionable adapter-specific wording or report that no counterpart exists.
 - Run the skill validator for changed skills. If the validator is unavailable, run manual frontmatter and line-count checks and report the validator failure.
 - Run the remaining local validation checks needed for the changed files, then send the overall change to review agent for independent validation and self-improvement audit. If no review agent is available, report the missing review-agent coverage and mark the result as self-reviewed.
