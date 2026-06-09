@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, refreshes inventory, creates local backups, removes stale/duplicated/vague rules, keeps paired Claude/Codex assets aligned, records only durable custom criteria, and validates with a review agent."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, refreshes inventory, creates local backups, removes stale/duplicated/vague rules, aligns language within each asset type or domain, keeps paired Claude/Codex assets aligned, records only durable custom criteria, and validates with a review agent."
 ---
 
 # Prompt Asset Improver
@@ -101,13 +101,14 @@ When review work reveals a weakness in this skill itself, queue it instead of si
 5. Keep prompt text dense and short. Preserve the rule, trigger, boundary, and action; remove wording that does not change model behavior.
 6. Use plain language. Prefer words a user and an agent can both understand over internal jargon, long noun chains, or unexplained protocol names.
 7. Write new or revised prompt asset text in English by default. Use another language only when the user requests it, the target audience needs it, the asset is product-facing copy in that language, the existing project convention is non-English, or preserving quoted/source text requires it.
-8. Keep pitfall notes only when they include evidence such as an incident, issue id, failing command, file path, or user decision. During each optimization, list pitfall notes without evidence and ask the user whether to remove them.
-9. Keep examples sparse. One or two representative examples are enough for a rule.
-10. Put trigger information in skill or agent frontmatter descriptions, not only in the body. The body loads after trigger selection.
-11. Write frontmatter descriptions as positive trigger and capability signals. Omit mentions of unrelated tools, products, environments, or excluded capabilities unless that boundary changes trigger selection; when the boundary matters, state the active scope instead of listing incidental exclusions.
-12. Do not make a general prompt asset assume another skill, plugin, product, or tool exists. Name another capability only when this asset is the integration point, the user scoped the edit to that environment, or the dependency changes trigger selection; otherwise describe the capability contract generically.
-13. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
-14. For paired Claude/Codex assets, find the counterpart before editing one side. Edit both sides in the same pass or record that no counterpart exists; keep behavior, triggers, validation, and failure handling aligned while allowing differences only for adapter tools, turn boundaries, and file-edit mechanics. Do not label one side as a Claude or Codex perspective; let the file path and load path imply the adapter, and state only actionable adapter-specific mechanics.
+8. Use one language for prompt assets in the same asset type or domain. Pick the language from the confirmed audience, product convention, or dominant existing set; if a specific asset needs a different language, state the audience or source-text boundary in that asset or the report.
+9. Keep pitfall notes only when they include evidence such as an incident, issue id, failing command, file path, or user decision. During each optimization, list pitfall notes without evidence and ask the user whether to remove them.
+10. Keep examples sparse. One or two representative examples are enough for a rule.
+11. Put trigger information in skill or agent frontmatter descriptions, not only in the body. The body loads after trigger selection.
+12. Write frontmatter descriptions as positive trigger and capability signals. Omit mentions of unrelated tools, products, environments, or excluded capabilities unless that boundary changes trigger selection; when the boundary matters, state the active scope instead of listing incidental exclusions.
+13. Do not make a general prompt asset assume another skill, plugin, product, or tool exists. Name another capability only when this asset is the integration point, the user scoped the edit to that environment, or the dependency changes trigger selection; otherwise describe the capability contract generically.
+14. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
+15. For paired Claude/Codex assets, find the counterpart before editing one side. Edit both sides in the same pass or record that no counterpart exists; keep behavior, triggers, validation, and failure handling aligned while allowing differences only for adapter tools, turn boundaries, and file-edit mechanics. Do not label one side as a Claude or Codex perspective; let the file path and load path imply the adapter, and state only actionable adapter-specific mechanics.
 
 ## Asset-Specific Focus
 
@@ -141,6 +142,7 @@ Before changing a prompt asset, run a targeted audit and carry the results into 
    - stale, compatibility, migration, old-structure, or future-looking language;
    - vague advice that needs an exact action or exception boundary;
    - non-English prose without a user, audience, product-copy, project-convention, or quoted-source reason;
+   - language drift across prompt assets that share an asset type or domain;
    - frontmatter descriptions with unnecessary unrelated-tool or excluded-capability mentions;
    - general assets that assume another skill, plugin, product, or tool exists;
    - paired Claude/Codex assets that need synchronized edits or a documented no-counterpart decision;
@@ -172,6 +174,7 @@ The review agent must check:
 - The changed prompt assets answer the user's request without adding unrelated policy or hidden dependencies.
 - The scope is correct, and any paired Claude/Codex counterpart is updated or explicitly reported as absent.
 - The edits follow the English-by-default rule and preserve justified non-English text only when an exception applies.
+- Same-type or same-domain prompt assets use one language, with any exception tied to audience, product convention, or quoted/source text.
 - General assets do not assume unrelated skills, plugins, products, or tools exist.
 - Paired assets avoid perspective labels and preserve only actionable adapter-specific mechanics.
 - Local links, bundled resource paths, frontmatter, inventory, backups, backup retention pruning, and manifests are valid.
@@ -201,6 +204,7 @@ Before finishing:
 - Confirm scope was explicitly approved by the user or came from exact prompt assets named in the current user request; inventory freshness did not expand the scope.
 - Confirm no unrelated project-specific policy moved into a general skill.
 - Confirm new or revised prompt text uses English by default, and any non-English text has a user, audience, product-copy, project-convention, or quoted-source reason.
+- Confirm same-type or same-domain prompt assets use one language, or the report states the exception boundary.
 - Confirm no general asset assumes another unrelated skill, plugin, product, or tool exists.
 - Confirm custom points contain only standing preferences, not one-time task directions.
 - Confirm processed self-improvement candidates were removed from the queue document.
