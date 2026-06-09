@@ -1,6 +1,6 @@
 ---
 name: project-engineering-foundation
-description: "Use when starting or maintaining a long-lived AI-coding repository. Sets up CLAUDE.md/AGENTS.md, README update rules, src/build layout, ref/changelogs and ref/reviews records, convention promotion, review-expiry checks, and the 500-line file-size guardrail."
+description: "Use when starting or maintaining a long-lived AI-coding repository. Sets up CLAUDE.md/AGENTS.md, README update rules, src/build layout, plan/review/changelog records under ref/, convention promotion, review-expiry checks, and the 500-line file-size guardrail."
 ---
 
 # Project Engineering Foundation
@@ -21,7 +21,7 @@ project-root/
 └── ref/
     ├── changelogs/INDEX.md
     ├── reviews/INDEX.md
-    ├── plans/
+    ├── plans/INDEX.md
     └── conventions/
         ├── INDEX.md
         ├── tally.md
@@ -31,7 +31,7 @@ project-root/
 Use the templates under `assets/templates/`; read only the needed template and create or update the project file with file tools, not shell redirection. Merge missing sections into existing files instead of overwriting project-specific instructions.
 
 - `project-claude.template.md` and `project-agents.template.md` for the project entry points.
-- `changelog-index.template.md`, `changelog.template.md`, `reviews-index.template.md`, and `review.template.md` for `ref/`.
+- `changelog-index.template.md`, `changelog.template.md`, `plans-index.template.md`, `reviews-index.template.md`, and `review.template.md` for `ref/`.
 - `conventions-index.template.md`, `conventions-tally.template.md`, and `convention-single.template.md` for promoted conventions.
 
 ## Layout Rules
@@ -40,14 +40,25 @@ Use the templates under `assets/templates/`; read only the needed template and c
 - Pick one build output root, `build/` or `dist/`, and keep all toolchain output under it.
 - Leave metadata and top-level config at the repo root: `README.md`, license, package manifests, lockfiles, config files, and CI folders.
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
+- Add `.refs/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
 - Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
+
+## Plan And Review Artifacts
+
+Use this rule when plan or review documents are not terminal yet. Keep active plan documents in the current environment's working plan location; when no stronger project contract exists, use ignored path `<repo>/.refs/plans/<plan-id>.md`. Keep active review drafts and raw reviewer output in the current review workflow's working location; when no stronger project contract exists, use ignored path `<repo>/.refs/reviews/<review-id>.md` or session output, not `ref/reviews/REVIEW_X.md`.
+
+When a plan or review reaches its terminal state, clean up the working copy in the same closeout:
+
+- Move the final plan document and plan-owned supporting reports to `ref/plans/`, then update `ref/plans/INDEX.md`.
+- Write the final review record to `ref/reviews/REVIEW_X.md`, then update `ref/reviews/INDEX.md`.
+- Remove the non-terminal working copy or mark it archived so there is not a second active copy.
 
 ## Change Records
 
 Before feature work, inspect existing context:
 
 ```bash
-ls ref/conventions ref/changelogs ref/reviews
+ls ref/conventions ref/changelogs ref/plans ref/reviews
 ```
 
 Write one record after each meaningful change that changes behavior, structure, dependencies, verification, or review coverage:
