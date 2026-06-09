@@ -13,6 +13,7 @@ Catalog status values:
 
 | Adapter | Skill | Path | Status | Description |
 |---|---|---|---|---|
+| claude | code-slimming | skills/claude/code-slimming | active | Use when asked to slim, shrink, deduplicate, or clean code by finding unused files, functions, classes, exports, dependencies, repeated logic, or consolidation opportunities. |
 | claude | complex-plan-workflow | skills/claude/complex-plan-workflow | active | Use before coding when work is risky, design-heavy, multi-session, blocked by an uncertain decision, needs a spike/RFC, or needs a durable plan for handoff. |
 | claude | flow-arch-plantuml | skills/claude/flow-arch-plantuml | active | Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. |
 | claude | project-engineering-foundation | skills/claude/project-engineering-foundation | active | Use when starting or maintaining a long-lived AI-coding repository. |
