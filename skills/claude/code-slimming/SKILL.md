@@ -1,19 +1,19 @@
 ---
 name: code-slimming
-description: "Use when asked to slim, shrink, deduplicate, or clean code by finding unused files, functions, classes, exports, dependencies, repeated logic, or consolidation opportunities. Scans first, reports candidates with evidence and risk, waits for user approval, then edits only approved items with validation."
+description: "Use when asked to slim, shrink, deduplicate, or clean code by finding unused files, symbols, dependencies, repeated logic, merge candidates, or oversized files. Produces an evidence-backed scan report first, waits for explicit candidate approval, then edits only approved items with validation."
 ---
 
 # Code Slimming
 
-Use this skill to reduce code size without guessing. Scan first, report evidence-backed candidates, and stop for user decision before changing source files. Use `rg` / Bash for inspection and file tools for edits.
+Use this skill to reduce code size without guessing. Run it in two phases: scan and report first, approval-gated edits second. Use `rg` / Bash for inspection and file tools for edits.
 
 ## Workflow
 
-1. Confirm the target repository and scope. If the user did not name a scope, scan the project entry points, package/module metadata, source roots, tests, build config, routing/config files, scripts, and public exports before proposing candidates.
-2. Establish scan cache without changing repository files. Use `.code-slimming/local/` only when it already exists and is ignored; otherwise use `/tmp/code-slimming/<repo-name-or-hash>/<timestamp>/` and report the cache path.
+1. Confirm the target repository, cleanup scope, and exclusions. If scope is unclear, inspect entry points, package/module metadata, source roots, tests, build config, routing/config files, scripts, and public exports before proposing candidates.
+2. Establish scan cache without changing repository files during the scan phase. Use `.code-slimming/local/` only when it already exists and is ignored; otherwise use `/tmp/code-slimming/<repo-name-or-hash>/<timestamp>/`.
 3. Scan for unused files, unused functions, unused classes, duplicate logic, overlapping helpers, mergeable functions, mergeable methods, mergeable classes, mergeable code blocks, repeated constants, dead dependencies, and large files that invite extraction.
 4. Report candidates to the user with evidence, confidence, risk, proposed action, and validation plan. End the scan phase without editing source files.
-5. Wait for the user to approve candidate IDs or revise scope. Do not execute code removal, function merging, class merging, or dependency deletion before this decision.
+5. Stop until the user approves candidate IDs or revises scope. Map broad approval back to explicit candidate IDs before editing.
 6. After approval, re-check that each approved candidate is still valid, edit only approved items, and run the planned validation.
 
 ## Local Cache
