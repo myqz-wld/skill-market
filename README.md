@@ -101,7 +101,7 @@ Example config:
 }
 ```
 
-`activePath` is the active install location. `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`.
+`activePath` is the active install location. `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`. `installedVersion` records the standalone skill version copied from `skills/INDEX.md`.
 
 After installation, the management skills are available from the installed plugin namespace:
 
@@ -114,7 +114,7 @@ Codex:  skill-market, skill-list, skill-search, skill-download, skill-install, s
 
 After installing the plugin, use the management skills to:
 
-- list managed skills from `~/.skill-market/managed-skills.json` and enrich them with catalog status from `skills/INDEX.md`
+- list managed skills from `~/.skill-market/managed-skills.json` and enrich them with catalog version and status from `skills/INDEX.md`
 - search marketplace plugins and standalone skills
 - download plugin or skill packages without installing
 - install plugins or standalone skills and record standalone skills in local managed state
@@ -126,7 +126,7 @@ After installing the plugin, use the management skills to:
 
 Upload is not publish. A skill or plugin is published only after the PR is merged.
 
-`skills/INDEX.md` is the remote skill catalog index. Local management state is stored in `~/.skill-market/managed-skills.json`.
+`skills/INDEX.md` is the remote skill catalog index. It records a semver `Version` for each standalone skill. Start new standalone skills at `0.0.1` and bump the version whenever the published skill package changes. Local management state is stored in `~/.skill-market/managed-skills.json`.
 
 `skill-download` exports packages without installing them. If the user does not provide a destination, use `~/.skill-market/downloads/<adapter>/<name>/`.
 
@@ -140,6 +140,7 @@ Local state example:
       "adapter": "codex",
       "name": "example-skill",
       "catalogPath": "skills/codex/example-skill",
+      "installedVersion": "0.0.1",
       "activePath": "~/.codex/skills/example-skill",
       "disabledPath": "~/.codex/skills.disabled/example-skill",
       "status": "installed"
@@ -156,7 +157,7 @@ All uploads must go through PR:
 
 1. Create branch `market/<type>/<adapter>/<name>`.
 2. For plugin uploads, add or update `plugins/<plugin-name>/` and the corresponding marketplace catalog.
-3. For standalone skill uploads, add or update `skills/<adapter>/<skill-name>/` and `skills/INDEX.md`.
+3. For standalone skill uploads, add or update `skills/<adapter>/<skill-name>/`, bump that skill's `Version` in `skills/INDEX.md`, and keep the catalog row path/status/description current.
 4. Commit and push.
 5. Open a PR.
 6. Merge the PR to publish.

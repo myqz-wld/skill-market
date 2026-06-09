@@ -1,6 +1,6 @@
 ---
 name: skill-install
-description: Install a Codex Skill Market plugin or standalone Codex skill and record managed standalone skill state.
+description: Install a Codex Skill Market plugin or standalone Codex skill and record managed standalone skill state with its catalog version.
 ---
 
 # Skill Install for Codex
@@ -16,8 +16,8 @@ For install, clone the cache when missing. Fetch when the user asks for latest b
 ## Install
 
 - Plugin: run `codex plugin add <plugin-name>@skill-market`.
-- Standalone Codex skill: copy `skills/codex/<skill-name>/` from the cache to `~/.codex/skills/<skill-name>/`.
+- Standalone Codex skill: read its `Version` from `skills/INDEX.md`, then copy `skills/codex/<skill-name>/` from the cache to `~/.codex/skills/<skill-name>/`.
 
 Before installing over an existing active or disabled local skill absent from `~/.skill-market/managed-skills.json`, ask the user before adopting or overwriting it.
 
-After installing a standalone skill, add or update its entry in `~/.skill-market/managed-skills.json` with `adapter: "codex"`, `catalogPath: "skills/codex/<skill-name>"`, `activePath: "~/.codex/skills/<skill-name>"`, `disabledPath: "~/.codex/skills.disabled/<skill-name>"`, and `status: "installed"`. If a managed disabled copy already exists at `disabledPath`, remove or replace it before setting status to `installed`.
+After installing a standalone skill, add or update its entry in `~/.skill-market/managed-skills.json` with `adapter: "codex"`, `catalogPath: "skills/codex/<skill-name>"`, `installedVersion: "<catalog-version>"`, `activePath: "~/.codex/skills/<skill-name>"`, `disabledPath: "~/.codex/skills.disabled/<skill-name>"`, and `status: "installed"`. If a managed disabled copy already exists at `disabledPath`, remove or replace it before setting status to `installed`.

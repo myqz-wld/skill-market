@@ -1,6 +1,6 @@
 ---
 name: skill-install
-description: Install a Claude Skill Market plugin or standalone Claude skill and record managed standalone skill state.
+description: Install a Claude Skill Market plugin or standalone Claude skill and record managed standalone skill state with its catalog version.
 disable-model-invocation: true
 ---
 
@@ -17,8 +17,8 @@ For install, clone the cache when missing. Fetch when the user asks for latest b
 ## Install
 
 - Plugin: run `claude plugin install <plugin-name>@skill-market`.
-- Standalone Claude skill: copy `skills/claude/<skill-name>/` from the cache to `~/.claude/skills/<skill-name>/`.
+- Standalone Claude skill: read its `Version` from `skills/INDEX.md`, then copy `skills/claude/<skill-name>/` from the cache to `~/.claude/skills/<skill-name>/`.
 
 Before installing over an existing active or disabled local skill absent from `~/.skill-market/managed-skills.json`, ask the user before adopting or overwriting it.
 
-After installing a standalone skill, add or update its entry in `~/.skill-market/managed-skills.json` with `adapter: "claude"`, `catalogPath: "skills/claude/<skill-name>"`, `activePath: "~/.claude/skills/<skill-name>"`, `disabledPath: "~/.claude/skills.disabled/<skill-name>"`, and `status: "installed"`. If a managed disabled copy already exists at `disabledPath`, remove or replace it before setting status to `installed`.
+After installing a standalone skill, add or update its entry in `~/.skill-market/managed-skills.json` with `adapter: "claude"`, `catalogPath: "skills/claude/<skill-name>"`, `installedVersion: "<catalog-version>"`, `activePath: "~/.claude/skills/<skill-name>"`, `disabledPath: "~/.claude/skills.disabled/<skill-name>"`, and `status: "installed"`. If a managed disabled copy already exists at `disabledPath`, remove or replace it before setting status to `installed`.

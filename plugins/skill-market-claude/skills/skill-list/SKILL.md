@@ -1,6 +1,6 @@
 ---
 name: skill-list
-description: List Claude skills managed by Skill Market without scanning unrelated local skills.
+description: List Claude skills managed by Skill Market with installed and catalog versions, without scanning unrelated local skills.
 disable-model-invocation: true
 ---
 
@@ -17,8 +17,8 @@ For list, clone the cache when missing. Fetch when the user asks for latest stat
 ## List
 
 1. Read `~/.skill-market/managed-skills.json`; this is the local managed state file.
-2. Report only Claude entries from that state file, including name, local status, `activePath`, `disabledPath`, and catalog path.
-3. Read `skills/INDEX.md` only to enrich managed entries with remote catalog status and description.
+2. Report only Claude entries from that state file, including name, local status, `installedVersion`, `catalogPath`, `activePath`, and `disabledPath`.
+3. Read `skills/INDEX.md` only to enrich managed entries with remote catalog version, status, and description. Flag entries where `installedVersion` differs from the catalog `Version`.
 4. If the state file is missing or has no Claude entries, report that no Claude skills are currently managed.
 
 Do not scan or list unrelated local skills from `~/.claude/skills/` by default. If the user names a specific local skill and asks to manage it, ask for confirmation before adding it to `managed-skills.json`.

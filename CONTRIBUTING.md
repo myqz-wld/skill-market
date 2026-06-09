@@ -54,6 +54,8 @@ Update:
 skills/INDEX.md
 ```
 
+Set the catalog `Version` for every new standalone skill to `0.0.1`. Bump that version whenever the published skill package changes.
+
 ## Codex Skill Upload
 
 Standalone Codex skills live under:
@@ -68,6 +70,8 @@ Update:
 skills/INDEX.md
 ```
 
+Set the catalog `Version` for every new standalone skill to `0.0.1`. Bump that version whenever the published skill package changes.
+
 ## PR Requirements
 
 - Plugin name is kebab-case.
@@ -75,7 +79,7 @@ skills/INDEX.md
 - Claude and Codex variants are not auto-synced.
 - Each plugin has the correct native manifest.
 - Each new plugin is listed in the corresponding marketplace catalog.
-- Each new standalone skill is listed in `skills/INDEX.md`.
+- Each new standalone skill is listed in `skills/INDEX.md` with a semver `Version`.
 - Uploads are proposed until the PR is merged.
 - Marketplace deletion is also proposed until the PR is merged.
 - Do not add services, npm packages, custom CLIs, or custom registry APIs for skill management.
