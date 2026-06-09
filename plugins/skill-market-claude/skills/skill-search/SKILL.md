@@ -31,4 +31,4 @@ For search, clone the cache when missing. Fetch when the user asks for latest re
 - Claude plugins: `.claude-plugin/marketplace.json` and `plugins/`.
 - Standalone Claude skills: `skills/INDEX.md` and `skills/claude/`.
 
-Return matches with type, adapter, name, repository path, and a short description.
+Return matches with type, adapter, name, version, repository path, and a short description.

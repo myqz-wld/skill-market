@@ -16,8 +16,8 @@ For download, clone the cache when missing. Fetch when the user asks for the lat
 ## Download
 
 - Plugin package: copy or archive `plugins/<plugin-name>/`.
-- Standalone Codex skill package: copy or archive `skills/codex/<skill-name>/`.
+- Standalone Codex skill package: read its `Version` from `skills/INDEX.md`, then copy or archive `skills/codex/<skill-name>/`.
 
 If the user does not provide a destination, copy to `~/.skill-market/downloads/codex/<name>/`.
 
-Download never installs or updates local Codex state. Do not overwrite an existing destination unless the user explicitly asks.
+Download never installs or updates local Codex state. Do not overwrite an existing destination unless the user explicitly asks. Report the catalog version for downloaded standalone skills.

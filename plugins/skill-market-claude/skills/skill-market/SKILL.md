@@ -50,6 +50,6 @@ For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, clone t
 
 Upload is not publish. A skill or plugin is published only after its PR is merged.
 
-`skills/INDEX.md` is the remote skill catalog index. Local Claude management state lives in `~/.skill-market/managed-skills.json`.
+`skills/INDEX.md` is the remote skill catalog index and records each standalone skill's catalog `Version`, status, path, and description. Local Claude management state lives in `~/.skill-market/managed-skills.json` and records each installed standalone skill's `installedVersion`.
 
 Only skills installed through Skill Market or explicitly adopted by the user are managed. Do not list unrelated local Claude skills. If a requested operation touches a local skill absent from `managed-skills.json`, ask the user before adopting or modifying it.

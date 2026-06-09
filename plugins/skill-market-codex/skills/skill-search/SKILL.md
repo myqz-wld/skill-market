@@ -30,4 +30,4 @@ For search, clone the cache when missing. Fetch when the user asks for latest re
 - Codex plugins: `.agents/plugins/marketplace.json` and `plugins/`.
 - Standalone Codex skills: `skills/INDEX.md` and `skills/codex/`.
 
-Return matches with type, adapter, name, repository path, and a short description.
+Return matches with type, adapter, name, version, repository path, and a short description.

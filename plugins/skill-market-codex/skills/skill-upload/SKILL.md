@@ -20,7 +20,7 @@ Reject `skill-market-claude` and `skill-market-codex` as upload or deletion targ
 1. Confirm whether the target is a Codex plugin, standalone Codex skill, or deletion.
 2. Create branch `market/<type>/codex/<name>`.
 3. For plugin uploads, add or update `plugins/<plugin-name>/`, ensure `.codex-plugin/plugin.json` exists, and update `.agents/plugins/marketplace.json`.
-4. For standalone skill uploads, add or update `skills/codex/<skill-name>/SKILL.md` and update `skills/INDEX.md`.
+4. For standalone skill uploads, add or update `skills/codex/<skill-name>/SKILL.md`, set or bump its `Version`, and update the row in `skills/INDEX.md`.
 5. For deletions, remove or retire the catalog row and remove files only when the user explicitly asks.
 6. Commit, push the branch, and create a PR with `gh pr create`.
 

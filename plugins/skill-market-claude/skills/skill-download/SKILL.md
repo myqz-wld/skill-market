@@ -17,8 +17,8 @@ For download, clone the cache when missing. Fetch when the user asks for the lat
 ## Download
 
 - Plugin package: copy or archive `plugins/<plugin-name>/`.
-- Standalone Claude skill package: copy or archive `skills/claude/<skill-name>/`.
+- Standalone Claude skill package: read its `Version` from `skills/INDEX.md`, then copy or archive `skills/claude/<skill-name>/`.
 
 If the user does not provide a destination, copy to `~/.skill-market/downloads/claude/<name>/`.
 
-Download never installs or updates local Claude state. Do not overwrite an existing destination unless the user explicitly asks.
+Download never installs or updates local Claude state. Do not overwrite an existing destination unless the user explicitly asks. Report the catalog version for downloaded standalone skills.
