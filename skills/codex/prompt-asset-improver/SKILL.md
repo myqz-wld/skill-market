@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, backs up files, removes stale/duplicated/low-value rules, keeps paired assets aligned, records durable custom criteria, and validates the result."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, backs up files, always delegates editable batches to focused editing agents, removes stale/duplicated/low-value rules, keeps paired assets aligned, records durable custom criteria, and validates material changes with the review mechanism available in the current environment."
 ---
 
 # Prompt Asset Improver
@@ -18,7 +18,8 @@ Confirm edit scope before changing prompt assets. Inventory describes assets; it
 1. If the user names exact assets, treat them as confirmed and repeat the scope before editing.
 2. If the user names a directory, product area, broad asset class, or vague problem, scan likely target roots, show included and excluded paths, ask for confirmation, and stop before editing.
 3. If the audit finds duplicated rules, paired counterparts, or affected assets outside confirmed scope, ask whether to expand scope before editing them.
-4. Record the confirmation source in the final report.
+4. If the user deliberately limits work to one side of a paired asset, inspect the counterpart for drift but do not edit it without explicit scope expansion.
+5. Record the confirmation source in the final report.
 
 ## Inventory
 
@@ -30,6 +31,7 @@ After scope confirmation, refresh local inventory for each target root.
 - Put project-level shared inventory or criteria under `shared/` only when the user confirms it belongs with the project.
 - In a git repo, ensure `.prompt-asset-improver/local/` is ignored before writing local data.
 - Write `inventory.json` with `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets with `path`, `type`, `scope`, and `reason`.
+- Use `scope: "confirmed"` for editable assets and `scope: "counterpart-check-only"` for paired assets inspected only to prevent drift.
 
 Use a 7-day expiry. Refresh when inventory is missing, expired, points at another root, lists missing files, or the user says the asset set changed.
 
@@ -39,6 +41,7 @@ Before the first edit, back up every prompt asset that may change.
 
 - Store backups under `<target-root>/.prompt-asset-improver/local/backups/<timestamp>/`.
 - Include `manifest.json` with `created_at`, `root`, `reason`, and each file's `original_path`, `backup_path`, and hash when available.
+- Back up only assets that may be edited in the confirmed scope; check-only counterparts are backed up only after the user expands scope.
 - Stop if the current backup cannot be written.
 - Prune only manifest-backed backup directories named `YYYYMMDDTHHMMSSZ`; keep the current backup, every backup from the last 7 days, and at least the newest 10.
 - Report the backup id/path, pruning result, and restore method.
@@ -54,7 +57,7 @@ Use custom points only for durable criteria intended to guide later prompt-asset
 
 ## Self-Improvement Queue
 
-When review reveals a weakness in this skill, queue it instead of silently changing this skill.
+When review reveals a weakness in this skill, queue it instead of silently changing this skill. If the user explicitly asks to update `prompt-asset-improver`, treat that request as confirmed scope, back up this skill, and edit it directly; do not queue the same request.
 
 1. Record candidates in `.prompt-asset-improver/local/skill-improvements.md` with date, evidence, affected section, and proposed rule change.
 2. At workflow start, ask the user to `add to skill`, `discard`, or `keep pending` for each pending candidate before editing other assets.
@@ -70,7 +73,7 @@ Optimize for executable value, not coverage for its own sake.
 - Prefer one strong rule over the same rule repeated in frontmatter, overview, workflow, final check, and report format.
 - Do not edit every scoped asset just to show activity. If a file is already lean, leave it unchanged or make only a targeted improvement and report that decision.
 - Frontmatter should select the skill. Move execution details into the body unless they change trigger selection.
-- User-facing reports must use plain language. If delegation or review is skipped because an agent would return asynchronously or require another turn, say that directly and explain why local editing or self-review was chosen; do not use protocol shorthand such as "cannot return inside the current workflow" without explanation.
+- User-facing reports must use plain language. If focused editing delegation is blocked — tools are unavailable or the write set cannot be safely isolated — report that and stop before making local content edits. If independent review is unavailable or the user explicitly declines it, report that and name what validation or self-review replaced it. Do not skip agents only because their replies arrive asynchronously; when the user expects agent involvement, dispatch them and continue adjudication when their replies arrive.
 
 ## Editing Rules
 
@@ -84,7 +87,7 @@ Optimize for executable value, not coverage for its own sake.
 8. Put trigger information in frontmatter descriptions, not only in the body.
 9. Do not make a general asset assume another skill, plugin, product, repository, vendor, or tool exists unless this asset is the integration point or the dependency changes trigger selection.
 10. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
-11. For paired Claude/Codex assets, edit both sides in the same pass or report that no counterpart exists. Keep behavior, triggers, validation, and failure handling aligned; preserve only actionable adapter-specific mechanics.
+11. For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirmed a one-sided scope; in that case, inspect the counterpart for drift, edit only within the confirmed side's files, and stop to ask before changing shared protocol semantics.
 
 ## Asset Focus
 
@@ -98,6 +101,19 @@ Optimize for executable value, not coverage for its own sake.
 Search only changed files and related prompt-asset directories where the same rule can be duplicated. Do not scan session logs, dependencies, generated caches, or whole home directories.
 
 Check for duplicate rules, stale language, vague advice, unjustified language drift, low-value frontmatter, hidden dependencies, paired-asset drift, repeated examples, pitfall notes without evidence, local references, bundled resource paths, external links, and stale skill names. Use concrete target names and section titles as search terms; do not run placeholder searches.
+
+When the confirmed scope is one side of a paired asset, audit the counterpart before editing. If the proposed edit would change shared protocol semantics, stop and ask whether to expand scope.
+
+## Focused Editing Agents
+
+Use focused editing agents after scope confirmation, inventory refresh, custom-point loading, and backup creation.
+
+- Always dispatch focused editing agents for editable prompt-asset batches before local content edits. Do not edit first and delegate afterward. Do not require the agent to return in the same turn.
+- Keep lead-owned steps with the lead: scope confirmation, inventory, backups, custom points, worktree choice, batch assignment, conflict resolution, final validation, and final report.
+- Give each editing agent a narrow brief: exact target files, allowed write set, active custom points, paired-counterpart rules, value-audit criteria, validation commands, and a ban on widening scope or touching inventory/backups.
+- In asynchronous agent environments, use the current environment's normal delegation and wait protocol. Record the returned agent identifiers or handoff handles, tell the user what was dispatched, then stop when the environment requires waiting. When replies arrive, inspect diffs, merge accepted edits, resolve conflicts, and update progress.
+- Never split paired assets across agents unless the lead assigns the pair as one counterpart-group batch or provides an explicit final alignment step.
+- If focused editing agents cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker.
 
 ## Dead Link Check
 
@@ -115,9 +131,9 @@ After the audit, split confirmed scope into batches.
 
 - Default to one prompt asset file per batch.
 - Use one counterpart-group batch for paired files that must stay aligned.
-- Use editing agents only when they can return results in the current workflow and the write sets are disjoint.
+- Assign every editable batch to focused editing agents.
 - Keep scope confirmation, backups, inventory writes, conflict resolution, final validation, and the final report with the lead agent.
-- If delegation is skipped, say why in user-facing language and describe what local validation replaced it.
+- If delegation is blocked, say why in user-facing language and stop before editing.
 
 ## Validation
 
@@ -126,11 +142,11 @@ Before finishing:
 - Re-read the first sentence of every changed section and every `description`; each must say when to use the asset or what action to take.
 - Validate frontmatter and changed JSON/YAML when present.
 - Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, and resource-path checks and report the missing validator.
-- Use a review agent when it can return in the current workflow. Otherwise self-review and report what independent coverage is missing.
+- Use the current environment's independent review mechanism for material changes to system prompts, agents, `SKILL.md`, MCP/tool descriptions, paired assets, or this skill itself. Do not require a specific review skill, plugin, tool API, message protocol, or product. Asynchronous reviewer replies are acceptable: dispatch the review, follow the environment's wait boundary, and continue adjudication when replies arrive. Self-review only when review tools are unavailable, the user explicitly declines review, or the change is mechanical and the user did not ask for agents.
 - Confirm no unrelated project policy moved into a reusable asset and no custom point records one-time task direction.
 
 ## Final Report
 
 Start with `User Custom Points`.
 
-Include scope confirmation method, inventory freshness, confirmed assets, backup id/path, pruning result, batch assignments, delegation decision, changed files, pitfall-note decisions, dead-link results, validation results, pending self-improvement candidates, and restore note. For each changed asset, name the changed sections, summarize the content shift, explain why it improves task-time behavior, and note preserved adapter differences.
+Include scope confirmation method, inventory freshness, confirmed assets, counterpart check-only assets, backup id/path, pruning result, batch assignments, editing-agent delegation status, independent review status, changed files, pitfall-note decisions, dead-link results, validation results, pending self-improvement candidates, and restore note. For each changed asset, name the changed sections, summarize the content shift, explain why it improves task-time behavior, and note preserved adapter differences.
