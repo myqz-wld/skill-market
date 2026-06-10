@@ -10,13 +10,29 @@
 - 语言版本：<例：Node ≥ 18 / Go 1.22 / Python 3.11>
 - 其他特殊环境约束：<可空，如必须用 docker compose up 起依赖>
 
+## 基础目录架构
+
+创建或维护仓库时按这份结构落位；除非项目已有更强契约，不要为同类文件另建平行目录：
+
+- `CLAUDE.md`：共享项目 SSOT，记录仓库基础、目录架构、改动后必做、plan/review 生命周期、项目特定触发、项目特定约定和验证流程。
+- `AGENTS.md`：入口 / 工具差异，只引用并遵守 `CLAUDE.md` 的共享规则。
+- `README.md`：面向用户和维护者的启动、使用、验证和结构说明。
+- `src/`：源码。
+- `build/` 或 `dist/`：构建产物；按项目实际工具保留一个或两个名称。
+- `ref/changelogs/INDEX.md`：终态 changelog 索引。
+- `ref/reviews/INDEX.md`：终态 review 索引；终态 review 文件放 `ref/reviews/REVIEW_X.md`。
+- `ref/plans/INDEX.md`：终态 plan 索引；终态 plan 文件放 `ref/plans/`。
+- `ref/conventions/INDEX.md`：已升级项目约定索引；约定正文用 `ref/conventions/<X>-<topic>.md`。
+- `ref/conventions/tally.md`：重复反馈 / 重复踩坑计数入口。
+- `.refs/`：必须加入 `.gitignore`；只放未终态 plan/review 工作副本，不放终态记录。
+
 ## 改动后必做
 
 先执行这四条最低规则，再按项目特定触发补充：
 
 1. 改用户可见行为、文件结构、启动方式、端口、依赖或验证步骤 → 更新 `README.md` 对应章节；纯 bug 修复或内部重构不动 README。
 2. 每个有意义的功能 / 行为 / API / 依赖变化 → 写 `ref/changelogs/CHANGELOG_X.md` 并更新 `ref/changelogs/INDEX.md`；debug / 性能 / 安全 / review-driven fix → 写 `ref/reviews/REVIEW_X.md` 并更新 `ref/reviews/INDEX.md`。
-3. `.refs/` 必须加入 `.gitignore`。未终态 plan 放在当前环境的 plan 工作区；无更强契约时用 `<repo>/.refs/plans/<plan-id>.md`。未终态 review 草稿 / reviewer 原始输出放在当前 review 工作区；无更强契约时用 `<repo>/.refs/reviews/<review-id>.md` 或会话输出。终态后必须清理工作区副本：plan 归档到 `ref/plans/` 并更新 `ref/plans/INDEX.md`，review 归档到 `ref/reviews/REVIEW_X.md` 并更新 `ref/reviews/INDEX.md`。
+3. `.refs/` 必须加入 `.gitignore`。未终态 plan 放在当前环境的 plan 工作区；无更强契约时用 `<repo>/.refs/plans/<plan-id>.md`。未终态 review 草稿 / reviewer 原始输出放在当前 review 工作区；无更强契约时用 `<repo>/.refs/reviews/<review-id>.md` 或会话输出。终态收口时必须移动最终记录并清理工作区副本：plan 归档到 `ref/plans/` 并更新 `ref/plans/INDEX.md`，review 归档到 `ref/reviews/REVIEW_X.md` 并更新 `ref/reviews/INDEX.md`。
 4. 反复用户反馈或重复 agent 踩坑先记入 `ref/conventions/tally.md`；`count >= 3` 后走本仓库 review 流程，升级为 `ref/conventions/<X>-<topic>.md` 并更新 `ref/conventions/INDEX.md`。
 
 项目特定触发：
