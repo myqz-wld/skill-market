@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Engineering Foundation"
-  short_description: "Set up AI-coding project foundations"
-  default_prompt: "Use $project-engineering-foundation to set up or refresh this repository's AI-coding entry points, ref records, plan/review lifecycle rules, conventions, and guardrails."
+  short_description: "Bootstrap or repair an AI-coding repository"
+  default_prompt: "Use $project-engineering-foundation to set up or repair this repository's AI-coding structure: CLAUDE.md/AGENTS.md entries, src/build layout, ref/ record indexes, and the ongoing plan/review, review-expiry, convention, and file-size rules installed into CLAUDE.md."

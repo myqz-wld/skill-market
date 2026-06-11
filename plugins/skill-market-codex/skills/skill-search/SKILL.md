@@ -21,7 +21,7 @@ Use the local cache only as a working copy:
 2. `~/.skill-market/config.json` field `cachePath`.
 3. Default: `~/.skill-market/cache/skill-market`.
 
-Only use `SKILL_MARKET_REPO` or config field `repoPath` when the user explicitly wants a local development checkout. Do not treat the current directory as the default repository.
+Only use `SKILL_MARKET_REPO` or config field `repoPath` when the user explicitly wants a local development checkout. Do not treat the current directory as the default repository. `~/.skill-market/config.json` is required: if it is missing, create it with the default `repoUrl`, `cachePath`, and `cacheTtlSeconds` values before continuing.
 
 For search, clone the cache when missing. Fetch when the user asks for latest results or the cache marker is missing or older than `cacheTtlSeconds`. TTL comes from `SKILL_MARKET_CACHE_TTL_SECONDS`, config field `cacheTtlSeconds`, then default `86400` seconds. `cacheTtlSeconds: 0` disables automatic TTL refresh. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. If fetch fails and cache exists, use the stale cache and report that it may be stale.
 
