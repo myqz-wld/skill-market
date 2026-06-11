@@ -1,6 +1,6 @@
 ---
 name: parallel-tasks
-description: "Use when a complex task splits into two or more independent subtasks: decompose, route each subtask to a model tier by complexity (gpt-5.5 xhigh / opus xhigh / gpt-5.5 medium / sonnet xhigh), run subtasks on parallel agents, then integrate and validate results. Trigger on requests to parallelize work, fan out independent subtasks, or pick models by task difficulty."
+description: "Use when a complex task splits into two or more independent subtasks: decompose, default spawned agents to the lead's adapter family unless the user specifies otherwise, route each subtask to a model tier by complexity, run subtasks on parallel agents, then integrate and validate results. Trigger on requests to parallelize work, fan out independent subtasks, or pick models by task difficulty."
 ---
 
 # Parallel Tasks
@@ -23,7 +23,11 @@ Do not use for serial-dependent chains, tasks small enough for one agent, or sub
 
 ## Model Routing
 
-Judge each subtask's complexity independently (subtasks of one parent task may land in different tiers) and select the model:
+Judge each subtask's complexity independently (subtasks of one parent task may land in different tiers) and select the adapter family before the model:
+
+- Unless the user explicitly requests a different adapter or model family, keep spawned agents in the lead's family: Claude-family leads spawn Claude-family teammates, and GPT/Codex-family leads spawn GPT/Codex-family teammates.
+- After selecting the family, apply the tier table inside that family. If the named model belongs to another family, use the closest same-family model and reasoning effort the dispatch mechanism exposes.
+- If the user explicitly requests a different family or model, use it when available; if unavailable, substitute by the availability rules below and record the substitution in the final report.
 
 | Tier | Criteria | Model |
 |---|---|---|
@@ -33,12 +37,12 @@ Judge each subtask's complexity independently (subtasks of one parent task may l
 | T4 | Mechanical edits, batch search, documentation, boilerplate tests | sonnet xhigh |
 
 - Map the tier to the closest model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
-- When the tier's model is unavailable in the current environment, substitute the nearest tier that is available, preferring one tier up over one tier down, and record the substitution in the final report.
+- When the selected family's tier model is unavailable in the current environment, substitute the nearest same-family tier that is available, preferring one tier up over one tier down, and record the substitution in the final report.
 - When torn between two tiers, pick the higher one.
 
 ## Dispatch
 
-- Dispatch through whatever parallel-agent mechanism the current environment provides, following that mechanism's own contract. Pass each subtask's model and reasoning effort through the mechanism's parameters where exposed; otherwise substitute per the routing rules above.
+- Dispatch through whatever parallel-agent mechanism the current environment provides, following that mechanism's own contract. Pass each subtask's adapter family, model, and reasoning effort through the mechanism's parameters where exposed; otherwise substitute per the routing rules above.
 - Launch all independent subtasks in one batch. There is no fixed concurrency cap; size the batch to what the lead can integrate and the environment can run.
 - Record each agent id together with its subtask and tier.
 - Follow the environment's wait protocol: synchronous mechanisms return results in place; message-based mechanisms inject replies later — send the work, end the current turn, and continue when replies arrive. Never busy-wait or poll.
@@ -46,7 +50,7 @@ Judge each subtask's complexity independently (subtasks of one parent task may l
 ## Integration And Validation
 
 - The lead merges results, resolves conflicts, runs each subtask's planned validation, and runs one whole-task check at the end.
-- Report per subtask: tier, model actually used (including substitutions), outcome, and validation result.
+- Report per subtask: adapter family, tier, model actually used (including substitutions), outcome, and validation result.
 - Do not accept an agent's success claim without its validation output.
 
 ## Failure Handling
