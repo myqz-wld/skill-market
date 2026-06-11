@@ -31,16 +31,30 @@ The local cache is only a working copy. The default cache path is:
 ~/.skill-market/cache/skill-market
 ```
 
-Configuration overrides:
-
-- `SKILL_MARKET_REPO_URL` or `~/.skill-market/config.json` field `repoUrl`.
-- `SKILL_MARKET_CACHE` or `~/.skill-market/config.json` field `cachePath`.
-- `SKILL_MARKET_CACHE_TTL_SECONDS` or config field `cacheTtlSeconds`; default `86400` seconds.
-- `SKILL_MARKET_REPO` or config field `repoPath` only for explicit local development.
-
-Do not treat the current directory as the default repository.
-
 For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, clone the cache when missing and fetch when the user asks for latest or the cache marker is missing or older than `cacheTtlSeconds`. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. `cacheTtlSeconds: 0` disables automatic TTL refresh. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs.
+
+## Configuration File
+
+`~/.skill-market/config.json` is the required configuration file for all Skill Market management skills: before any operation that reads the remote or cache, check it, and if it is missing, create it with the defaults below, then continue.
+
+```json
+{
+  "repoUrl": "git@github.com:myqz-wld/skill-market.git",
+  "cachePath": "~/.skill-market/cache/skill-market",
+  "cacheTtlSeconds": 86400
+}
+```
+
+Field reference:
+
+- `repoUrl`: the remote source-of-truth repository; env override `SKILL_MARKET_REPO_URL`.
+- `cachePath`: the local cache working copy location; env override `SKILL_MARKET_CACHE`.
+- `cacheTtlSeconds`: cache freshness TTL in seconds for list, search, download, and install; `0` disables automatic TTL refresh; env override `SKILL_MARKET_CACHE_TTL_SECONDS`.
+- `repoPath` (optional): explicit local development repository override; bypasses cache TTL; env override `SKILL_MARKET_REPO`. Never default to the current directory.
+
+Precedence: environment variable > config file field > built-in default.
+
+When this skill runs, or whenever the user asks about Skill Market configuration, read the current `~/.skill-market/config.json` and the four environment variables, then explain each field to the user with its current effective value and where that value comes from (env override, config file, or default). Flag unknown fields and invalid values (for example a non-numeric `cacheTtlSeconds`) instead of silently ignoring them.
 
 ## Storage
 

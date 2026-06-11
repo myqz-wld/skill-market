@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # File-level review expiry check. Run this as the first step before the next review.
-# Use with this skill's Review Expiry rules.
+# Use with the repository CLAUDE.md review-expiry rules.
 # Run from the repository root.
 
 set -euo pipefail

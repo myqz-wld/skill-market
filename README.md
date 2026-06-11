@@ -69,6 +69,8 @@ For local plugin development only, register `/path/to/skill-market` instead of t
 
 ## Repository Configuration
 
+`~/.skill-market/config.json` is the required configuration file: when it is missing, any management skill that reads the remote or cache creates it with the default values before continuing. Environment variables still take precedence over the config file for that run.
+
 The installed management skills use the remote repository as the source of truth:
 
 1. `SKILL_MARKET_REPO_URL` environment variable.
@@ -100,8 +102,6 @@ Example config:
   "cacheTtlSeconds": 86400
 }
 ```
-
-`activePath` is the active install location. `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`. `installedVersion` records the standalone skill version copied from `skills/INDEX.md`.
 
 After installation, the management skills are available from the installed plugin namespace:
 
@@ -148,6 +148,8 @@ Local state example:
   ]
 }
 ```
+
+In each entry, `activePath` is the active install location, `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`, and `installedVersion` records the standalone skill version copied from `skills/INDEX.md`.
 
 Only skills installed through Skill Market or explicitly adopted by the user are managed. `skill-list` must not list unrelated local skills. When a requested operation touches a local skill absent from `managed-skills.json`, ask the user before adopting or modifying it.
 

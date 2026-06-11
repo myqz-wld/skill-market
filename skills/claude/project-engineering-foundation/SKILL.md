@@ -1,11 +1,11 @@
 ---
 name: project-engineering-foundation
-description: "Use when starting, repairing, or maintaining a long-lived AI-coding repository. Establishes project agent prompts, README update rules, src/build layout, durable records under ref/, convention promotion, review-expiry checks, and the 500-line file-size guardrail."
+description: "Use when creating a new AI-coding repository or when an existing repository lacks the durable engineering structure (CLAUDE.md/AGENTS.md entries, src/build layout, ref/ record indexes). One-time setup: instantiates templates that install the ongoing plan/review lifecycle, change records, review-expiry, convention-promotion, and 500-line file-size rules into the project itself; not needed for routine maintenance afterwards."
 ---
 
 # Project Engineering Foundation
 
-Use this skill to give or restore a repository's stable AI-coding operating model. Inspect the existing repository first, preserve project-specific invariants in project files, and keep reusable workflow rules in this skill. Use Bash for inspection and file tools for project file edits.
+Use this skill as a one-shot setup: inspect the existing repository first, preserve project-specific invariants, and write all ongoing process rules into the generated project files — CLAUDE.md is the project SSOT. After setup the project applies those rules from its own CLAUDE.md; this skill is not loaded for routine work. Use Bash for inspection and file tools for project file edits.
 
 ## New Project Setup
 
@@ -30,6 +30,8 @@ project-root/
 
 Use only the needed template from `assets/templates/`; create or update project files with file tools, not shell redirection. Merge missing sections into existing files instead of overwriting project-specific instructions.
 
+Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md` and `assets/templates/project-agents.template.md` as `AGENTS.md`. The CLAUDE.md template carries the ongoing rules — plan/review artifact lifecycle, change records, review expiry, file-size guardrail, and convention promotion — so do not re-state those rules in this skill. Fill template placeholders from repository inspection, and merge missing sections into existing files instead of overwriting them.
+
 ## Layout Rules
 
 - Put first-party source under `src/`. Do not put fixtures, generated artifacts, or dependencies there.
@@ -38,74 +40,16 @@ Use only the needed template from `assets/templates/`; create or update project 
 - Add `.refs/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
 - Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
 
-## Plan And Review Artifacts
+## Bundled Helpers To Copy Into The Project
 
-Use this rule when plan or review documents are not terminal yet. Keep active work in the current environment's working location; when no stronger project contract exists, use ignored paths under `<repo>/.refs/`, not `ref/`.
+During setup, copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the review-expiry check in the generated CLAUDE.md stays runnable without this skill. When repairing an existing repository that already has oversized files, read `assets/file-size-guardrail.md` for the detailed split policy before restructuring; the generated CLAUDE.md carries the compact ongoing rule.
 
-When a plan or review reaches its terminal state, clean up the working copy in the same closeout:
+## Existing Repository Repair
 
-- Move final plans to `ref/plans/` and final reviews to `ref/reviews/`, then update the matching INDEX.
-- Remove the non-terminal working copy or mark it archived so there is not a second active copy.
-
-## Change Records
-
-Before feature work, inspect existing context. If a directory is missing, create it during setup instead of treating the `ls` failure as fatal:
-
-```bash
-ls ref/conventions ref/changelogs ref/plans ref/reviews 2>/dev/null || true
-```
-
-Write one record after each meaningful change that changes behavior, structure, dependencies, verification, or review coverage:
-
-- Feature, behavior, API, dependency, or structure changes: write `ref/changelogs/CHANGELOG_X.md` and update `ref/changelogs/INDEX.md`.
-- Debug, performance, security, or review-driven fixes: write `ref/reviews/REVIEW_X.md` and update `ref/reviews/INDEX.md`.
-- After any review workflow that produces durable findings, store the final review record under `ref/reviews/`.
-- Use the next integer `X`; find it with `ls`, not by guessing.
-- Keep INDEX summaries under 80 Chinese characters or one short English sentence.
-
-Update `README.md` only when user-visible behavior, file structure, startup flow, ports, dependencies, or verification steps change.
-
-## Review Expiry
-
-Treat `ref/reviews/` as expiring coverage, not permanent exemption. The next review minimum scope is:
-
-```text
-unreviewed files ∪ expired reviewed files ∪ scope_unknown files
-```
-
-A reviewed file expires when any condition is true since its latest covering REVIEW baseline:
-
-- Net churn is at least `min(200 lines, 30% of current LOC)`.
-- Distinct commit count is at least 3.
-- At least 90 days have passed and the file changed at least once.
-- REVIEW frontmatter has `expired: true`.
-
-When preparing a review, run the bundled helper from the repository root with Bash:
-
-```bash
-bash <path-to-this-skill>/scripts/file-level-review-expiry.sh
-```
-
-## File-Size Guardrail
-
-Any source file over 500 LOC triggers a split attempt before commit. Exclude generated code, lockfiles, snapshots, migrations, and fixtures. Read `assets/file-size-guardrail.md` when a file crosses the threshold.
-
-Prefer split approaches in this order:
-
-1. Extract module-level pure functions, types, or constants.
-2. Directory-ize into same-directory submodules that preserve import paths.
-3. Split a class with a facade and shared context only after a plan/review pass.
-
-If the file truly cannot be split, record it in the relevant changelog under a "do not split" protection list with a concrete reason.
-
-## Convention Promotion
-
-Store repeated feedback and repeated agent pitfalls in `ref/conventions/tally.md`. Increment an existing semantic match; otherwise add a new row with `count: 1`.
-
-Promote only at `count >= 3`: create `ref/conventions/<X>-<topic>.md`, update `ref/conventions/INDEX.md`, and remove the candidate from tally. Do not promote one-off preferences or trivial observations.
+When invoked on a repository that partially has the structure, diff the repository against the tree above and against the template sections, then add only what is missing. Never delete or rewrite project-specific invariants. If the repository's CLAUDE.md predates the current template, merge in the missing rule sections — plan/review lifecycle, change records, review expiry, file-size guardrail, convention promotion — without overwriting customized values.
 
 ## Resources
 
 - `assets/templates/`: project entry, changelog, review, plan, and convention templates.
 - `assets/file-size-guardrail.md`: detailed split-risk policy.
-- `scripts/file-level-review-expiry.sh`: mechanical review-expiry helper.
+- `scripts/file-level-review-expiry.sh`: mechanical review-expiry helper; copied into projects at setup.
