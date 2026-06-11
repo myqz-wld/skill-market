@@ -1,6 +1,6 @@
 # PlantUML Patterns
 
-Open this reference only when `flow-arch-plantuml` needs syntax examples. Keep generated diagrams in project `ref/flows` or `ref/architecture`; this file is only a pattern library.
+Open this reference only when `flow-arch-plantuml` needs syntax examples. This file is only a PlantUML pattern library; do not use it to choose diagram file locations.
 
 ## Sequence
 

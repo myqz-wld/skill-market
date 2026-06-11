@@ -1,4 +1,4 @@
 interface:
   display_name: "Flow Architecture PlantUML"
   short_description: "Maintain PlantUML flow and architecture diagrams"
-  default_prompt: "Use $flow-arch-plantuml to confirm whether this core workflow or architecture change needs a PlantUML diagram, then update the project diagram SSOT."
+  default_prompt: "Use $flow-arch-plantuml to confirm whether this core workflow or architecture change needs a PlantUML diagram, then create, update, or archive the project's PlantUML diagram."

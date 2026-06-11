@@ -1,11 +1,11 @@
 ---
 name: flow-arch-plantuml
-description: Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. Confirms the diagram gate, updates PlantUML `.puml` SSOT files under `ref/flows` or `ref/architecture`, maintains INDEX files, and does not render PNG/SVG.
+description: Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. Confirms the diagram gate, creates, updates, or archives PlantUML `.puml` diagrams in the repository's established diagram location, and does not render PNG/SVG.
 ---
 
 # Flow / Architecture PlantUML
 
-Use this skill to decide whether a core workflow or architecture change needs a PlantUML diagram, then create or update the `.puml` SSOT and matching `ref/flows` or `ref/architecture` INDEX after confirmation. Use `AskUserQuestion` for missing decisions when available; inspect with Bash/Read and edit `.puml` / INDEX files with file tools.
+Use this skill to decide whether a core workflow or architecture change needs a PlantUML diagram, then create, update, or archive the `.puml` source diagram after confirmation. Use `AskUserQuestion` for missing decisions when available; inspect with Bash/Read and edit `.puml` files with file tools.
 
 ## When To Use
 
@@ -23,47 +23,33 @@ Resolve these decisions before editing diagrams. Ask only for decisions the user
 
 1. **Core change:** Does this change affect a core workflow or architecture? If the user directly asked for a diagram, treat this as yes. If the user says no, stop and report that the diagram update was skipped by user decision.
 2. **Diagram type:** Use a flow diagram (sequence/activity), an architecture diagram (component), or both.
-3. **File action:** Create a new file, update an existing `.puml`, or mark an existing `.puml` archived.
+3. **File action:** Create a new `.puml`, update an existing `.puml`, or mark an existing `.puml` archived in the repository's established diagram location. If no established diagram location exists, ask where the diagram should live before editing.
 
-Wait for the user's decision. Do not create or edit `.puml` or INDEX files before confirmation.
+Wait for the user's decision. Do not create or edit `.puml` files before confirmation.
 
 ## Workflow
 
 1. Resolve the confirmation gate and wait for the user decision.
-2. List existing `.puml` files and read the matching INDEX files.
+2. Locate the repository's established diagram location by listing existing `.puml` files and nearby diagram conventions; ask the user if no clear location exists.
 3. Read the relevant source, plan, or review evidence.
 4. Create or update `.puml` files using the file rules below.
-5. Update INDEX rows for new, changed, or archived diagrams.
-6. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` when PlantUML is installed.
-7. Report the changed `.puml` and INDEX files, the syntax-check result, and any PlantUML CLI gap.
+5. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` when PlantUML is installed.
+6. Report the changed `.puml` files, the syntax-check result, any PlantUML CLI gap, and any unresolved location decision.
 
-## File And INDEX Rules
+## File Rules
 
-- Put sequence and activity diagrams under `<main-repo>/ref/flows/<topic>.puml`.
-- Put component, module-dependency, and process-boundary diagrams under `<main-repo>/ref/architecture/<topic>.puml`.
+- Use the repository's established diagram location for PlantUML source files.
+- If the repository has no established diagram location, ask the user to choose one before creating a new diagram.
 - Name files with kebab-case topics, such as `archive-plan-flow.puml` or `mcp-server-architecture.puml`.
 - When one topic needs both flow and architecture views, create separate files whose names identify each diagram's job.
-- If the directories are missing, run `mkdir -p ref/flows ref/architecture`, then create empty INDEX files with file tools.
-
-Use a four-column INDEX table. Keep existing localized column names when updating an existing INDEX; for new INDEX files use:
-
-```markdown
-| File | Status | Related plan / commit | Summary |
-|---|---|---|---|
-| archive-plan-flow.puml | active | plan-id | archive_plan closeout sequence |
-```
-
-- **Status:** `active` for the current SSOT, `archived` for retained stale diagrams, or `draft` for unconfirmed diagrams.
-- **Archived diagrams:** add a PlantUML comment inside the `.puml`: `' ARCHIVED: <reason>`.
-- **Related plan / commit:** link to `ref/plans/<plan-id>.md` or write a 7-character short hash.
-- **Summary:** describe the diagram's subject in at most 80 characters.
+- For archived diagrams, add a PlantUML comment inside the `.puml`: `' ARCHIVED: <reason>`.
 
 ## PlantUML Rules
 
 Start every diagram with this header:
 
 ```plantuml
-' plan: <plan-id> or commit: <hash>
+' source: <plan-id, issue, commit hash, or brief evidence label>
 ' description: <one-sentence subject>
 ' last_updated: <ISO date>
 @startuml <topic-name>
@@ -90,8 +76,8 @@ Open `references/plantuml-patterns.md` only when syntax examples for these diagr
 
 - If PlantUML CLI is unavailable, verify `@startuml` / `@enduml` pairing and report that strict syntax validation was not run.
 - If `plantuml -syntax` fails, fix the `.puml`, rerun the check, and report the final status.
-- If multiple `.puml` files describe the same flow, choose more specific topic names and explain the difference in INDEX summaries.
+- If multiple `.puml` files describe the same flow, choose more specific topic names and explain the difference in the final report.
 
 ## Review Workflow Relationship
 
-This skill only creates or maintains `.puml` files. If a review or plan says a core flow has no diagram, finish that workflow first, then invoke this skill. Do not run it in parallel with another workflow that writes `.puml` or INDEX files.
+This skill only creates, updates, or archives `.puml` files. If a review or plan says a core flow has no diagram, finish that workflow first, then invoke this skill. Do not run it in parallel with another workflow that writes `.puml` files.
