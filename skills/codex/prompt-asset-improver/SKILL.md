@@ -19,7 +19,6 @@ Confirm edit scope before changing prompt assets. Inventory describes assets; it
 2. If the user names a directory, product area, broad asset class, or vague problem, scan likely target roots, show included and excluded paths, ask for confirmation, and stop before editing.
 3. If the audit finds duplicated rules, paired counterparts, or affected assets outside confirmed scope, ask whether to expand scope before editing them.
 4. If the user deliberately limits work to one side of a paired asset, inspect the counterpart for drift but do not edit it without explicit scope expansion.
-5. Record the confirmation source in the final report.
 
 ## Inventory
 
@@ -44,7 +43,6 @@ Before the first edit, back up every prompt asset that may change.
 - Back up only assets that may be edited in the confirmed scope; check-only counterparts are backed up only after the user expands scope.
 - Stop if the current backup cannot be written.
 - Prune only manifest-backed backup directories named `YYYYMMDDTHHMMSSZ`; keep the current backup, every backup from the last 7 days, and at least the newest 10.
-- Report the backup id/path, pruning result, and restore method.
 
 ## Custom Points
 
@@ -53,7 +51,7 @@ Use custom points only for durable criteria intended to guide later prompt-asset
 - Store standing user preferences in `.prompt-asset-improver/local/custom-points.md` unless the user explicitly marks them project-level.
 - Do not record one-time task directions, direct edits requested for the current asset, or rules already covered by this skill.
 - Keep the user's wording, date, source, and scope. Deduplicate without changing meaning.
-- Load shared and local custom points before every optimization and list active points in the final report.
+- Load shared and local custom points before every optimization.
 
 ## Self-Improvement Queue
 
@@ -73,7 +71,7 @@ Optimize for executable value, not coverage for its own sake.
 - Prefer one strong rule over the same rule repeated in frontmatter, overview, workflow, final check, and report format.
 - Do not edit every scoped asset just to show activity. If a file is already lean, leave it unchanged or make only a targeted improvement and report that decision.
 - Frontmatter should select the skill. Move execution details into the body unless they change trigger selection.
-- User-facing reports must use plain language. If focused editing delegation is blocked — tools are unavailable or the write set cannot be safely isolated — report that and stop before making local content edits. If independent review is unavailable or the user explicitly declines it, report that and name what validation or self-review replaced it. Do not skip agents only because their replies arrive asynchronously; when the user expects agent involvement, dispatch them and continue adjudication when their replies arrive.
+- User-facing reports must use plain language.
 
 ## Editing Rules
 
@@ -87,7 +85,7 @@ Optimize for executable value, not coverage for its own sake.
 8. Put trigger information in frontmatter descriptions, not only in the body.
 9. Do not make a general asset assume another skill, plugin, product, repository, vendor, or tool exists unless this asset is the integration point or the dependency changes trigger selection.
 10. Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
-11. For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirmed a one-sided scope; in that case, inspect the counterpart for drift, edit only within the confirmed side's files, and stop to ask before changing shared protocol semantics.
+11. For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirmed a one-sided scope (handled per Scope Confirmation and Pre-Edit Audit).
 
 ## Asset Focus
 
@@ -112,8 +110,7 @@ Use focused editing agents after scope confirmation, inventory refresh, custom-p
 - Keep lead-owned steps with the lead: scope confirmation, inventory, backups, custom points, worktree choice, batch assignment, conflict resolution, final validation, and final report.
 - Give each editing agent a narrow brief: exact target files, allowed write set, active custom points, paired-counterpart rules, value-audit criteria, validation commands, and a ban on widening scope or touching inventory/backups.
 - In asynchronous agent environments, use the current environment's normal delegation and wait protocol. Record the returned agent identifiers or handoff handles, tell the user what was dispatched, then stop when the environment requires waiting. When replies arrive, inspect diffs, merge accepted edits, resolve conflicts, and update progress.
-- Never split paired assets across agents unless the lead assigns the pair as one counterpart-group batch or provides an explicit final alignment step.
-- If focused editing agents cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker.
+- If focused editing agents cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker in plain language.
 
 ## Dead Link Check
 
@@ -127,13 +124,10 @@ Before finishing, check changed assets for dead local references.
 
 ## Editing Batches
 
-After the audit, split confirmed scope into batches.
+After the audit, split confirmed scope into batches. Dispatch and ownership rules are in Focused Editing Agents.
 
 - Default to one prompt asset file per batch.
-- Use one counterpart-group batch for paired files that must stay aligned.
-- Assign every editable batch to focused editing agents.
-- Keep scope confirmation, backups, inventory writes, conflict resolution, final validation, and the final report with the lead agent.
-- If delegation is blocked, say why in user-facing language and stop before editing.
+- Use one counterpart-group batch for paired files that must stay aligned; never split a pair across agents unless the lead provides an explicit final alignment step.
 
 ## Validation
 
@@ -147,6 +141,8 @@ Before finishing:
 
 ## Final Report
 
-Start with `User Custom Points`.
+Start with `User Custom Points` listing the active points.
 
-Include scope confirmation method, inventory freshness, confirmed assets, counterpart check-only assets, backup id/path, pruning result, batch assignments, editing-agent delegation status, independent review status, changed files, pitfall-note decisions, dead-link results, validation results, pending self-improvement candidates, and restore note. For each changed asset, name the changed sections, summarize the content shift, explain why it improves task-time behavior, and note preserved adapter differences.
+Then report: scope confirmation source, inventory freshness, backup id/path with pruning result and restore method, batch assignments with delegation status, independent review status, dead-link results, validation results, and pending self-improvement candidates.
+
+For each changed asset, name the changed sections, explain why the change improves task-time behavior, and note preserved adapter differences. State the decision for scoped assets left unchanged and for pitfall notes kept or removed.
