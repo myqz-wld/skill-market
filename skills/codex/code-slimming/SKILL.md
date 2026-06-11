@@ -10,7 +10,7 @@ Use this skill to reduce code size without guessing. Run it in two phases: scan 
 ## Workflow
 
 1. Confirm the target repository, cleanup scope, and exclusions. If scope is unclear, inspect entry points, package/module metadata, source roots, tests, build config, routing/config files, scripts, and public exports before proposing candidates.
-2. Establish scan cache without changing repository files during the scan phase. Use `.code-slimming/local/` only when it already exists and is ignored; otherwise use `/tmp/code-slimming/<repo-name-or-hash>/<timestamp>/`.
+2. Establish the scan cache using the Local Cache rules below. Do not change repository files during the scan phase.
 3. Scan for unused files, unused functions, unused classes, duplicate logic, overlapping helpers, mergeable functions, mergeable methods, mergeable classes, mergeable code blocks, repeated constants, dead dependencies, and large files that invite extraction.
 4. Report candidates to the user with evidence, confidence, risk, proposed action, and validation plan. End the scan phase without editing source files.
 5. Stop until the user approves candidate IDs or revises scope. Map broad approval back to explicit candidate IDs before editing.

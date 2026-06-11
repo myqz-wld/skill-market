@@ -88,8 +88,6 @@ Open `references/plantuml-patterns.md` only when syntax examples for these diagr
 
 ## Failure Handling
 
-- If the user says the change is not core, stop and report that diagram maintenance was skipped by user decision.
-- If target directories are missing, create `ref/flows`, `ref/architecture`, and their INDEX files using the file rules above.
 - If PlantUML CLI is unavailable, verify `@startuml` / `@enduml` pairing with `shell` and report that strict syntax validation was not run.
 - If `plantuml -syntax` fails, fix the `.puml`, rerun the check, and report the final status.
 - If multiple `.puml` files describe the same flow, choose more specific topic names and explain the difference in INDEX summaries.
