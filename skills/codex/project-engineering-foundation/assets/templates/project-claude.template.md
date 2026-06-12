@@ -18,6 +18,7 @@
 - `AGENTS.md`：入口 / 工具差异，只引用并遵守 `CLAUDE.md` 的共享规则。
 - `README.md`：面向用户和维护者的启动、使用、验证和结构说明。
 - `src/`：源码。
+- `scripts/`：项目脚本和自动化辅助脚本。
 - `build/` 或 `dist/`：构建产物；按项目实际工具保留一个或两个名称。
 - `ref/changelogs/INDEX.md`：终态 changelog 索引。
 - `ref/reviews/INDEX.md`：终态 review 索引；终态 review 文件放 `ref/reviews/REVIEW_X.md`。

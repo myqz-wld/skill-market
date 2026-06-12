@@ -17,6 +17,7 @@ project-root/
 ├── AGENTS.md
 ├── README.md
 ├── src/
+├── scripts/
 ├── build/ or dist/
 └── ref/
     ├── changelogs/INDEX.md
@@ -35,6 +36,7 @@ Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md` and `as
 ## Layout Rules
 
 - Put first-party source under `src/`. Do not put fixtures, generated artifacts, or dependencies there.
+- Put project scripts and automation helpers under `scripts/`.
 - Pick one build output root, `build/` or `dist/`, and keep all toolchain output under it.
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
 - Add `.refs/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
