@@ -1,0 +1,3 @@
+display_name: NineData
+short_description: Query NineData datasources and execute explicit SQL through controlled OpenAPI.
+default_prompt: Use the NineData Skill to list my available datasources, then after I confirm the SQL, execute it through the controlled SQL execution tool and summarize the platform decision, requestId, executionId, and result preview.

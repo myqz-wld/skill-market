@@ -1,0 +1,29 @@
+{
+  "summary": "",
+  "evidence": {
+    "requestId": "",
+    "executionId": "",
+    "decision": "",
+    "datasourceId": "",
+    "databaseName": "",
+    "schemaName": "",
+    "sqlType": "",
+    "riskLevel": "",
+    "preflight": {
+      "hasError": false,
+      "hasWarn": false,
+      "allowSubmit": false,
+      "messages": []
+    },
+    "resultPreview": {
+      "rowCount": 0,
+      "affectedRows": 0,
+      "columns": [],
+      "rows": []
+    },
+    "masked": false,
+    "truncated": false,
+    "needSQLTask": false,
+    "nextAction": null
+  }
+}
