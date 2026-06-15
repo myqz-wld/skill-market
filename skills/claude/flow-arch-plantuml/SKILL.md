@@ -1,11 +1,11 @@
 ---
 name: flow-arch-plantuml
-description: Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. Confirms the diagram gate, creates, updates, or archives PlantUML `.puml` diagrams in the repository's established diagram location, and does not render PNG/SVG.
+description: Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. Confirms the diagram gate, creates or updates PlantUML `.puml` diagrams in the repository's established diagram location, and does not render PNG/SVG.
 ---
 
 # Flow / Architecture PlantUML
 
-Use this skill to decide whether a core workflow or architecture change needs a PlantUML diagram, then create, update, or archive the `.puml` source diagram after confirmation. Use `AskUserQuestion` for missing decisions when available; inspect with Bash/Read and edit `.puml` files with file tools.
+Use this skill to decide whether a core workflow or architecture change needs a PlantUML diagram, then create or update the `.puml` source diagram after confirmation. Use `AskUserQuestion` for missing decisions when available; inspect with Bash/Read and edit `.puml` files with file tools.
 
 ## When To Use
 
@@ -23,7 +23,7 @@ Resolve these decisions before editing diagrams. Ask only for decisions the user
 
 1. **Core change:** Does this change affect a core workflow or architecture? If the user directly asked for a diagram, treat this as yes. If the user says no, stop and report that the diagram update was skipped by user decision.
 2. **Diagram type:** Use a flow diagram (sequence/activity), an architecture diagram (component), or both.
-3. **File action:** Create a new `.puml`, update an existing `.puml`, or mark an existing `.puml` archived in the repository's established diagram location. If no established diagram location exists, ask where the diagram should live before editing.
+3. **File action:** Create a new `.puml` or update an existing `.puml` in the repository's established diagram location. If no established diagram location exists, ask where the diagram should live before editing.
 
 Wait for the user's decision. Do not create or edit `.puml` files before confirmation.
 
@@ -40,9 +40,8 @@ Wait for the user's decision. Do not create or edit `.puml` files before confirm
 
 - Use the repository's established diagram location for PlantUML source files.
 - If the repository has no established diagram location, ask the user to choose one before creating a new diagram.
-- Name files with kebab-case topics, such as `archive-plan-flow.puml` or `mcp-server-architecture.puml`.
+- Name files with kebab-case topics, such as `auth-login-flow.puml` or `mcp-server-architecture.puml`.
 - When one topic needs both flow and architecture views, create separate files whose names identify each diagram's job.
-- For archived diagrams, add a PlantUML comment inside the `.puml`: `' ARCHIVED: <reason>`.
 
 ## PlantUML Rules
 
@@ -80,4 +79,4 @@ Open `references/plantuml-patterns.md` only when syntax examples for these diagr
 
 ## Review Workflow Relationship
 
-This skill only creates, updates, or archives `.puml` files. If a review or plan says a core flow has no diagram, finish that workflow first, then invoke this skill. Do not run it in parallel with another workflow that writes `.puml` files.
+This skill only creates or updates `.puml` files. If a review or plan says a core flow has no diagram, finish that workflow first, then invoke this skill. Do not run it in parallel with another workflow that writes `.puml` files.

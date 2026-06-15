@@ -1,11 +1,11 @@
 ---
 name: complex-plan-workflow
-description: Use before coding when work is risky, design-heavy, cross-session, blocked by an uncertain decision, needs a spike/RFC, or needs durable handoff. Provides a generic planning workflow while deferring concrete paths, worktree commands, review commands, archive steps, and handoff tools to the active environment.
+description: Use before coding when work may span sessions, crosses module/process/schema/adapter/permission boundaries, changes protocols or lifecycles, needs rollback/isolation, depends on unverified library/API/SDK/performance/sandbox behavior, or has unclear design/user intent. Create or update a durable plan while deferring concrete paths, tools, review, archive, and handoff contracts to the active environment.
 ---
 
 # Complex Plan Workflow
 
-Use this skill before implementing work that needs durable planning, evidence gathering, or cross-session handoff. Create or update a plan that preserves decisions, evidence, progress, validation, and the next action outside chat.
+Use this skill before implementing work that needs durable planning, evidence gathering, risk isolation, or cross-session handoff. Create or update a plan that preserves decisions, evidence, progress, validation, and the next action outside chat.
 
 ## Boundary
 
@@ -17,13 +17,14 @@ Do not make an application baseline depend on this skill. Product prompt assets 
 
 Create or update a plan before implementation when any condition applies:
 
-- The change is expected to span multiple sessions or several independent phases.
-- The design is uncertain, user intent needs narrowing, or a breaking interface is involved.
-- A library, SDK, API, performance claim, or sandbox behavior must be measured before design is final.
-- The work crosses module, process, schema, adapter, or permission boundaries.
-- A failed implementation needs a clear isolation or abandonment path.
+- The work is likely to span multiple sessions, require handoff, or proceed through several phases that must survive outside chat.
+- The design is unclear, user intent needs narrowing, an RFC-style decision is needed, or a breaking interface/API/contract is involved.
+- A library, SDK, API, performance claim, concurrency behavior, sandbox behavior, or tool limitation must be measured before design is final.
+- The change crosses module, process, schema, data-migration, adapter, permission, auth, storage, protocol, lifecycle, or deployment boundaries.
+- A broad refactor, migration, incident recovery, rollback-sensitive change, or failed implementation needs an isolation, abandonment, or recovery path.
+- The work affects shared architecture, long-lived workflow, state machine, external integration, or durable prompt/tool behavior.
 
-For small, local, reversible edits, skip the plan and work directly.
+Skip the plan for trivial questions, small local reversible edits, or single-file changes with an obvious implementation and validation path.
 
 ## Workflow
 
