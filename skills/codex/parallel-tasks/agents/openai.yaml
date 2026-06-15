@@ -1,4 +1,4 @@
 interface:
   display_name: "Parallel Tasks"
-  short_description: "Fan out independent subtasks to parallel agents with complexity-based model routing"
-  default_prompt: "Use $parallel-tasks to split this task into independent subtasks, route each subtask to the right model tier by complexity, run them on parallel agents, and integrate the validated results."
+  short_description: "Fan out independent files, modules, audits, research tracks, or tests to parallel agents"
+  default_prompt: "Use $parallel-tasks when this work can split into 2+ independent tracks with disjoint write sets: decompose them, route each by complexity, run parallel agents, and integrate validated results."
