@@ -1,18 +1,23 @@
 ---
 name: parallel-tasks
-description: "Use when a complex task splits into two or more independent subtasks: decompose, default spawned agents to the lead's adapter family unless the user specifies otherwise, route each subtask to a model tier by complexity, run subtasks on parallel agents, then integrate and validate results. Trigger on requests to parallelize work, fan out independent subtasks, or pick models by task difficulty."
+description: "Use when a task has 2+ independent tracks with disjoint write sets, such as separate modules, files, audits, research questions, tests, or implementation areas, that parallel agents can run concurrently. Also honor explicit requests to parallelize. Keep agents in the lead's family unless requested otherwise; decompose, route by complexity, run in parallel, then integrate and validate."
 ---
 
 # Parallel Tasks
 
-Use this skill when one complex task contains two or more independent subtasks that parallel agents can execute concurrently. The lead decomposes the task, routes each subtask to a model tier, dispatches agents, and owns integration and validation.
+Use this skill when a request can be split into two or more self-contained tracks that parallel agents can execute concurrently. The lead decomposes the task, routes each subtask to a model tier, dispatches agents, and owns integration and validation.
 
 ## When To Use
 
-- The task decomposes into at least 2 subtasks with disjoint write sets and no ordering dependency between them.
-- Each subtask can be described in a self-contained brief that an agent can execute without reading the lead's conversation.
+Use this skill when any trigger applies and the lead can give each agent a self-contained brief:
 
-Do not use for serial-dependent chains, tasks small enough for one agent, or subtasks that need continuously shared state. If no parallel-agent mechanism is available in the current environment, keep the model routing below but run the subtasks serially in tier order (T1 first).
+- The task has at least 2 independent tracks with no ordering dependency and disjoint write sets, such as separate modules, files, packages, services, docs, tests, bug hypotheses, research questions, or audit/search areas.
+- A broad inspection can be split safely, such as unused-code scans, repeated-pattern searches, compatibility checks, test triage, or comparing multiple implementation options.
+- A multi-area implementation can be split by ownership boundary with disjoint write sets and a clear final integration step.
+- Each subtask has enough context to run without reading the lead's conversation and can report concrete validation output.
+- The user explicitly asks to parallelize, fan out, use parallel agents, or split work; treat this as a signal to check for decomposability against the structural criteria above.
+
+Do not use for serial-dependent chains, tasks small enough for one agent, overlapping write sets that cannot be resolved before dispatch, or subtasks that need continuously shared state. If no parallel-agent mechanism is available in the current environment, keep the model routing below but run the subtasks serially in tier order (T1 first).
 
 ## Decomposition Rules
 

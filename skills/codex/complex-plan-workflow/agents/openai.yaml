@@ -1,4 +1,4 @@
 interface:
   display_name: "Complex Plan Workflow"
-  short_description: "Plan risky multi-session work"
-  default_prompt: "Use $complex-plan-workflow to create or update the durable plan/RFC/spike workflow before implementation."
+  short_description: "Plan cross-session, cross-boundary, uncertain, or rollback-sensitive work"
+  default_prompt: "Use $complex-plan-workflow before coding when work spans sessions, crosses boundaries, needs evidence/RFC decisions, or requires durable handoff, rollback, or isolation planning."
