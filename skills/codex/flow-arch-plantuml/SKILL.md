@@ -1,37 +1,32 @@
 ---
 name: flow-arch-plantuml
-description: Use when the user asks for a flow/architecture diagram or a change affects a core workflow, state machine, protocol, process boundary, schema, permission boundary, or module architecture. Confirms the diagram gate, creates or updates PlantUML `.puml` diagrams in the repository's established diagram location, and does not render PNG/SVG.
+description: Use when the user asks to create or update a flow, architecture, sequence, activity, component, or PlantUML diagram. Asks for missing drawing inputs, creates or updates PlantUML `.puml` diagrams in the repository's established diagram location, and does not render PNG/SVG.
 ---
 
 # Flow / Architecture PlantUML
 
-Use this skill to decide whether a core workflow or architecture change needs a PlantUML diagram, then create or update the `.puml` source diagram after confirmation. Ask missing decisions in the response, end the turn, then inspect with `shell` and edit `.puml` files with `apply_patch` after the user confirms.
+Use this skill to create or update PlantUML `.puml` diagrams when requested. Ask missing drawing inputs in the response, end the turn, then inspect with `shell` and edit `.puml` files with `apply_patch` after the required information is available.
 
 ## When To Use
 
-Invoke this skill when any condition applies:
+Invoke this skill when the user asks for a diagram, including requests such as "画架构图", "画流程图", "画 PlantUML", "flow diagram", "sequence diagram", "architecture diagram", "component diagram", "activity diagram", or "update this diagram".
 
-- The user asks for a diagram, including requests such as "画架构图", "画流程图", "画 PlantUML", "flow diagram", or "architecture diagram".
-- The change affects a core workflow, state machine, cross-process or cross-service protocol, database/schema contract, permission boundary, sandbox/tool contract, event routing, lifecycle transition, or module dependency.
-- A plan or review says a core flow changed and its durable diagram is missing or stale.
+## Drawing Inputs
 
-Do not use this skill for typo fixes, local UI tweaks, isolated business logic edits, or bug fixes that do not change design, contracts, or flow. If the core-flow boundary is unclear, ask the user whether the change needs a diagram and follow that decision.
+Gather these inputs before editing diagrams. Ask only for inputs the user has not already provided.
 
-## Confirmation Gate
+1. **Diagram type:** Sequence, activity, or component — see PlantUML Rules for guidance.
+2. **Topic and name:** The subject being diagrammed and the intended filename.
+3. **Diagram location:** Create a new `.puml` or update an existing `.puml` in the repository's established diagram location. If no established diagram location exists, ask where the diagram should live.
+4. **Source evidence:** The source files, description, or context needed to draw accurately.
 
-Resolve these decisions before editing diagrams. Ask only for decisions the user has not already provided.
-
-1. **Core change:** Does this change affect a core workflow or architecture? If the user directly asked for a diagram, treat this as yes. If the user says no, stop and report that the diagram update was skipped by user decision.
-2. **Diagram type:** Use a flow diagram (sequence/activity), an architecture diagram (component), or both.
-3. **File action:** Create a new `.puml` or update an existing `.puml` in the repository's established diagram location. If no established diagram location exists, ask where the diagram should live before editing.
-
-No blocking user-question tool is available in this environment. After asking, end the turn and wait for the user's next message. Do not create or edit `.puml` files before confirmation.
+No blocking user-question tool is available in this environment. After asking, end the turn and wait for the user's next message. Do not create or edit `.puml` files before the required inputs are available.
 
 ## Workflow
 
-1. Resolve the confirmation gate and wait for the user decision.
+1. Gather missing drawing inputs; end the turn if a required input is missing and wait for the user's response.
 2. Locate the repository's established diagram location by listing existing `.puml` files and nearby diagram conventions with `shell`; ask the user if no clear location exists.
-3. Read the relevant source, plan, or review evidence with `shell`.
+3. Read the relevant source or context evidence with `shell`.
 4. Create or update `.puml` files with `apply_patch` using the file rules below.
 5. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` through `shell` when PlantUML is installed.
 6. Report the changed `.puml` files, the syntax-check result, any PlantUML CLI gap, and any unresolved location decision.
@@ -76,7 +71,3 @@ Open `references/plantuml-patterns.md` only when syntax examples for these diagr
 - If PlantUML CLI is unavailable, verify `@startuml` / `@enduml` pairing with `shell` and report that strict syntax validation was not run.
 - If `plantuml -syntax` fails, fix the `.puml`, rerun the check, and report the final status.
 - If multiple `.puml` files describe the same flow, choose more specific topic names and explain the difference in the final report.
-
-## Review Workflow Relationship
-
-This skill only creates or updates `.puml` files. If a review or plan says a core flow has no diagram, finish that workflow first, then invoke this skill. Do not run it in parallel with another workflow that writes `.puml` files.
