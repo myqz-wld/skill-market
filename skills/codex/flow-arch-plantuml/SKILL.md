@@ -1,11 +1,11 @@
 ---
 name: flow-arch-plantuml
-description: Use when the user asks to create or update a flow, architecture, sequence, activity, component, or PlantUML diagram. Asks for missing drawing inputs, creates or updates PlantUML `.puml` diagrams in the repository's established diagram location or `tmp/` fallback, and does not render PNG/SVG.
+description: Use when the user asks to create or update a flow, architecture, sequence, activity, component, or PlantUML diagram. Focuses on drawing; writes new `.puml` diagrams to an explicit user path or a temporary directory such as `/tmp/flow-arch-plantuml/`, and does not render PNG/SVG.
 ---
 
 # Flow / Architecture PlantUML
 
-Use this skill to create or update PlantUML `.puml` diagrams when requested. Ask missing drawing inputs in the response, end the turn, then inspect with `shell` and edit `.puml` files with `apply_patch` after the required information is available; default new diagrams to `tmp/` when no output location is specified or established.
+Use this skill to create or update PlantUML `.puml` diagrams when requested. Ask only for missing drawing inputs, end the turn, then inspect with `shell` and edit `.puml` files with `apply_patch` after the required information is available; for new diagrams, use `/tmp/flow-arch-plantuml/` unless the user explicitly specifies an output path.
 
 ## When To Use
 
@@ -13,29 +13,28 @@ Invoke this skill when the user asks for a diagram, including requests such as "
 
 ## Drawing Inputs
 
-Gather these inputs before editing diagrams. Ask only for required inputs the user has not already provided.
+Gather only the inputs needed to draw the diagram. Ask only for required inputs the user has not already provided.
 
 1. **Diagram type:** Sequence, activity, or component — see PlantUML Rules for guidance.
 2. **Topic and name:** The subject being diagrammed and the intended filename.
-3. **Diagram location:** Update an existing `.puml` when requested. For new diagrams, use a user-specified location, otherwise the repository's established diagram location, otherwise `tmp/`.
-4. **Source evidence:** The source files, description, or context needed to draw accurately.
+3. **Source evidence:** The source files, description, or context needed to draw accurately.
 
-No blocking user-question tool is available in this environment. After asking for required inputs, end the turn and wait for the user's next message. Do not ask only for a missing output directory; apply the location fallback in File Rules.
+No blocking user-question tool is available in this environment. After asking for required inputs, end the turn and wait for the user's next message. Do not ask for an output directory for a new diagram; apply the output rules below.
 
 ## Workflow
 
 1. Gather missing drawing inputs; end the turn if a required input is missing and wait for the user's response.
-2. Locate the repository's established diagram location by listing existing `.puml` files and nearby diagram conventions with `shell`; use `tmp/` for new diagrams if no clear location exists.
-3. Read the relevant source or context evidence with `shell`.
-4. Create or update `.puml` files with `apply_patch` using the file rules below.
-5. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` through `shell` when PlantUML is installed.
-6. Report the changed `.puml` files, the chosen location, the syntax-check result, any PlantUML CLI gap, and any unresolved required input.
+2. Read the relevant source or context evidence with `shell`.
+3. Create or update `.puml` files with `apply_patch` using the file rules below.
+4. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` through `shell` when PlantUML is installed.
+5. Report the changed `.puml` files, the output path, the syntax-check result, any PlantUML CLI gap, and any unresolved required input.
 
 ## File Rules
 
 - Use the user's requested diagram path or directory when provided.
-- Use the repository's established diagram location for new PlantUML source files when the user does not specify a location.
-- If the repository has no established diagram location, create new diagrams under `tmp/`; create that directory first if it does not exist.
+- When updating an existing `.puml`, edit that file.
+- For new diagrams without an explicit user path, create files under `/tmp/flow-arch-plantuml/`; create that directory first if it does not exist.
+- Do not infer an output directory from repository diagram conventions or existing `.puml` files.
 - Name files with kebab-case topics, such as `auth-login-flow.puml` or `mcp-server-architecture.puml`.
 - When one topic needs both flow and architecture views, create separate files whose names identify each diagram's job.
 
