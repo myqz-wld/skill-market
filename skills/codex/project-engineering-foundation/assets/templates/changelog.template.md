@@ -1,20 +1,20 @@
-# CHANGELOG_<X>: <一句话标题>
+# CHANGELOG_<X>: <short title>
 
-## 概要
+## Summary
 
-<2-3 行：这次改了什么 + 为什么。重点放「为什么」，方便日后翻 INDEX 秒懂动机>
+<2-3 lines: what changed and why. Emphasize why so future readers can scan the index quickly.>
 
-## 变更内容
+## Changes
 
-### <模块 / 层名（相对路径）>
+### <module or layer (relative path)>
 
-- <要点 1>
-- <要点 2>
+- <point 1>
+- <point 2>
 
-### <模块 / 层名（相对路径）>
+### <module or layer (relative path)>
 
 - ...
 
-## 备注（可选）
+## Notes
 
-<已知取舍 / 未解决风险及理由 / 关联 REVIEW 编号 / 不升级或不修复的理由>
+<Optional. Known tradeoffs, unresolved risk and rationale, related REVIEW id, or reason not to promote or fix something.>

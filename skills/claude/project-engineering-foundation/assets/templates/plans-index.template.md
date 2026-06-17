@@ -1,8 +1,8 @@
 # Plans Index
 
-> **范围**：终态 plan 文档。未终态 plan 留在当前环境配置的工作区；无更强契约时用 `<repo>/.refs/plans/`，`.refs/` 必须加入 `.gitignore`，不要放进本目录。
-> **清理**：plan 到终态后，把最终文档和 plan 专属支持材料归档到 `ref/plans/`，更新本 INDEX，并清理工作区副本。
+> Scope: final plan documents. Keep non-final plans in the current environment's plan workspace. If no stronger contract exists, use `<repo>/.refs/plans/`; add `.refs/` to `.gitignore` and do not store non-final plans here.
+> Cleanup: when a plan reaches a final state, archive the final document and plan-specific support materials under `ref/plans/`, update this index, and remove workspace copies.
 
-| Plan | 状态 | 完成日期 | 摘要 | 关联 changelog/review |
+| Plan | Status | Completed At | Summary | Related Changelog/Review |
 |---|---|---:|---|---|
-| <第一次终态 plan 后填> | | | | |
+| <fill after first final plan> | | | | |

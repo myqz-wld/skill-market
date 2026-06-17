@@ -1,67 +1,67 @@
 ---
 review_id: <X>
 reviewed_at: <YYYY-MM-DD>
-expired: false               # 人工兜底；置 true 强制下轮重新纳入
-skipped_expired:             # 本轮算出过期但被用户裁掉的（可空），写原因便于下次回查
+expired: false               # Manual override; true forces inclusion in the next review.
+skipped_expired:             # Expired files omitted from this round, with reasons.
   # - file: src/some.ts
-  #   reason: 仅格式化 / 注释批量改
+  #   reason: formatting-only or comment-only batch
 ---
 
-# REVIEW_<X>: <主题>
+# REVIEW_<X>: <topic>
 
-## 触发场景
+## Trigger
 
-<用户主动 / 周期性 / 大重构前 / 安全审查 ...，一两句说明动机；如本轮含「过期文件复审」请显式说明>
+<User-requested, scheduled, before a major refactor, security review, or another trigger. State whether expired files were included.>
 
-## 方法
+## Method
 
-**对抗 review 配对**（走本仓库已配置的 review 流程；没有配置时写明人工或单代理方法，并保留三态裁决 + Finding 输出契约）：
-- <Agent A：模型 / reasoning effort / 实现路径（Bash 起外部 CLI / 第二代理 / 人工复核 / ...）>
-- <Agent B：模型 / reasoning effort / 超时设置>
+**Review method** (use the configured project review process; if none exists, name the human or single-agent fallback and keep the adjudication contract):
+- <Reviewer A: model, reasoning effort, tool path, or human fallback>
+- <Reviewer B: model, reasoning effort, tool path, timeout, or human fallback>
 
-**范围**：<N 个文件 / 模块清单 / 约多少行>
+**Scope**: <N files, module list, and approximate line count>
 
 ```text
-<给人读的范围摘要；可按模块分组 / brace expansion，可读性优先>
+<Human-readable scope summary. Group by module when useful; prefer readability over compression.>
 ```
 
-**机器可读范围**（File-level Review Expiry 用；一行一个仓库相对路径，按字典序、去重；禁止目录 / glob / brace expansion）：
+**Machine-readable scope** (for file-level review expiry; one repository-relative file path per line, sorted and deduplicated; no directories, globs, or brace expansion):
 
 ```review-scope
 src/main/foo.ts
 src/main/bar.ts
 ```
 
-> 本文件**首次加入 git** 的 commit 视为该批文件的覆盖基线（自动取，不写 hash）。请与本轮结论 / 关联修复一同落地，不要预先创建空 `REVIEW_<X>.md`。
+> The commit that first adds this file to git is the coverage baseline for this review scope. Land this file with the review outcome or related fixes; do not create empty review records in advance.
 
-**约束**：<已知不再列的问题（如「CHANGELOG 1-N 已修过的不要再列」）/ 输出格式 / 严重度分级 (CRITICAL/HIGH/MEDIUM/LOW/INFO)>
+**Constraints**: <known issues to suppress, output format, and severity scale such as CRITICAL/HIGH/MEDIUM/LOW/INFO>
 
-## 三态裁决结果
+## Adjudication
 
-> 本节遵循本仓库 review 流程的 Finding 输出契约：每条 ✅ 必须带**验证手段**（grep / 写小 test / 跑命令 / 读真实代码），未验证的 finding 强制降级 ❓ + MEDIUM 或更低。弱断言只允许出现在 *未验证* 条目。
+> Confirmed findings require direct evidence such as grep output, a targeted test, a command result, or a cited code path. Unverified findings stay in Partial / Unverified with severity MEDIUM or lower. Weak assertions belong only in unverified rows.
 
-### ✅ 真问题（双方独立提出 / 一方提出且现场实践验证成立）
+### Confirmed Issues
 
-| # | 严重度 | 文件:行号 | 问题 | A | B | 验证手段 |
+| # | Severity | File:Line | Issue | A | B | Evidence |
 |---|---|---|---|---|---|---|
 
-### ❌ 反驳（被对抗或现场核实证伪）
+### Refuted Findings
 
-| 报告方 | 报项 | 反驳依据（验证手段 + 结论） |
+| Reporter | Claim | Refutation Evidence |
 |---|---|---|
 
-### ❓ 部分 / 未验证（双方角度不同 / 一方提出但未实践验证）
+### Partial / Unverified
 
-| 现场 | A 视角 | B 视角 | 是否已验证 | 结论 |
+| Area | A View | B View | Verified? | Conclusion |
 |---|---|---|---|---|
 
-## 修复（CHANGELOG_<Y> 落地）
+## Fixes Landed In CHANGELOG_<Y>
 
 ### CRITICAL
-1. **<文件:行号>** — <一句话修复方案>
+1. **<file:line>** - <one-sentence fix>
 
 ### HIGH
-1. **<文件:行号>** — <一句话修复方案>
+1. **<file:line>** - <one-sentence fix>
 
 ### MEDIUM
 ...
@@ -72,10 +72,10 @@ src/main/bar.ts
 ### INFO
 ...
 
-## 关联 changelog
+## Related Changelog
 
-- `ref/changelogs/CHANGELOG_<Y>.md`：本次修复落地
+- `ref/changelogs/CHANGELOG_<Y>.md`: fixes landed in this task
 
-## Agent 踩坑沉淀（如有）
+## Agent Pitfall Candidates
 
-本次 review 提炼出 N 条 agent-pitfall 候选（见项目根 `ref/conventions/tally.md`「Agent 踩坑候选」section）。同主题再撞 2 次会触发升级为 `ref/conventions/<X>-<topic>.md`（不再写项目 CLAUDE.md）。
+This review produced N agent-pitfall candidates in `ref/conventions/tally.md`. If the same theme reaches count 3, promote it to `ref/conventions/<X>-<topic>.md` through the configured review process; do not copy promoted conventions back into project `CLAUDE.md`.

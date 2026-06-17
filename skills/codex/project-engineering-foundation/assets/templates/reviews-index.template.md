@@ -1,21 +1,22 @@
-# Reviews 索引
+# Reviews Index
 
-> 周期性 / 触发性的 debug、code review、性能 audit、安全审查报告。未终态 review 草稿放 `<repo>/.refs/reviews/`，且 `.refs/` 必须加入 `.gitignore`。功能变更去 `ref/changelogs/INDEX.md`。
+> Scope: final debug, code review, performance audit, security review, and review-driven fix records. Keep non-final review drafts in `<repo>/.refs/reviews/` and add `.refs/` to `.gitignore`. Feature changes go in `ref/changelogs/INDEX.md`.
 
-## 命名
+## Naming
 
-`REVIEW_X.md`（X 递增整数，跟 `CHANGELOG_X.md` 对齐）。新建前 `ls ref/reviews/` 找最大 X。
+Use `REVIEW_X.md`, where `X` is the next integer aligned with existing review files. Before creating a review, run `ls ref/reviews/` and choose one higher than the current maximum.
 
-## 单文件结构
+## File Structure
 
-- 触发场景（用户主动 / 周期性 / 大重构前 ...）
-- 方法（双对抗 Agent 配对、范围、工具）
-- 三态裁决清单（✅ / ❌ / ❓）+ 证据（文件:行号 + 代码片段）
-- 修复条目（按严重度）
-- 关联 changelog（本轮修复落地的 CHANGELOG 编号）
+- Trigger
+- Method: reviewer pair or fallback method, scope, and tools
+- Adjudication: confirmed, refuted, and partial/unverified findings with evidence
+- Fixes grouped by severity
+- Related changelog for fixes landed in the same task
+- Agent pitfall candidates when applicable
 
-## 索引
+## Index
 
-| 文件 | 主题 | 严重度分布 | 关联 changelog |
-|------|------|-----------|----------------|
-| <第一次 review 后填> | | | |
+| File | Topic | Severity Distribution | Related Changelog |
+|------|-------|-----------------------|-------------------|
+| <fill after first review> | | | |

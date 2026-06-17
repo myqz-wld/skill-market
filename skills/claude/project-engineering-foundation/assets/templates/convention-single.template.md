@@ -1,30 +1,30 @@
-# <X>-<topic>: <一句话标题>
+# <X>-<topic>: <short title>
 
-> 项目特定约定（升级自 `ref/conventions/tally.md` 候选）。改动相关代码前 `cat ref/conventions/<X>-<topic>.md` 确认是否仍生效。
+> Project-specific convention promoted from `ref/conventions/tally.md`. Before changing related code, read this file and confirm the convention still applies.
 
-## 触发场景
+## Trigger
 
-<什么场景下这条约定开始适用：模块 / 文件 / 操作 / 时机>
+<When this convention applies: module, file, operation, or timing.>
 
-## 约定
+## Rule
 
-<3-10 行核心规则。措辞清晰、可机器执行、可现场 grep 验证。**不写**「应该 / 也许 / 推荐」类弱断言；要么硬规则，要么走 ❓ 不立约定>
+<3-10 lines of enforceable behavior. Use clear, testable wording. Do not use weak assertions such as "should", "maybe", or "recommended"; if evidence is weak, do not promote the convention.>
 
-## 为什么（避免后续推翻）
+## Rationale
 
-<2-5 行理由。哪个 commit / REVIEW 触发的、哪条踩坑反复、违反约定的代价是什么>
+<2-5 lines: triggering commit or review, repeated pitfall, and cost of violating the rule.>
 
-## 反例 / 已知踩坑
+## Counterexamples Or Known Pitfalls
 
-- <1-N 条具体例子，带 commit hash / 文件:行号 / 关联 CHANGELOG 编号>
+- <specific example with commit hash, file:line, or related CHANGELOG id>
 
-## 关联
+## Links
 
-- 升级自：`ref/conventions/tally.md`「<候选 ID>」（count = 3 命中）
-- 关联 review：`ref/reviews/REVIEW_<X>.md`（如有）
-- 关联 changelog：`ref/changelogs/CHANGELOG_<X>.md`（如约定升级同时落地代码改动）
-- 历史相关约定：`ref/conventions/<其他 X>.md`（如有 cross-ref）
+- Promoted from: `ref/conventions/tally.md` `<candidate ID>` at count 3
+- Related review: `ref/reviews/REVIEW_<X>.md` if any
+- Related changelog: `ref/changelogs/CHANGELOG_<X>.md` if any
+- Related conventions: `ref/conventions/<other-X>.md` if any
 
-## 适用范围 / 例外
+## Scope And Exceptions
 
-<可空。约定不适用的场景 / 边界条件 / 已知豁免>
+<Optional. Cases where this convention does not apply or known exemptions.>

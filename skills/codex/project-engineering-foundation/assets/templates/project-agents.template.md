@@ -1,20 +1,16 @@
 # AGENTS.md
 
-> 本文件作为仓库级 agent 指令加载。
-> 共享仓库规则写在 `CLAUDE.md`：仓库基础、基础目录架构、改动后要求、plan/review 文档生命周期、review 过期规则、文件大小护栏、项目特定触发、项目特定约定和验证流程。本文件只记录当前入口的运行时 / 工具差异。
-> 最小工程流程以 `CLAUDE.md` 为准。额外工程或 review skill 只作为增强层。
+> Repository-level instructions for Codex-compatible entries.
+> Shared project workflow lives in `CLAUDE.md`. This file records only entry-specific runtime or tool differences.
 
-## 必读顺序
+## Required Reading
 
-1. 先读 `CLAUDE.md`，再遵守共享的仓库基础、基础目录架构、plan/review 文档生命周期、review 过期规则、文件大小护栏、项目特定触发、项目特定约定和验证流程。
-2. 涉及 SDK session、MCP tool、skill 或 prompt 资产时，遵守本仓库或用户环境配置的契约。没有明确契约时，不要发明工具流程。
-3. 成对 prompt 资产必须同时审计。运行时机制不同时，工具措辞可以不同，但协议语义不能漂移。
+Read `CLAUDE.md` before task work and follow its shared repository workflow, including the UI/CLI copy language rule.
 
-## 项目特定入口差异
+## Entry-Specific Differences
 
-`CLAUDE.md` 是共享项目 SSOT。只有当本项目对当前入口存在工具能力差异时，才在这里加一行；无差异时保持本节为空。
+Add a bullet only when this entry has a runtime or tool difference that changes the next action. Leave this section empty when there is no difference.
 
-<!-- 模式：每行一条差异。
-- <例：本入口用 shell `<cmd>` 验证 X；配套入口用 Bash 跑同一命令，行为相同则不要记录>
-- <例：某个 MCP tool 在本入口 sandbox 下需要 approvalPolicy=on-request>
+<!-- Pattern:
+- <When doing X in this entry, use Y; the shared project rule remains Z.>
 -->
