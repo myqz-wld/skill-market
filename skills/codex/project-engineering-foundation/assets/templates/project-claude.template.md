@@ -45,6 +45,8 @@ Project-specific triggers:
 
 ## UI/CLI Copy Language
 
+Default active documentation, maintainer instructions, agent instructions, changelogs, plans, reviews, and conventions to English. Exceptions are `UI_COPY_LANGUAGE.md`, user-facing UI/CLI copy governed by that file, locale examples, quoted/source text, and explicit non-English trigger anchors or examples.
+
 Before adding or changing user-facing UI or CLI copy, read `UI_COPY_LANGUAGE.md` and follow its active mode. If the requested copy language or supported locales differ from that file, update `UI_COPY_LANGUAGE.md` first, then make the UI/CLI copy changes.
 
 ## Project-Specific Conventions
