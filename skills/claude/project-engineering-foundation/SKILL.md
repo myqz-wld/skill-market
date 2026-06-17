@@ -1,11 +1,11 @@
 ---
 name: project-engineering-foundation
-description: "Use when creating a new AI-coding repository or when an existing repository lacks the durable engineering structure (CLAUDE.md/AGENTS.md entries, src/build layout, ref/ record indexes). One-time setup: instantiates templates that install the ongoing plan/review lifecycle, change records, review-expiry, convention-promotion, and 500-line file-size rules into the project itself; not needed for routine maintenance afterwards."
+description: "Use when creating a new AI-coding repository or when an existing repository lacks the durable engineering structure (CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, ref/ record indexes). One-time setup: instantiates templates that install the ongoing plan/review lifecycle, change records, review-expiry, convention-promotion, UI/CLI copy language, and 500-line file-size rules into the project itself; not needed for routine maintenance afterwards."
 ---
 
 # Project Engineering Foundation
 
-Use this skill as a one-shot setup: inspect the existing repository first, preserve project-specific invariants, and write all ongoing process rules into the generated project files — CLAUDE.md is the project SSOT. After setup the project applies those rules from its own CLAUDE.md; this skill is not loaded for routine work. Use Bash for inspection and file tools for project file edits.
+Use this skill as a one-shot setup: inspect the existing repository first, preserve project-specific invariants, and write all ongoing process rules into the generated project files. `CLAUDE.md` is the project workflow SSOT, and `UI_COPY_LANGUAGE.md` is the user-facing UI/CLI copy language SSOT. After setup the project applies those rules from its own files; this skill is not loaded for routine work. Use Bash for inspection and file tools for project file edits.
 
 ## New Project Setup
 
@@ -15,6 +15,7 @@ Create or complete this shape when the repository lacks a durable AI-coding stru
 project-root/
 ├── CLAUDE.md
 ├── AGENTS.md
+├── UI_COPY_LANGUAGE.md
 ├── README.md
 ├── src/
 ├── scripts/
@@ -31,7 +32,7 @@ project-root/
 
 Use only the needed template from `assets/templates/`; create or update project files with file tools, not shell redirection. Merge missing sections into existing files instead of overwriting project-specific instructions.
 
-Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md` and `assets/templates/project-agents.template.md` as `AGENTS.md`. The CLAUDE.md template carries the ongoing rules — plan/review artifact lifecycle, change records, review expiry, file-size guardrail, and convention promotion — so do not re-state those rules in this skill. Fill template placeholders from repository inspection, and merge missing sections into existing files instead of overwriting them.
+Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `assets/templates/project-agents.template.md` as `AGENTS.md`, and `assets/templates/ui-copy-language.template.md` as `UI_COPY_LANGUAGE.md`. The CLAUDE.md template carries the ongoing workflow rules: plan/review artifact lifecycle, change records, review expiry, file-size guardrail, convention promotion, and the instruction to obey `UI_COPY_LANGUAGE.md` for UI/CLI copy. The UI/CLI copy language template carries the active language mode and supported locales, so do not duplicate those settings in CLAUDE.md. Fill template placeholders from repository inspection, and merge missing sections into existing files instead of overwriting them.
 
 ## Layout Rules
 
@@ -41,6 +42,7 @@ Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md` and `as
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
 - Add `.refs/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
 - Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
+- Keep `UI_COPY_LANGUAGE.md` at project root; update it before changing the active UI/CLI copy language mode or supported locales.
 
 ## Bundled Helpers To Copy Into The Project
 
@@ -52,6 +54,6 @@ When invoked on a repository that partially has the structure, diff the reposito
 
 ## Resources
 
-- `assets/templates/`: project entry, changelog, review, plan, and convention templates.
+- `assets/templates/`: project entry, UI/CLI copy language, changelog, review, plan, and convention templates.
 - `assets/file-size-guardrail.md`: detailed split-risk policy.
 - `scripts/file-level-review-expiry.sh`: mechanical review-expiry helper; copied into projects at setup.
