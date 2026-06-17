@@ -41,7 +41,7 @@ Judge each subtask's complexity independently (subtasks of one parent task may l
 | T3 | Single-module implementation or refactor with clear boundaries | gpt-5.5 medium |
 | T4 | Mechanical edits, batch search, documentation, boilerplate tests | sonnet xhigh |
 
-- Classify review-related subtasks as high-judgment routing work, not T4 mechanical/search/documentation work solely because they inspect, validate, or summarize. This covers review, audit, validation-review, adversarial review, plan review, prompt-asset review, and code-review subtasks; route them to the highest appropriate available tier and reasoning setting for the review scope, currently using `xhigh` where that is the top exposed effort.
+- Classify review-related subtasks as high-judgment routing work, not T4 mechanical/search/documentation work solely because they inspect, validate, or summarize. This covers review, audit, validation-review, adversarial review, plan review, prompt-asset review, and code-review subtasks; route them to the highest appropriate available tier and reasoning setting for the review scope.
 - Map the tier to the closest model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
 - When the selected family's tier model is unavailable in the current environment, substitute the nearest same-family tier that is available, preferring one tier up over one tier down, and record the substitution in the final report.
 - When torn between two tiers, pick the higher one.
