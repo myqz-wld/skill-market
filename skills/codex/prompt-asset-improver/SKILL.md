@@ -79,7 +79,7 @@ Optimize for executable value, not coverage for its own sake.
 2. Write current facts only. Remove deprecated, transitional, future-looking, compatibility, old-structure, or migration prose.
 3. Use executable language: "do X", "reject Y", "run Z". Replace vague advice with exact actions or exception boundaries.
 4. Keep fallback handling only when it changes the next action.
-5. Write new or revised prompt text in English by default. Use another language only for user request, audience need, product copy, project convention, or quoted/source text.
+5. Write maintainer- and agent-facing prompt assets in English by default. Use another language only for user request, audience need, product copy, project convention, deliberate trigger anchors, or quoted/source text.
 6. Use one language within the same asset type or domain unless the exception is explicit.
 7. Keep pitfall notes only when they include evidence such as an incident, issue id, failing command, file path, or user decision.
 8. Put trigger information in frontmatter descriptions, not only in the body.
@@ -109,6 +109,7 @@ Use focused editing agents after scope confirmation, inventory refresh, custom-p
 - Always dispatch focused editing agents for editable prompt-asset batches before local content edits. Do not edit first and delegate afterward. Do not require the agent to return in the same turn.
 - Keep lead-owned steps with the lead: scope confirmation, inventory, backups, custom points, worktree choice, batch assignment, conflict resolution, final validation, and final report.
 - Give each editing agent a narrow brief: exact target files, allowed write set, active custom points, paired-counterpart rules, value-audit criteria, validation commands, and a ban on widening scope or touching inventory/backups.
+- Use one prompt asset file per batch by default. Use one counterpart-group batch for paired files that must stay aligned; never split a pair across agents unless the lead provides an explicit final alignment step.
 - In asynchronous agent environments, use the current environment's normal delegation and wait protocol. Record the returned agent identifiers or handoff handles, tell the user what was dispatched, then stop when the environment requires waiting. When replies arrive, inspect diffs, merge accepted edits, resolve conflicts, and update progress.
 - If focused editing agents cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker in plain language.
 
@@ -121,13 +122,6 @@ Before finishing, check changed assets for dead local references.
 - For prompt templates, classify references as bundled resources or generated-project paths before judging them.
 - Fix missing local files, renamed directories, and stale `$skill-name` examples.
 - Validate external links only when the user asks or the asset relies on the source; otherwise report them as unchecked.
-
-## Editing Batches
-
-After the audit, split confirmed scope into batches. Dispatch and ownership rules are in Focused Editing Agents.
-
-- Default to one prompt asset file per batch.
-- Use one counterpart-group batch for paired files that must stay aligned; never split a pair across agents unless the lead provides an explicit final alignment step.
 
 ## Validation
 

@@ -5,7 +5,7 @@ description: Use when the user asks to create or update a flow, architecture, se
 
 # Flow / Architecture PlantUML
 
-Use this skill to create or update PlantUML `.puml` diagrams when requested. Ask only for missing drawing inputs, end the turn, then inspect with `shell` and edit `.puml` files with `apply_patch` after the required information is available; for new diagrams, use `/tmp/flow-arch-plantuml/` unless the user explicitly specifies an output path.
+Use this skill to create or update PlantUML `.puml` diagrams when requested. Ask only for required missing drawing inputs; if any are missing, end the turn. Once inputs are available, inspect with `shell` and edit `.puml` files with `apply_patch`. For new diagrams, use `/tmp/flow-arch-plantuml/` unless the user explicitly specifies an output path.
 
 ## When To Use
 
@@ -15,7 +15,7 @@ Invoke this skill when the user asks for a diagram, including requests such as "
 
 Gather only the inputs needed to draw the diagram. Ask only for required inputs the user has not already provided.
 
-1. **Diagram type:** Sequence, activity, or component — see PlantUML Rules for guidance.
+1. **Diagram type:** Sequence, activity, or component; see PlantUML Rules for guidance.
 2. **Topic and name:** The subject being diagrammed and the intended filename.
 3. **Source evidence:** The source files, description, or context needed to draw accurately.
 
@@ -23,11 +23,11 @@ No blocking user-question tool is available in this environment. After asking fo
 
 ## Workflow
 
-1. Gather missing drawing inputs; end the turn if a required input is missing and wait for the user's response.
+1. Gather missing drawing inputs; stop for the user's response if required input is missing.
 2. Read the relevant source or context evidence with `shell`.
 3. Create or update `.puml` files with `apply_patch` using the file rules below.
 4. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` through `shell` when PlantUML is installed.
-5. Report the changed `.puml` files, the output path, the syntax-check result, any PlantUML CLI gap, and any unresolved required input.
+5. Report changed files, output path, syntax-check result, PlantUML CLI gaps, and unresolved required inputs.
 
 ## File Rules
 

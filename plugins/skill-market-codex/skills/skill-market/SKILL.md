@@ -16,44 +16,20 @@ Use this entry point to choose the focused Codex Skill Market management skill. 
 - `skill-update`: update a local installation from the remote catalog.
 - `skill-upload`: create a branch and PR for uploads or marketplace deletions.
 
-## Repository Model
+## Repository and Configuration
 
-The remote repository is the source of truth. The default remote is:
+All focused skills use the remote repository as source of truth and the local cache only as a working copy.
 
-```text
-git@github.com:myqz-wld/skill-market.git
-```
+- Default `repoUrl`: `git@github.com:myqz-wld/skill-market.git`.
+- Default `cachePath`: `~/.skill-market/cache/skill-market`.
+- Default `cacheTtlSeconds`: `86400`; `0` disables automatic TTL refresh.
+- Required config file: `~/.skill-market/config.json`. Create it with the defaults before any operation that reads the remote or cache if it is missing.
+- Precedence: environment variable > config field > default. Use `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `SKILL_MARKET_CACHE_TTL_SECONDS` for the three defaults above.
+- `SKILL_MARKET_REPO` or config `repoPath` is only an explicit local development checkout override; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, marker writes, and TTL.
 
-The local cache is only a working copy. The default cache path is:
+When `repoPath` is not selected, `skill-list`, `skill-search`, `skill-download`, and `skill-install` clone the cache when missing and fetch when the user asks for latest or the cache marker is missing or older than `cacheTtlSeconds`. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`.
 
-```text
-~/.skill-market/cache/skill-market
-```
-
-For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, clone the cache when missing and fetch when the user asks for latest or the cache marker is missing or older than `cacheTtlSeconds`. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. `cacheTtlSeconds: 0` disables automatic TTL refresh. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs.
-
-## Configuration File
-
-`~/.skill-market/config.json` is the required configuration file for all Skill Market management skills: before any operation that reads the remote or cache, check it, and if it is missing, create it with the defaults below, then continue.
-
-```json
-{
-  "repoUrl": "git@github.com:myqz-wld/skill-market.git",
-  "cachePath": "~/.skill-market/cache/skill-market",
-  "cacheTtlSeconds": 86400
-}
-```
-
-Field reference:
-
-- `repoUrl`: the remote source-of-truth repository; env override `SKILL_MARKET_REPO_URL`.
-- `cachePath`: the local cache working copy location; env override `SKILL_MARKET_CACHE`.
-- `cacheTtlSeconds`: cache freshness TTL in seconds for list, search, download, and install; `0` disables automatic TTL refresh; env override `SKILL_MARKET_CACHE_TTL_SECONDS`.
-- `repoPath` (optional): explicit local development repository override; bypasses cache TTL; env override `SKILL_MARKET_REPO`. Never default to the current directory.
-
-Precedence: environment variable > config file field > built-in default.
-
-When this skill runs, or whenever the user asks about Skill Market configuration, read the current `~/.skill-market/config.json` and the four environment variables, then explain each field to the user with its current effective value and where that value comes from (env override, config file, or default). Flag unknown fields and invalid values (for example a non-numeric `cacheTtlSeconds`) instead of silently ignoring them.
+When the user asks about Skill Market configuration, read the current config and the four environment variables, report each effective value and source, and flag unknown fields or invalid values.
 
 ## Storage
 

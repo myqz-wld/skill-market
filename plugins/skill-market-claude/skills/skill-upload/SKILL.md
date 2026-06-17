@@ -10,13 +10,16 @@ Use this skill when the user wants to propose Claude catalog changes through a p
 
 ## Repository Source
 
-Use remote `repoUrl` as the source of truth, defaulting to `git@github.com:myqz-wld/skill-market.git`. Use cache path `~/.skill-market/cache/skill-market` by default. `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `~/.skill-market/config.json` fields `repoUrl` / `cachePath` override those defaults. `repoPath` is only an explicit local development override. `~/.skill-market/config.json` is required: if it is missing, create it with the default `repoUrl`, `cachePath`, and `cacheTtlSeconds` (`86400`) values before continuing.
+Before creating the PR branch:
 
-For upload, clone the remote into the cache when missing, fetch `main`, and create the upload branch from the latest `main`.
+- Ensure `~/.skill-market/config.json` exists; if missing, create it with default `repoUrl: git@github.com:myqz-wld/skill-market.git`, `cachePath: ~/.skill-market/cache/skill-market`, and `cacheTtlSeconds: 86400`.
+- Resolve settings as environment variable > config field > default. `SKILL_MARKET_REPO_URL` and `SKILL_MARKET_CACHE` map to `repoUrl` and `cachePath`.
+- Use `repoUrl` as the source of truth and `cachePath` only as a working copy. Use `SKILL_MARKET_REPO` or config `repoPath` only when the user explicitly chooses a local development checkout; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, markers, and TTL.
+- Without `repoPath`, clone the cache when missing, fetch `main`, write the cache marker with `repoUrl`, `fetchedAt`, and `head`, and create the upload branch from the latest `main`.
 
 ## Upload Through PR
 
-Reject `skill-market-claude` and `skill-market-codex` as upload or deletion targets. Bootstrap plugin changes are developer-only repository changes and must not be proposed through Skill Market management skills.
+Reject both bootstrap plugins (`skill-market-codex` and `skill-market-claude`) as upload or deletion targets. Bootstrap plugin changes are developer-only repository changes and must not be proposed through Skill Market management skills.
 
 1. Confirm whether the target is a Claude plugin, standalone Claude skill, or deletion.
 2. Create branch `market/<type>/claude/<name>`.
@@ -24,5 +27,7 @@ Reject `skill-market-claude` and `skill-market-codex` as upload or deletion targ
 4. For standalone skill uploads, add or update `skills/claude/<skill-name>/SKILL.md`, set or bump its `Version`, and update the row in `skills/INDEX.md`.
 5. For deletions, remove or retire the catalog row and remove files only when the user explicitly asks.
 6. Commit, push the branch, and create a PR with `gh pr create`.
+
+When creating or editing prompt assets in the upload, keep paired Codex and Claude or template-backed files behaviorally aligned while preserving adapter-specific paths, manifests, and commands. Write maintainer- or agent-facing instructions in English by default; use another language only for explicit user request, UI/CLI or product copy, examples, deliberate trigger anchors, or quoted/source text.
 
 If `gh` is not authenticated, push the branch when possible and give the exact `gh auth login` / `gh pr create` command needed to finish.
