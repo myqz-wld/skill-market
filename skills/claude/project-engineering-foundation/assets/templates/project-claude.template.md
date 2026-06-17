@@ -1,8 +1,7 @@
 # CLAUDE.md
 
-> Repository-level instructions and the shared SSOT for paired AI-coding entries.
-> This file contains the minimum repository workflow. Extra engineering or review skills, when present, are enhancement layers.
-> `AGENTS.md` is the companion entry for runtime/tool differences. Keep shared repository rules here to avoid drift.
+> Shared repository workflow for paired AI-coding entries.
+> Put runtime or tool differences in `AGENTS.md` to avoid drift.
 
 ## Repository Baseline
 
@@ -14,7 +13,7 @@
 
 Create or maintain files in this structure. Do not create parallel directories for the same file type unless the project already has a stronger convention.
 
-- `CLAUDE.md`: shared project workflow SSOT for repository baseline, directory structure, after-change requirements, plan/review lifecycle, review expiry, file-size guardrail, project-specific triggers, project conventions, and validation.
+- `CLAUDE.md`: shared workflow for repository baseline, directory structure, after-change requirements, plan/review lifecycle, review expiry, file-size guardrail, project-specific triggers, project conventions, and validation.
 - `AGENTS.md`: entry and tool differences; it references and follows the shared rules in `CLAUDE.md`.
 - `UI_COPY_LANGUAGE.md`: SSOT for user-facing UI/CLI copy language and locale mode.
 - `README.md`: user and maintainer instructions for setup, usage, validation, and structure.
@@ -78,7 +77,7 @@ Since the latest REVIEW baseline that covered a file, that file expires when any
 - At least 90 days have passed and the file changed at least once.
 - REVIEW frontmatter sets `expired: true`.
 
-Before review, run `bash scripts/file-level-review-expiry.sh` from the repository root. The foundation template copies this script into the project. If the script is missing, use `git log` to apply the conditions above manually.
+Before review, run `bash scripts/file-level-review-expiry.sh` from the repository root. If the script is missing, use `git log` to apply the conditions above manually.
 
 ## File-Size Guardrail (500 LOC)
 

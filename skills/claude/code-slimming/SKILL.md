@@ -5,16 +5,16 @@ description: "Use when asked to slim, shrink, deduplicate, or clean code by find
 
 # Code Slimming
 
-Use this skill to reduce code size without guessing. Run it in two phases: scan and report first, approval-gated edits second. Use `rg` / Bash for inspection and file tools for edits.
+Use this skill to reduce code size with evidence. Run a scan-only phase first, wait for candidate approval, then edit only approved items. Use `rg` / Bash for inspection and file tools for edits.
 
 ## Workflow
 
 1. Confirm the target repository, cleanup scope, and exclusions. If scope is unclear, inspect entry points, package/module metadata, source roots, tests, build config, routing/config files, scripts, and public exports before proposing candidates.
 2. Establish the scan cache using the Local Cache rules below. Do not change repository files during the scan phase.
-3. Scan for unused files, unused functions, unused classes, duplicate logic, overlapping helpers, mergeable functions, mergeable methods, mergeable classes, mergeable code blocks, repeated constants, dead dependencies, and large files that invite extraction.
-4. Report candidates to the user with evidence, confidence, risk, proposed action, and validation plan. End the scan phase without editing source files.
+3. Scan for unused files, symbols, exports, dependencies, duplicate or mergeable logic, repeated constants, and oversized files that invite extraction.
+4. Produce a candidate report. Start with `No repository files changed. Scan cache: <path>`, then list each candidate's ID, type, location, evidence, confidence, risk, proposed action, and validation.
 5. Stop until the user approves candidate IDs or revises scope. Map broad approval back to explicit candidate IDs before editing.
-6. After approval, re-check that each approved candidate is still valid, edit only approved items, and run the planned validation.
+6. Re-check each approved candidate against the current tree, edit only approved items, and run the planned validation.
 
 ## Local Cache
 
@@ -37,24 +37,9 @@ Classify every candidate:
 
 Do not propose automatic deletion for migrations, fixtures, snapshots, generated code, vendored code, public APIs, command-line entry points, plugin manifests, route files, schema files, or configuration files unless the report includes project-specific evidence that they are unused.
 
-## Report Format
+## Candidate Report
 
-Produce a scan report before edits:
-
-```text
-No repository files changed. Scan cache: <path>
-
-Candidate ID: CS-001
-Type: unused-file | unused-function | unused-class | duplicate-code | mergeable-function | mergeable-method | mergeable-helper | mergeable-class | mergeable-code | dead-dependency | large-file-split
-Location: <path[:line] or package>
-Evidence: <commands, searches, references checked>
-Confidence: high | medium | low
-Risk: <behavior/API/test risk>
-Proposed action: <delete, merge into X, inline, extract, keep with note>
-Validation: <commands or manual checks after edit>
-```
-
-Ask the user to choose candidate IDs to apply, reject, or investigate further. If the evidence is weak, recommend investigation rather than deletion.
+Produce the report before edits and ask the user to choose candidate IDs to apply, reject, or investigate further. Use stable IDs such as `CS-001`; use candidate types such as `unused-file`, `unused-function`, `duplicate-code`, `mergeable-helper`, `dead-dependency`, or `large-file-split`. If evidence is weak, recommend investigation instead of deletion.
 
 ## Execution Rules
 

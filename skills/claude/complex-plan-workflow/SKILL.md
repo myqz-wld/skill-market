@@ -9,9 +9,9 @@ Use this skill before implementing work that needs durable planning, evidence ga
 
 ## Boundary
 
-This skill is generic. It does not define product-specific tools, repository paths, archive automation, or team/session semantics. When an environment prompt, project prompt, or tool description defines plan locations, worktree commands, handoff prompts, archive steps, or review commands, follow that contract first and use this skill only for the reusable planning method.
+This skill is generic. It defines the planning method, not product-specific tools, repository paths, archive automation, or team/session semantics. When an environment prompt, project prompt, or tool description defines plan locations, worktree commands, handoff prompts, archive steps, or review commands, follow that contract first.
 
-Do not make an application baseline depend on this skill. Product prompt assets must still contain the minimum protocol needed for their own tools and handoff flows.
+Do not make an application baseline depend on this skill. Product prompt assets must still carry the minimum protocol for their own tools and handoff flows.
 
 ## Trigger
 
@@ -31,7 +31,7 @@ Skip the plan for trivial questions, small local reversible edits, or single-fil
 1. **Frame the outcome.** Write the goal, non-goals, known constraints, and success checks in durable text before editing code.
 2. **Run RFC when design is unclear.** Ask the user focused questions about the decision that blocks implementation. Keep each round narrow. Record final decisions and the reason for each one in the plan.
 3. **Run spikes for unverified assumptions.** Build the smallest script, command, or throwaway test that measures the unknown behavior. Save the command, observed output, conclusion, and remaining risk. Replace "pending spike" notes with the evidence-backed result.
-4. **Write or update the plan document.** Use the path and frontmatter required by the current project. Include at least: goal, invariants, design decisions, implementation checklist, current progress, validation steps, known risks, and next-session first action.
+4. **Write or update the plan document.** Use the path and frontmatter required by the current project, then include the Plan Content below.
 5. **Review the plan before large edits.** Use the review process available in the environment. Resolve blocking findings before implementation; record accepted residual risk.
 6. **Isolate implementation when needed.** Use the worktree, branch, or sandbox mechanism specified by the environment. Keep code changes out of the main working tree when the plan is meant to be isolated.
 7. **Update progress continuously.** After each meaningful phase, mark completed checklist items, write what changed, list what was verified, and update the next-session first action.
@@ -44,7 +44,7 @@ Include these fields in a durable plan:
 
 - **Frontmatter or header:** plan id, status, created date, base commit/branch, and worktree path when the environment uses them.
 - **Goal and invariants:** what must be true when the work is done.
-- **Design decisions:** decisions that require new evidence before re-litigation.
+- **Design decisions:** decisions and evidence that should not be re-litigated without new data.
 - **Checklist:** concrete implementation steps with status.
 - **Progress, validation, and risks:** where work stopped, what proves it works, and what remains uncertain.
 - **Next-session first action:** a complete instruction that lets a cold session start immediately.

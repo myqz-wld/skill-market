@@ -23,27 +23,26 @@ Do not use for serial-dependent chains, tasks small enough for one agent, overla
 
 1. Split along module or file boundaries so write sets do not overlap. Resolve any overlap before dispatch, not after.
 2. Write one brief per subtask: goal, input context, exact file paths, allowed write set, validation command, and expected output format.
-3. Cross-cutting work — shared types, integration glue, conflict resolution, final whole-task validation — stays with the lead; do not assign it to a parallel agent.
+3. Cross-cutting work such as shared types, integration glue, conflict resolution, and final whole-task validation stays with the lead; do not assign it to a parallel agent.
 4. State the subtask's complexity tier in the brief so the agent knows the expected depth.
 
 ## Model Routing
 
-Judge each subtask's complexity independently (subtasks of one parent task may land in different tiers) and select the adapter family before the model:
+Judge each subtask's complexity independently, choose the adapter family, then map the tier to an available model:
 
 - Unless the user explicitly requests a different adapter or model family, keep spawned agents in the lead's family: Claude-family leads spawn Claude-family teammates, and GPT/Codex-family leads spawn GPT/Codex-family teammates.
-- After selecting the family, apply the tier table inside that family. If the named model belongs to another family, use the closest same-family model and reasoning effort the dispatch mechanism exposes.
-- If the user explicitly requests a different family or model, use it when available; if unavailable, substitute by the availability rules below and record the substitution in the final report.
+- If the user explicitly requests a different family or model, use it when available; otherwise substitute by the availability rules below and record the substitution in the final report.
+- Treat review-related subtasks as high-judgment work, not T4 mechanical/search/documentation work solely because they inspect, validate, or summarize. This covers review, audit, validation-review, adversarial review, plan review, prompt-asset review, and code-review subtasks; route them to the highest appropriate available tier for the review scope.
 
-| Tier | Criteria | Model |
+| Tier | Criteria | Default target |
 |---|---|---|
 | T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | gpt-5.5 xhigh |
 | T2 | Multi-file implementation, complex refactor, long-chain reasoning | opus xhigh |
 | T3 | Single-module implementation or refactor with clear boundaries | gpt-5.5 medium |
 | T4 | Mechanical edits, batch search, documentation, boilerplate tests | sonnet xhigh |
 
-- Classify review-related subtasks as high-judgment routing work, not T4 mechanical/search/documentation work solely because they inspect, validate, or summarize. This covers review, audit, validation-review, adversarial review, plan review, prompt-asset review, and code-review subtasks; route them to the highest appropriate available tier and reasoning setting for the review scope.
-- Map the tier to the closest model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
-- When the selected family's tier model is unavailable in the current environment, substitute the nearest same-family tier that is available, preferring one tier up over one tier down, and record the substitution in the final report.
+- Map the tier to the closest same-family model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
+- When the selected family's tier model is unavailable, substitute the nearest same-family tier that is available, preferring one tier up over one tier down, and record the substitution in the final report.
 - When torn between two tiers, pick the higher one.
 
 ## Dispatch
@@ -51,7 +50,7 @@ Judge each subtask's complexity independently (subtasks of one parent task may l
 - Dispatch through whatever parallel-agent mechanism the current environment provides, following that mechanism's own contract. Pass each subtask's adapter family, model, and reasoning effort through the mechanism's parameters where exposed; otherwise substitute per the routing rules above.
 - Launch all independent subtasks in one batch. There is no fixed concurrency cap; size the batch to what the lead can integrate and the environment can run.
 - Record each agent id together with its subtask and tier.
-- Follow the environment's wait protocol: synchronous mechanisms return results in place; message-based mechanisms inject replies later — send the work, end the current turn, and continue when replies arrive. Never busy-wait or poll.
+- Follow the environment's wait protocol: synchronous mechanisms return results in place; message-based mechanisms inject replies later. Send the work, end the current turn, and continue when replies arrive. Never busy-wait or poll.
 
 ## Integration And Validation
 

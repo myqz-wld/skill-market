@@ -5,7 +5,7 @@
 
 ## Required Reading
 
-Read `CLAUDE.md` before task work and follow its shared repository workflow, including the UI/CLI copy language rule.
+Read `CLAUDE.md` before task work and follow its shared repository workflow.
 
 ## Entry-Specific Differences
 

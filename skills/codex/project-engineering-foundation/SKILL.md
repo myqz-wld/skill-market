@@ -1,11 +1,11 @@
 ---
 name: project-engineering-foundation
-description: "Use when creating a new AI-coding repository or when an existing repository lacks the durable engineering structure (CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, ref/ record indexes). One-time setup: instantiates templates that install the ongoing plan/review lifecycle, change records, review-expiry, convention-promotion, UI/CLI copy language, and 500-line file-size rules into the project itself; not needed for routine maintenance afterwards."
+description: "Use when creating a new AI-coding repository or repairing one that lacks the durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, ref/ record indexes, plan/review lifecycle, review expiry, convention promotion, UI/CLI copy-language SSOT, and 500-line file-size rules. One-time setup only; not for routine maintenance."
 ---
 
 # Project Engineering Foundation
 
-Use this skill as a one-shot setup: inspect the existing repository first, preserve project-specific invariants, and write all ongoing process rules into the generated project files. `CLAUDE.md` is the project workflow SSOT, and `UI_COPY_LANGUAGE.md` is the user-facing UI/CLI copy language SSOT. After setup the project applies those rules from its own files; this skill is not loaded for routine work. Use `rg` / shell for inspection and `apply_patch` for manual file edits.
+Use this skill for one-shot setup. Inspect the repository first, preserve project-specific invariants, and install ongoing process rules into project files. After setup, the project follows its own `CLAUDE.md` workflow SSOT and `UI_COPY_LANGUAGE.md` UI/CLI copy-language SSOT. Use `rg` / shell for inspection and `apply_patch` for manual file edits.
 
 ## New Project Setup
 
@@ -30,9 +30,9 @@ project-root/
         └── <X>-<topic>.md
 ```
 
-Use only the needed template from `assets/templates/`; create or update project files with `apply_patch`, not shell redirection. Merge missing sections into existing files instead of overwriting project-specific instructions.
+Use only the needed template from `assets/templates/`; create or update project files with `apply_patch`, not shell redirection. Merge missing template sections into existing files instead of overwriting project-specific instructions.
 
-Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `assets/templates/project-agents.template.md` as `AGENTS.md`, and `assets/templates/ui-copy-language.template.md` as `UI_COPY_LANGUAGE.md`. The CLAUDE.md template carries the ongoing workflow rules: plan/review artifact lifecycle, change records, review expiry, file-size guardrail, convention promotion, and the instruction to obey `UI_COPY_LANGUAGE.md` for UI/CLI copy. The UI/CLI copy language template carries the active language mode and supported locales, so do not duplicate those settings in CLAUDE.md. Write generated active documentation and maintainer/agent-facing instructions in English by default; exceptions are `UI_COPY_LANGUAGE.md`, UI/CLI copy governed by that file, locale examples, quoted/source text, and explicit non-English trigger anchors or examples. Fill template placeholders from repository inspection, and merge missing sections into existing files instead of overwriting them.
+Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `assets/templates/project-agents.template.md` as `AGENTS.md`, and `assets/templates/ui-copy-language.template.md` as `UI_COPY_LANGUAGE.md`. Fill placeholders from repository inspection. Keep active language mode and supported locales only in `UI_COPY_LANGUAGE.md`, not `CLAUDE.md`. Write active documentation and maintainer/agent-facing instructions in English by default; exceptions are `UI_COPY_LANGUAGE.md`, UI/CLI copy governed by that file, locale examples, quoted/source text, and explicit non-English trigger anchors or examples.
 
 ## Layout Rules
 
@@ -46,11 +46,11 @@ Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `asset
 
 ## Bundled Helpers To Copy Into The Project
 
-During setup, copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the review-expiry check in the generated CLAUDE.md stays runnable without this skill. When repairing an existing repository that already has oversized files, read `assets/file-size-guardrail.md` for the detailed split policy before restructuring; the generated CLAUDE.md carries the compact ongoing rule.
+Copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the generated review-expiry check is runnable without this skill. When repairing oversized existing files, read `assets/file-size-guardrail.md` before restructuring; generated `CLAUDE.md` carries the compact ongoing rule.
 
 ## Existing Repository Repair
 
-When invoked on a repository that partially has the structure, diff the repository against the tree above and against the template sections, then add only what is missing. Never delete or rewrite project-specific invariants. If the repository's CLAUDE.md predates the current template, merge in the missing rule sections — plan/review lifecycle, change records, review expiry, file-size guardrail, convention promotion — without overwriting customized values.
+When the repository already has part of the structure, diff it against the tree above and current templates, then add only missing files or sections. Never delete or rewrite project-specific invariants. If `CLAUDE.md` predates the current template, merge missing rule sections without overwriting customized values.
 
 ## Resources
 

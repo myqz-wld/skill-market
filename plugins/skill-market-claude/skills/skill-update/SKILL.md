@@ -10,9 +10,12 @@ Use this skill when the user wants an installed Claude Skill Market item refresh
 
 ## Repository Source
 
-Use remote `repoUrl` as the source of truth, defaulting to `git@github.com:myqz-wld/skill-market.git`. Use cache path `~/.skill-market/cache/skill-market` by default. `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `~/.skill-market/config.json` fields `repoUrl` / `cachePath` override those defaults. `repoPath` is only an explicit local development override. `~/.skill-market/config.json` is required: if it is missing, create it with the default `repoUrl`, `cachePath`, and `cacheTtlSeconds` (`86400`) values before continuing.
+Before changing local state:
 
-For update, fetch the remote and fast-forward the cache before copying files.
+- Ensure `~/.skill-market/config.json` exists; if missing, create it with default `repoUrl: git@github.com:myqz-wld/skill-market.git`, `cachePath: ~/.skill-market/cache/skill-market`, and `cacheTtlSeconds: 86400`.
+- Resolve settings as environment variable > config field > default. `SKILL_MARKET_REPO_URL` and `SKILL_MARKET_CACHE` map to `repoUrl` and `cachePath`.
+- Use `repoUrl` as the source of truth and `cachePath` only as a working copy. Use `SKILL_MARKET_REPO` or config `repoPath` only when the user explicitly chooses a local development checkout; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, markers, and TTL.
+- Without `repoPath`, clone the cache when missing, then fetch the remote and fast-forward the cache before copying files. After fetch, write the cache marker with `repoUrl`, `fetchedAt`, and `head`.
 
 ## Update
 
