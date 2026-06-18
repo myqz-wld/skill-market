@@ -40,13 +40,17 @@ Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `asset
 - Put project scripts and automation helpers under `scripts/`.
 - Pick one build output root, `build/` or `dist/`, and keep all toolchain output under it.
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
-- Add `.refs/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
+- Add `.ref/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
 - Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
 - Keep `UI_COPY_LANGUAGE.md` at project root; update it before changing the active UI/CLI copy language mode or supported locales.
 
 ## Bundled Helpers To Copy Into The Project
 
-Copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the generated review-expiry check is runnable without this skill. When repairing oversized existing files, read `assets/file-size-guardrail.md` before restructuring; generated `CLAUDE.md` carries the compact ongoing rule.
+Copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the generated review-expiry check is runnable without this skill.
+
+Copy `scripts/plan-archive-reminder-pre-commit.sh` from this skill into the project at `scripts/plan-archive-reminder-pre-commit.sh`, then run `bash scripts/plan-archive-reminder-pre-commit.sh --install` from the repository root. The installer appends a managed block to the local `.git/hooks/pre-commit` hook instead of replacing existing hook logic. The hook must remain advisory: it checks `.ref/plans/` for non-final plan files, reminds the committer to consider archiving plans to `ref/plans/` and updating `ref/plans/INDEX.md`, then exits 0.
+
+When repairing oversized existing files, read `assets/file-size-guardrail.md` before restructuring; generated `CLAUDE.md` carries the compact ongoing rule.
 
 ## Existing Repository Repair
 
@@ -57,3 +61,4 @@ When the repository already has part of the structure, diff it against the tree 
 - `assets/templates/`: project entry, UI/CLI copy language, changelog, review, plan, and convention templates.
 - `assets/file-size-guardrail.md`: detailed split-risk policy.
 - `scripts/file-level-review-expiry.sh`: mechanical review-expiry helper; copied into projects at setup.
+- `scripts/plan-archive-reminder-pre-commit.sh`: advisory pre-commit helper that reminds users to archive non-final plan files.

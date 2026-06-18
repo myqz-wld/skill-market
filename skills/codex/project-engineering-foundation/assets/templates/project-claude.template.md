@@ -18,14 +18,14 @@ Create or maintain files in this structure. Do not create parallel directories f
 - `UI_COPY_LANGUAGE.md`: SSOT for user-facing UI/CLI copy language and locale mode.
 - `README.md`: user and maintainer instructions for setup, usage, validation, and structure.
 - `src/`: first-party source code.
-- `scripts/`: project scripts and automation helpers.
+- `scripts/`: project scripts and automation helpers, including copied foundation helpers after setup.
 - `build/` or `dist/`: build outputs; keep one or both names according to the project toolchain.
 - `ref/changelogs/INDEX.md`: final changelog index.
 - `ref/reviews/INDEX.md`: final review index; final review files live at `ref/reviews/REVIEW_X.md`.
 - `ref/plans/INDEX.md`: final plan index; final plan files live under `ref/plans/`.
 - `ref/conventions/INDEX.md`: promoted project convention index; convention bodies use `ref/conventions/<X>-<topic>.md`.
 - `ref/conventions/tally.md`: counter for repeated user feedback and repeated agent pitfalls.
-- `.refs/`: add to `.gitignore`; store only non-final plan/review working copies here, never final records.
+- `.ref/`: add to `.gitignore`; store only non-final plan/review working copies here, never final records.
 
 ## Required After Changes
 
@@ -33,8 +33,9 @@ Before starting, run `ls ref/conventions ref/changelogs ref/plans ref/reviews 2>
 
 1. When user-visible behavior, file structure, startup steps, ports, dependencies, or validation steps change, update the matching `README.md` section. Pure bug fixes and internal refactors do not require README changes.
 2. For each meaningful feature, behavior, API, or dependency change, write `ref/changelogs/CHANGELOG_X.md` and update `ref/changelogs/INDEX.md`. For debug, performance, security, or review-driven fixes, write `ref/reviews/REVIEW_X.md` and update `ref/reviews/INDEX.md`. Choose `X` as one higher than the current maximum after checking with `ls`; do not guess. Keep index summaries to 80 characters or one short sentence.
-3. Add `.refs/` to `.gitignore`. Keep non-final plans in the current environment's plan workspace; if no stronger contract exists, use `<repo>/.refs/plans/<plan-id>.md`. Keep non-final review drafts and raw reviewer output in the current review workspace; if no stronger contract exists, use `<repo>/.refs/reviews/<review-id>.md` or session output. At final handoff, archive plans to `ref/plans/` and reviews to `ref/reviews/REVIEW_X.md`, update the matching index, and clean up workspace copies.
-4. Record repeated user feedback or repeated agent pitfalls in `ref/conventions/tally.md`: increment an existing semantically identical entry by 1, or add a new `count: 1` entry. When `count >= 3`, run the configured project review process, promote the item to `ref/conventions/<X>-<topic>.md`, and update `ref/conventions/INDEX.md`.
+3. Add `.ref/` to `.gitignore`. Keep non-final plans in the current environment's plan workspace; if no stronger contract exists, use `<repo>/.ref/plans/<plan-id>.md`. Keep non-final review drafts and raw reviewer output in the current review workspace; if no stronger contract exists, use `<repo>/.ref/reviews/<review-id>.md` or session output. At final handoff, archive plans to `ref/plans/` and reviews to `ref/reviews/REVIEW_X.md`, update the matching index, and clean up workspace copies.
+4. Keep the advisory plan archive pre-commit hook installed by running `bash scripts/plan-archive-reminder-pre-commit.sh --install` after setup or whenever `.git/hooks/pre-commit` is reset. The hook checks `.ref/plans/` for non-final plan files, reminds the committer to consider archiving plans to `ref/plans/` and updating `ref/plans/INDEX.md`, and must not block commits.
+5. Record repeated user feedback or repeated agent pitfalls in `ref/conventions/tally.md`: increment an existing semantically identical entry by 1, or add a new `count: 1` entry. When `count >= 3`, run the configured project review process, promote the item to `ref/conventions/<X>-<topic>.md`, and update `ref/conventions/INDEX.md`.
 
 Project-specific triggers:
 
