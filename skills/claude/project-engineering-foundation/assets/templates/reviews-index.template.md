@@ -1,6 +1,6 @@
 # Reviews Index
 
-> Scope: final debug, code review, performance audit, security review, and review-driven fix records. Keep non-final review drafts in `<repo>/.refs/reviews/` and add `.refs/` to `.gitignore`. Feature changes go in `ref/changelogs/INDEX.md`.
+> Scope: final debug, code review, performance audit, security review, and review-driven fix records. Keep non-final review drafts in `<repo>/.ref/reviews/` and add `.ref/` to `.gitignore`. Feature changes go in `ref/changelogs/INDEX.md`.
 
 ## Naming
 
