@@ -1,4 +1,4 @@
-# CHANGELOG_<X>: <short title>
+# CHANGELOG_X_<topic>: <short title>
 
 ## Summary
 
@@ -15,6 +15,10 @@
 
 - ...
 
+## Validation
+
+<Commands, tests, builds, manual checks, or reason validation was not run.>
+
 ## Notes
 
-<Optional. Known tradeoffs, unresolved risk and rationale, related REVIEW id, or reason not to promote or fix something.>
+<Optional. Known tradeoffs, unresolved risk and rationale, related `REVIEW_X_<topic>.md`, or reason not to promote or fix something.>

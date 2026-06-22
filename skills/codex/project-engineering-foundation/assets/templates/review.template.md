@@ -7,13 +7,11 @@ skipped_expired:             # Expired files omitted from this round, with reaso
   #   reason: formatting-only or comment-only batch
 ---
 
-# REVIEW_<X>: <topic>
+# REVIEW_X_<topic>: <short title>
 
-## Trigger
+## Scope
 
 <User-requested, scheduled, before a major refactor, security review, or another trigger. State whether expired files were included.>
-
-## Method
 
 **Review method** (use the configured project review process; if none exists, name the human or single-agent fallback and keep the adjudication contract):
 - <Reviewer A: model, reasoning effort, tool path, or human fallback>
@@ -36,7 +34,7 @@ src/main/bar.ts
 
 **Constraints**: <known issues to suppress, output format, and severity scale such as CRITICAL/HIGH/MEDIUM/LOW/INFO>
 
-## Adjudication
+## Findings
 
 > Confirmed findings require direct evidence such as grep output, a targeted test, a command result, or a cited code path. Unverified findings stay in Partial / Unverified with severity MEDIUM or lower. Weak assertions belong only in unverified rows.
 
@@ -55,7 +53,11 @@ src/main/bar.ts
 | Area | A View | B View | Verified? | Conclusion |
 |---|---|---|---|---|
 
-## Fixes Landed In CHANGELOG_<Y>
+## Validation / Evidence
+
+<Commands, targeted tests, grep output, reviewer evidence, or manual checks used to confirm or refute findings.>
+
+## Fixes Landed In CHANGELOG_X_<topic>
 
 ### CRITICAL
 1. **<file:line>** - <one-sentence fix>
@@ -72,10 +74,16 @@ src/main/bar.ts
 ### INFO
 ...
 
-## Related Changelog
+## Residual Risk
 
-- `ref/changelogs/CHANGELOG_<Y>.md`: fixes landed in this task
+<Unresolved risks, skipped expired files, accepted limitations, or `None`.>
 
-## Agent Pitfall Candidates
+## Follow-ups
 
-This review produced N agent-pitfall candidates in `ref/conventions/tally.md`. If the same theme reaches count 3, promote it to `ref/conventions/<X>-<topic>.md` through the configured review process; do not copy promoted conventions back into project `CLAUDE.md`.
+### Related Changelog
+
+- `ref/changelogs/CHANGELOG_X_<topic>.md`: fixes landed in this task; use the changelog record's own `X`.
+
+### Agent Pitfall Candidates
+
+This review produced N agent-pitfall candidates in `ref/conventions/tally.md`. If the same theme reaches count 3, promote it to `ref/conventions/CONVENTION_X_<topic>.md` through the configured review process; do not copy promoted conventions back into project `CLAUDE.md`.
