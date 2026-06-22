@@ -1,4 +1,4 @@
-# <X>-<topic>: <short title>
+# CONVENTION_X_<topic>: <short title>
 
 > Project-specific convention promoted from `ref/conventions/tally.md`. Before changing related code, read this file and confirm the convention still applies.
 
@@ -20,10 +20,11 @@
 
 ## Links
 
+- This record: `ref/conventions/CONVENTION_X_<topic>.md`
 - Promoted from: `ref/conventions/tally.md` `<candidate ID>` at count 3
-- Related review: `ref/reviews/REVIEW_<X>.md` if any
-- Related changelog: `ref/changelogs/CHANGELOG_<X>.md` if any
-- Related conventions: `ref/conventions/<other-X>.md` if any
+- Related review: `ref/reviews/REVIEW_X_<topic>.md` if any
+- Related changelog: `ref/changelogs/CHANGELOG_X_<topic>.md` if any
+- Related conventions: `ref/conventions/CONVENTION_X_<topic>.md` if any
 
 ## Scope And Exceptions
 

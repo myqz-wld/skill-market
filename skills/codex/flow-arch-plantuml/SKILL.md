@@ -1,6 +1,6 @@
 ---
 name: flow-arch-plantuml
-description: Use when the user asks to create or update a flow, architecture, sequence, activity, component, or PlantUML diagram. Focuses on drawing; writes new `.puml` diagrams to an explicit user path or a temporary directory such as `/tmp/flow-arch-plantuml/`, and does not render PNG/SVG.
+description: "Use when creating or updating PlantUML flow, architecture, sequence, activity, or component diagrams from source evidence. Writes `.puml` files only and does not render PNG/SVG."
 ---
 
 # Flow / Architecture PlantUML
@@ -21,13 +21,19 @@ Gather only the inputs needed to draw the diagram. Ask only for required inputs 
 
 No blocking user-question tool is available in this environment. After asking for required inputs, end the turn and wait for the user's next message. Do not ask for an output directory for a new diagram; apply the output rules below.
 
+## Evidence Requirements
+
+Before drawing, read the relevant source files or user-provided context. Trace each major node, edge, call chain, and state transition to a source file path plus function, class, config, or interface name, or to specific user-provided text.
+
+Mark relationships not directly proved by source or context with a PlantUML `note` that labels them as inferred. Keep detailed evidence in the final report instead of embedding every source detail in the diagram.
+
 ## Workflow
 
 1. Gather missing drawing inputs; stop for the user's response if required input is missing.
 2. Read the relevant source or context evidence with `shell`.
-3. Create or update `.puml` files with `apply_patch` using the file rules below.
+3. Map major diagram elements to evidence, then create or update `.puml` files with `apply_patch` using the file rules below.
 4. Check `@startuml` / `@enduml` pairing and run `plantuml -syntax <file>.puml` through `shell` when PlantUML is installed.
-5. Report changed files, output path, syntax-check result, PlantUML CLI gaps, and unresolved required inputs.
+5. Report the required final-report fields, changed files, output path, syntax-check result, PlantUML CLI gaps, and unresolved required inputs.
 
 ## File Rules
 
@@ -65,6 +71,15 @@ Choose the diagram type by the behavior being documented:
 - **Component:** module dependencies, process boundaries, or data flow.
 
 Open `references/plantuml-patterns.md` only when syntax examples for these diagram types or `note` usage are needed.
+
+## Final Report
+
+Include these fields:
+
+- `Evidence used`: source paths plus function, class, config, or interface names, or the user-provided text used for major diagram elements.
+- `Inferred relationships`: every relationship marked as inferred in the diagram, or `None`.
+- `Unverified assumptions`: missing sources, skipped validation, uncertain behavior, or `None`.
+- For existing `.puml` updates, added, modified, and deleted diagram elements with the evidence basis for each change.
 
 ## Failure Handling
 

@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, backs up files, always delegates editable batches to focused editing agents, removes stale/duplicated/low-value rules, keeps paired assets aligned, records durable custom criteria, and validates material changes with the review mechanism available in the current environment."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, and long-lived prompt references. Confirms scope, backs up files, delegates substantive edits to focused editing agents, allows only narrow mechanical exceptions, keeps paired assets aligned, and validates changes."
 ---
 
 # Prompt Asset Improver
@@ -55,7 +55,7 @@ Use custom points only for durable criteria intended to guide later prompt-asset
 
 ## Self-Improvement Queue
 
-When review reveals a weakness in this skill, queue it instead of silently changing this skill. If the user explicitly asks to update `prompt-asset-improver`, treat that request as confirmed scope, back up this skill, and edit it directly; do not queue the same request.
+When review reveals a weakness in this skill, queue it instead of silently changing this skill. If the user explicitly asks to update `prompt-asset-improver`, treat that request as confirmed scope and handle it through this skill's normal editing workflow, including focused editing agents when required; do not queue the same request.
 
 1. Record candidates in `.prompt-asset-improver/local/skill-improvements.md` with date, evidence, affected section, and proposed rule change.
 2. At workflow start, ask the user to `add to skill`, `discard`, or `keep pending` for each pending candidate before editing other assets.
@@ -104,14 +104,17 @@ When the confirmed scope is one side of a paired asset, audit the counterpart be
 
 ## Focused Editing Agents
 
-Use focused editing agents after scope confirmation, inventory refresh, custom-point loading, and backup creation.
+Use focused editing agents after scope confirmation, inventory refresh, custom-point loading, and backup creation for every edit that can change rule meaning, workflow behavior, triggers, validation, failure handling, or reusable guidance.
 
-- Always dispatch focused editing agents for editable prompt-asset batches before local content edits. Do not edit first and delegate afterward. Do not require the agent to return in the same turn.
+- Dispatch focused editing agents for substantive prompt-asset batches before local content edits. Do not edit first and delegate afterward. Do not require the agent to return in the same turn.
+- Skip focused editing agents only for low-risk mechanical edits: a single-file frontmatter/YAML syntax fix, an obviously stale local resource path, pure version/index sync, or exact user-requested text replacement that does not change rule semantics.
+- Treat any uncertain case as substantive and dispatch focused editing agents.
+- Mechanical exceptions still require confirmed scope, backup, dead-link check, frontmatter/YAML validation when present, and final report.
 - Keep lead-owned steps with the lead: scope confirmation, inventory, backups, custom points, worktree choice, batch assignment, conflict resolution, final validation, and final report.
 - Give each editing agent a narrow brief: exact target files, allowed write set, active custom points, paired-counterpart rules, value-audit criteria, validation commands, and a ban on widening scope or touching inventory/backups.
 - Use one prompt asset file per batch by default. Use one counterpart-group batch for paired files that must stay aligned; never split a pair across agents unless the lead provides an explicit final alignment step.
 - In asynchronous agent environments, use the current environment's normal delegation and wait protocol. Record the returned agent identifiers or handoff handles, tell the user what was dispatched, then stop when the environment requires waiting. When replies arrive, inspect diffs, merge accepted edits, resolve conflicts, and update progress.
-- If focused editing agents cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker in plain language.
+- If a substantive edit needs focused editing agents but they cannot be dispatched because tools are unavailable or the write set cannot be safely isolated, stop before local content edits and report the blocker in plain language. Do not self-edit as a fallback.
 
 ## Dead Link Check
 
@@ -125,12 +128,14 @@ Before finishing, check changed assets for dead local references.
 
 ## Validation
 
-Before finishing:
+Before finishing, validate every changed prompt asset.
 
 - Re-read the first sentence of every changed section and every `description`; each must say when to use the asset or what action to take.
 - Validate frontmatter and changed JSON/YAML when present.
 - Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, and resource-path checks and report the missing validator.
+- For mechanical exception edits, run the same changed-asset gates: dead-link/resource-path check, frontmatter/YAML validation when present, and final report. Do not skip these checks because no focused editing agent was dispatched.
 - Use the current environment's independent review mechanism for material changes to system prompts, agents, `SKILL.md`, MCP/tool descriptions, paired assets, or this skill itself. Do not require a specific review skill, plugin, tool API, message protocol, or product. Asynchronous reviewer replies are acceptable: dispatch the review, follow the environment's wait boundary, and continue adjudication when replies arrive. Self-review only when review tools are unavailable, the user explicitly declines review, or the change is mechanical and the user did not ask for agents.
+- Missing focused-agent tools are a blocker for substantive edits under `Focused Editing Agents`; independent review or self-review never substitutes for required focused editing agents.
 - Confirm no unrelated project policy moved into a reusable asset and no custom point records one-time task direction.
 
 ## Final Report
