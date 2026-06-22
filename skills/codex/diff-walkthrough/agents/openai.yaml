@@ -1,0 +1,4 @@
+interface:
+  display_name: "Diff Walkthrough"
+  short_description: "Walk through PR diffs and conflict resolutions one fragment at a time"
+  default_prompt: "Use $diff-walkthrough to present and explain this PR diff or merge-conflict resolution one fragment at a time, explain the code and correctness of each fragment, and wait for my confirmation before continuing."
