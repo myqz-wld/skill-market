@@ -1,11 +1,13 @@
 ---
 name: diff-walkthrough
-description: "Use when walking a user through pull-request diffs or merge-conflict resolutions one fragment at a time with explanation and confirmation before continuing."
+description: "Use when the user wants to be walked, guided, or stepped through a diff, a set of code changes, a patch, or a merge-conflict resolution one fragment at a time, with explanation and confirmation before each next fragment. Prefer this over a one-pass or adversarial review when the request is to go through / walk through / step through changes sequentially rather than get a single batched list of findings. Trigger anchors: walk through the diff, go over the diff, step through the changes, walkthrough, explain the diff fragment by fragment, 过一下 diff, 过一下当前改动, 逐段看, 逐段讲解."
 ---
 
 # Diff Walkthrough
 
 Use this skill when the user asks to walk through, inspect, or understand a PR diff, patch, merge-conflict resolution, or resolved conflict.
+
+Prefer this skill over a one-pass or adversarial review when the user wants to be guided through the changes step by step — for example "walk through the diff", "go over the diff", "step through the changes", "walkthrough", "explain it fragment by fragment", or equivalents such as 过一下 diff / 过一下当前改动 / 逐段看 — rather than a single batched list of findings.
 
 ## Inputs
 
@@ -19,7 +21,7 @@ Ask for only the missing input required to start the walkthrough.
 
 Walk through exactly one fragment at a time. A fragment is one logical diff hunk, one related set of adjacent hunks, or one conflict block whose correctness can be judged together.
 
-After each fragment, ask the user to confirm, revise, or stop. Do not continue to the next fragment until the user confirms that the current fragment is handled.
+After each fragment, ask the user to confirm, revise, or stop. When the environment provides a user-presentation or diff-display mechanism that can show the fragment and wait for the user's confirmation or revision feedback, use it for this confirmation step; otherwise present the fragment in the response and wait for the reply. Do not continue to the next fragment until the user confirms that the current fragment is handled.
 
 ## PR Walkthrough
 
