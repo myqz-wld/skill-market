@@ -1,6 +1,6 @@
 ---
 name: project-engineering-foundation
-description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, ref/ record indexes, plan/review lifecycle, review expiry, convention promotion, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
+description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, installable artifact build metadata, ref/ record indexes, plan/review lifecycle, review expiry, convention promotion, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
 ---
 
 # Project Engineering Foundation
@@ -54,6 +54,12 @@ For final archives, follow the matching generated `INDEX.md` template as the nam
 - Add `.ref/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
 - Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
 - Keep `UI_COPY_LANGUAGE.md` at project root; update it before changing the active UI/CLI copy language mode or supported locales.
+
+## Installable Artifact Metadata
+
+During inspection, identify whether the repository builds an installable or distributed artifact, such as a desktop app, packaged CLI, native app, installer, plugin, or distributed tool. Do not add this requirement for pure libraries or repositories with no package, install, or distribution surface. When instantiating `project-claude.template.md` for a pure library or no-distribution repository, remove the installable-artifact metadata paragraph from `Deployment / Packaging`.
+
+When a package/install surface exists, add or update the generated project's `CLAUDE.md` `Deployment / Packaging` section to require packaging to generate and ship build metadata, such as `build-info.json`, with at least app/package name, semantic version when available, full git commit, short commit, branch when available, dirty flag when determinable, and build timestamp. Require the installed artifact to expose a human-readable version/status entry and a machine-checkable freshness command or equivalent, such as `--version` and `--check-installed` when a CLI wrapper exists. The freshness check must compare installed metadata with the current source checkout commit, may compare local `origin/main`, must not fetch remotes, and must report missing metadata distinctly from a commit mismatch.
 
 ## Bundled Helpers To Copy Into The Project
 
