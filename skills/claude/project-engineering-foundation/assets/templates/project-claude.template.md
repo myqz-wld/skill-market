@@ -105,3 +105,7 @@ After changing <main / preload / native module / config ...>, <restart dev / rel
 ## Deployment / Packaging
 
 <Optional. Add `#` comments to explain why each step exists. List packaging pitfalls with related CHANGELOG ids.>
+
+<Include the following paragraph only when this repository builds an installable or distributed artifact; remove it for pure libraries and repositories with no package, install, or distribution surface.>
+
+When this repository builds an installable desktop app, packaged CLI, native app, installer, plugin, or distributed tool, packaging must generate and ship build metadata, such as `build-info.json`, with at least app/package name, semantic version when available, full git commit, short commit, branch when available, dirty flag when determinable, and build timestamp. The installed artifact must expose a human-readable version/status entry and a machine-checkable freshness command or equivalent, such as `--version` and `--check-installed` when a CLI wrapper exists. The check compares installed metadata with the current source checkout commit, may compare local `origin/main`, never fetches remotes, and reports missing metadata separately from a commit mismatch.
