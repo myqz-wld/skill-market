@@ -24,6 +24,7 @@ Present exactly one fragment and wait for the user's structured decision before 
 
 - For PR or patch fragments, present a before/after two-column shape. When one fragment spans multiple hunks, include the unified diff as supporting context so the relationship between hunks stays visible.
 - For merge-conflict fragments, present a three-way shape with ours, theirs, and the proposed resolution.
+- Every presented fragment must include the original/source text needed to judge it. A fragment may concatenate multiple original snippets from different locations when they must be judged together, but a summary or abstract may only accompany the source text, not replace it.
 - Presented diff or conflict content may include concise inserted notes or comments around fields, functions, methods, code snippets, references, callers, logic, or usage when they make the fragment easier to judge. Keep these annotations clearly distinguishable from the actual before/after or conflict content.
 - If the user approves the fragment, advance to the next unhandled fragment.
 - If the user asks for revision, update or clarify the current fragment and present the same fragment again.
