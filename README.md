@@ -126,7 +126,7 @@ After installing the plugin, use the management skills to:
 
 Upload is not publish. A skill or plugin is published only after the PR is merged.
 
-`skills/INDEX.md` is the remote skill catalog index. It records a semver `Version` for each standalone skill. Start new standalone skills at `0.0.1` and bump the version whenever the published skill package changes. Local management state is stored in `~/.skill-market/managed-skills.json`.
+`skills/INDEX.md` is the remote skill catalog index. It records a semver `Version` for each standalone skill. Start new standalone skills at `0.0.1` and bump the version whenever the published skill package changes. Plugin packages use the semver in their native plugin manifest; bump that plugin version whenever the plugin package changes, including changes to any bundled plugin skill under `plugins/<plugin-name>/skills/<skill-name>/SKILL.md`. Keep marketplace catalog version fields in sync when the catalog stores one. Local management state is stored in `~/.skill-market/managed-skills.json`.
 
 `skill-download` exports packages without installing them. If the user does not provide a destination, use `~/.skill-market/downloads/<adapter>/<name>/`.
 
@@ -158,7 +158,7 @@ Only skills installed through Skill Market or explicitly adopted by the user are
 All uploads must go through PR:
 
 1. Create branch `market/<type>/<adapter>/<name>`.
-2. For plugin uploads, add or update `plugins/<plugin-name>/` and the corresponding marketplace catalog.
+2. For plugin uploads, add or update `plugins/<plugin-name>/`, bump the plugin manifest version for any plugin package change, and update the corresponding marketplace catalog. Bundled plugin skill changes count as plugin package changes.
 3. For standalone skill uploads, add or update `skills/<adapter>/<skill-name>/`, bump that skill's `Version` in `skills/INDEX.md`, and keep the catalog row path/status/description current.
 4. Commit and push.
 5. Open a PR.
