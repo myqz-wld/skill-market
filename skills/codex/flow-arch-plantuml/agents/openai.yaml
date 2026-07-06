@@ -1,4 +1,0 @@
-interface:
-  display_name: "Flow Architecture PlantUML"
-  short_description: "Create and update PlantUML flow and architecture diagrams"
-  default_prompt: "Use $flow-arch-plantuml to create or update a PlantUML diagram for the requested flow or architecture topic."

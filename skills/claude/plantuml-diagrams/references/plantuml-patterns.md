@@ -1,6 +1,6 @@
 # PlantUML Patterns
 
-Open this reference only when `flow-arch-plantuml` needs syntax examples. This file is only a PlantUML pattern library; do not use it to choose diagram file locations.
+Open this reference only when `plantuml-diagrams` needs syntax examples. This file is only a PlantUML pattern library; do not use it to choose diagram file locations. The examples below are syntax fragments; generated diagrams must still use the required file header from `SKILL.md`.
 
 ## Sequence
 
