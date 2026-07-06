@@ -1,0 +1,4 @@
+interface:
+  display_name: "Complex Work Planning"
+  short_description: "Coordinate cross-session, cross-boundary, uncertain, or rollback-sensitive planning"
+  default_prompt: "Use $complex-work-planning when explicitly requested. When complex implementation requests, architecture changes, or other large-scale code changes are detected before coding, ask whether to start $complex-work-planning; prepare isolated implementation handoff only after the plan is complete."
