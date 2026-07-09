@@ -1,4 +1,4 @@
 interface:
   display_name: "Project Engineering Foundation"
-  short_description: "Bootstrap or repair an AI-coding repository"
-  default_prompt: "Use $project-engineering-foundation to set up or repair this repository's AI-coding foundation, including project instructions, UI/CLI copy-language SSOT, source/build layout, installable artifact build metadata when applicable, ref/ records, plan/review lifecycle, review expiry, convention tracking, and file-size guardrails."
+  short_description: "Inspect or repair an AI-coding repository foundation"
+  default_prompt: "Use $project-engineering-foundation to inspect, set up, or repair this repository's AI-coding foundation, including project instructions, UI/CLI copy-language SSOT, source/build layout, installable artifact build metadata when applicable, time-bucketed ref/ records, ref/ and .ref handling for LLM-facing materials, plan/review lifecycle, review expiry, and file-size guardrails."
