@@ -1,6 +1,6 @@
 ---
 name: project-engineering-foundation
-description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, installable artifact build metadata, ref/ record indexes, plan/review lifecycle, review expiry, convention promotion, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
+description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, installable artifact build metadata, time-bucketed ref/ record indexes, ref/ and .ref handling for LLM-facing materials, plan/review lifecycle, review expiry, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
 ---
 
 # Project Engineering Foundation
@@ -11,15 +11,15 @@ Use this skill for one-shot inspection, repair, or setup. Inspect the repository
 
 Choose the mode before making file changes.
 
-- `inspect-only`: default for existing repositories or unclear user intent. Report missing structure, equivalent existing conventions, recommended minimal repairs, and risks. Do not edit files.
-- `minimal repair`: use only when the user explicitly asks to repair, fill gaps, or add missing foundation pieces. Add only critical missing files or rules, and merge template fragments without overwriting existing conventions.
-- `full foundation setup`: use for new repositories or explicit full initialization. Create the complete `CLAUDE.md`, `AGENTS.md`, `UI_COPY_LANGUAGE.md`, `ref/` structure, helper scripts, and related rules as needed.
+- `inspect-only`: default for existing repositories or unclear user intent. Report missing current foundation structure, project-owned rules that already cover the same responsibility, recommended minimal repairs, and risks. Do not edit files.
+- `minimal repair`: use only when the user explicitly asks to repair, fill gaps, or add missing foundation pieces. Add only missing foundation files or rules required by the requested repair, and merge template fragments without overwriting existing project rules.
+- `full foundation setup`: use for new repositories or explicit full initialization. Create the complete `CLAUDE.md`, `AGENTS.md`, `UI_COPY_LANGUAGE.md`, `ref/` structure, helper scripts, and related rules while preserving stronger project-specific invariants.
 
 Existing repositories stay in `inspect-only` unless the user authorizes edits. New repositories may enter `full foundation setup`. Explicit repair or gap-filling requests may enter `minimal repair`. Explicit full initialization may enter `full foundation setup`.
 
 ## Setup And Repair Flow
 
-Create or complete this shape only in `minimal repair` or `full foundation setup`. If an equivalent project convention already exists, extend it instead of renaming or replacing it.
+In `inspect-only`, report this shape and do not create files. Create or complete it only in `minimal repair` or `full foundation setup`. If the project already has a stronger local rule for the same responsibility, report it and merge only the current foundation pieces the user authorizes.
 
 ```text
 project-root/
@@ -31,19 +31,35 @@ project-root/
 ├── scripts/
 ├── build/ or dist/
 └── ref/
-    ├── changelogs/INDEX.md
-    ├── reviews/INDEX.md
-    ├── plans/INDEX.md
-    └── conventions/
+    ├── changelogs/
+    │   ├── INDEX.md
+    │   ├── recent-3-days/INDEX.md
+    │   ├── recent-week/INDEX.md
+    │   ├── recent-month/INDEX.md
+    │   └── history/INDEX.md
+    ├── reviews/
+    │   ├── INDEX.md
+    │   ├── recent-3-days/INDEX.md
+    │   ├── recent-week/INDEX.md
+    │   ├── recent-month/INDEX.md
+    │   └── history/INDEX.md
+    └── plans/
         ├── INDEX.md
-        └── tally.md
+        ├── recent-3-days/INDEX.md
+        ├── recent-week/INDEX.md
+        ├── recent-month/INDEX.md
+        └── history/INDEX.md
 ```
 
-Use only the needed template from `assets/templates/`; create or update project files with `apply_patch`, not shell redirection. Merge missing template sections into existing files instead of overwriting project-specific instructions.
+Use only the needed templates from `assets/templates/`; create or update project files with `apply_patch`, not shell redirection. Merge missing template sections into existing files instead of overwriting project-specific instructions.
 
 Instantiate `assets/templates/project-claude.template.md` as `CLAUDE.md`, `assets/templates/project-agents.template.md` as `AGENTS.md`, and `assets/templates/ui-copy-language.template.md` as `UI_COPY_LANGUAGE.md`. Fill placeholders from repository inspection. Keep active language mode and supported locales only in `UI_COPY_LANGUAGE.md`, not `CLAUDE.md`. Write active documentation and maintainer/agent-facing instructions in English by default; exceptions are `UI_COPY_LANGUAGE.md`, UI/CLI copy governed by that file, locale examples, quoted/source text, and explicit non-English trigger anchors or examples.
 
-For final archives, follow the matching generated `INDEX.md` template as the naming and file-structure source of truth, including the `ls <dir>/` max-number + 1 rule. Keep non-final drafts in `.ref/` or the current environment workspace, not final `ref/` archives.
+Treat `README.md` and `build/` or `dist/` as project-shape checks, not prompt templates: update or create `README.md` only when missing or inaccurate, and choose the output root that matches the toolchain.
+
+Instantiate `changelogs-index.template.md`, `reviews-index.template.md`, and `plans-index.template.md` as the root `INDEX.md` files. Instantiate `changelog-bucket-index.template.md`, `review-bucket-index.template.md`, and `plan-bucket-index.template.md` in each matching bucket directory. In `full foundation setup`, create all four bucket directories for changelogs, reviews, and plans. In `minimal repair`, add only bucket directories and indexes required by the requested repair.
+
+For final typed `ref/` records, this skill installs the directory and index framework. After setup, generated project files govern runtime record behavior; do not restate those workflow rules in this skill.
 
 ## Layout Rules
 
@@ -51,31 +67,36 @@ For final archives, follow the matching generated `INDEX.md` template as the nam
 - Put project scripts and automation helpers under `scripts/`.
 - Pick one build output root, `build/` or `dist/`, and keep all toolchain output under it.
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
-- Add `.ref/` to `.gitignore`; it is the non-terminal plan/review working area, not a durable reference archive.
-- Keep AI-coding reference artifacts in `ref/`; do not ignore `ref/`.
+- Add `.ref/` to `.gitignore`; it is the non-final AI-work workspace for plans, reviews, raw outputs, spike drafts, scratch notes, and other unarchived LLM-facing material, not a durable reference archive.
+- Keep archived AI-coding reference artifacts in `ref/`; do not ignore `ref/`. Put unarchived drafts, scratch notes, raw logs, and non-final LLM-facing materials in `.ref/`.
 - Keep `UI_COPY_LANGUAGE.md` at project root; update it before changing the active UI/CLI copy language mode or supported locales.
 
 ## Installable Artifact Metadata
 
-During inspection, identify whether the repository builds an installable or distributed artifact, such as a desktop app, packaged CLI, native app, installer, plugin, or distributed tool. Do not add this requirement for pure libraries or repositories with no package, install, or distribution surface. When instantiating `project-claude.template.md` for a pure library or no-distribution repository, remove the installable-artifact metadata paragraph from `Deployment / Packaging`.
+During inspection, identify whether the repository builds an installable or distributed artifact, such as a desktop app, packaged CLI, native app, installer, plugin, or distributed tool. Do not add this requirement for pure libraries or repositories with no package, install, or distribution surface. When instantiating `project-claude.template.md` for a pure library or no-distribution repository, omit the installable-artifact metadata block from `Deployment / Packaging`; when repairing an existing generated file, remove that block if it does not apply.
 
 When a package/install surface exists, add or update the generated project's `CLAUDE.md` `Deployment / Packaging` section to require packaging to generate and ship build metadata, such as `build-info.json`, with at least app/package name, semantic version when available, full git commit, short commit, branch when available, dirty flag when determinable, and build timestamp. Require the installed artifact to expose a human-readable version/status entry and a machine-checkable freshness command or equivalent, such as `--version` and `--check-installed` when a CLI wrapper exists. The freshness check must compare installed metadata with the current source checkout commit, may compare local `origin/main`, must not fetch remotes, and must report missing metadata distinctly from a commit mismatch.
 
-## Bundled Helpers To Copy Into The Project
+## Bundled Helpers And Repair References
 
-Copy `scripts/file-level-review-expiry.sh` from this skill into the project at `scripts/file-level-review-expiry.sh` so the generated review-expiry check is runnable without this skill.
+Copy these helpers from this skill into the generated project's `scripts/` directory so `CLAUDE.md` can reference runnable project-local commands:
 
-Copy `scripts/plan-archive-reminder-pre-commit.sh` from this skill into the project at `scripts/plan-archive-reminder-pre-commit.sh`, then run `bash scripts/plan-archive-reminder-pre-commit.sh --install` from the repository root. The installer appends a managed block to the local `.git/hooks/pre-commit` hook instead of replacing existing hook logic. The hook must remain advisory: it checks `.ref/plans/` for non-final plan files, reminds the committer to consider archiving plans to `ref/plans/` and updating `ref/plans/INDEX.md`, then exits 0.
+- `scripts/file-level-review-expiry.sh` -> `scripts/file-level-review-expiry.sh`
+- `scripts/ref-archive-reminder-pre-commit.sh` -> `scripts/ref-archive-reminder-pre-commit.sh`
+
+After copying the ref archive reminder, run `bash scripts/ref-archive-reminder-pre-commit.sh --install` from the repository root. The installer creates or replaces only its current managed block in `.git/hooks/pre-commit` and preserves unrelated hook logic. The hook must remain advisory: it checks `.ref/` for unarchived files, prints an LLM-facing classification checklist, then exits 0.
 
 When repairing oversized existing files, read `assets/file-size-guardrail.md` before restructuring; generated `CLAUDE.md` carries the compact ongoing rule.
 
 ## Existing Repository Repair
 
-When the repository already has part of the structure, diff it against the tree above and current templates, then report only in `inspect-only` or add only missing files or sections in `minimal repair`. Never delete or rewrite project-specific invariants. If `CLAUDE.md` predates the current template, merge missing rule sections without overwriting customized values.
+For existing repositories, compare current files, project-owned rules, generated indexes, and copied helpers against the current foundation shape and relevant templates. Classify findings as already satisfied, project-owned rule, missing, conflicting local invariant, or risk.
+
+In `inspect-only`, report those findings and recommended minimal repairs without editing. In `minimal repair`, add only the missing pieces requested by the repair scope, or merge missing current-template sections into existing generated files. Extend project-owned rules in place; do not delete, rename, or rewrite project-specific invariants, and do not create parallel structures for the same responsibility.
 
 ## Resources
 
-- `assets/templates/`: project entry, UI/CLI copy language, changelog, review, plan, and convention templates.
-- `assets/file-size-guardrail.md`: detailed split-risk policy.
-- `scripts/file-level-review-expiry.sh`: mechanical review-expiry helper; copied into projects at setup.
-- `scripts/plan-archive-reminder-pre-commit.sh`: advisory pre-commit helper that reminds users to archive non-final plan files.
+- `assets/templates/`: generated-project templates for project entry files, UI/CLI copy language, changelog, review, plan, root indexes, and bucket indexes.
+- `assets/file-size-guardrail.md`: repair reference for oversized existing files; read before restructuring.
+- `scripts/file-level-review-expiry.sh`: copied helper for project-local review-expiry checks.
+- `scripts/ref-archive-reminder-pre-commit.sh`: copied helper for the advisory `.ref/` archive pre-commit reminder.

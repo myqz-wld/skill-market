@@ -10,8 +10,8 @@
 
 ## When The File Cannot Be Split
 
-If concurrency ordering is complex, state ownership is tightly coupled, or split risk exceeds value, record the file in the relevant changelog under a "do not split" protection list with a concrete reason, such as class state ownership, single-file entrypoint constraints, or cross-module shared state. Do not ignore it silently; record the decision so the next split pass does not re-litigate the same file.
+If concurrency ordering is complex, state ownership is tightly coupled, or split risk exceeds value, record the path, concrete reason, and revisit trigger in the relevant final record. Use the changelog's "Do Not Split Protection" for feature, behavior, API, or dependency changes; use the review's "Residual Risk" for debug, performance, security, or review-driven work. Do not ignore it silently; record the decision so the next split pass does not re-litigate the same file.
 
 ## Threshold Changes
 
-Changing the 500-line threshold is a convention change and must use the repository's configured review flow. The threshold check itself, line count > threshold, is mechanical and does not need adversarial review.
+Changing the 500-line threshold is a project policy change and must use the repository's configured review flow. The threshold check itself, line count > threshold, is mechanical and does not need adversarial review.
