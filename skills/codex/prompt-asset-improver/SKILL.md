@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex/Claude assets may drift. Confirms scope, lists proposed changes for user approval, backs up assets, edits confirmed files, and validates resources."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex/Claude assets may drift. Confirms scope, lists proposed changes for user approval, backs up and edits only confirmed editable files, and validates resources."
 ---
 
 # Prompt Asset Improver
@@ -9,7 +9,7 @@ Use this skill before editing durable AI-facing prompt assets. Keep only rules t
 
 ## Scope
 
-Use this skill for system prompts, environment prompts, agent bodies, role instructions, `SKILL.md` files, MCP/tool descriptions, bundled prompt references, and durable prompt templates. Use it for paired assets, such as Codex and Claude variants, when one side could drift from the other.
+Use this skill for system prompts, environment prompts, agent bodies, role instructions, `SKILL.md` files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and durable prompt templates. Use it for paired assets, such as Codex and Claude variants, when one side could drift from the other.
 
 Do not use it for source comments, project scaffolds, generated documentation snapshots, transient reviewer prompts, or one-off handoff messages unless the user asks to make them durable.
 
@@ -29,24 +29,19 @@ Inventory describes assets; it never expands scope by itself.
    - Store records under `<target-root>/.prompt-asset-improver/`; put private machine data, local exclusions, backups, and user preferences under `local/`.
    - Put shared project criteria under `shared/` only when the user confirms they belong with the project.
    - In a git repo, ensure `.prompt-asset-improver/local/` is ignored before writing local records.
-   - Write `inventory.json` with `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets containing `path`, `type`, `scope`, and `reason`.
+   - Write `inventory.json` with `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets containing `path`, `type`, `scope`, `reason`, optional `exists`, and optional current `hash`.
+   - After editing and validation, refresh `inventory.json` hashes for changed assets.
    - Use `scope: "confirmed"` for editable assets and `scope: "counterpart-check-only"` for paired assets inspected only to prevent drift.
    - Use a 7-day expiry. Refresh inventory when it is missing, expired, points at another root, lists missing files, or the user says the asset set changed.
 
-2. Load custom points and self-improvement candidates.
-   - Load shared and local custom points before proposing changes.
-   - Store standing user preferences in `.prompt-asset-improver/local/custom-points.md` unless the user explicitly marks them project-level.
+2. Load custom points.
+   - Load `.prompt-asset-improver/shared/custom-points.md` and `.prompt-asset-improver/local/custom-points.md` before proposing changes when they exist.
+   - Store standing user preferences in `.prompt-asset-improver/local/custom-points.md`; store project-level preferences in `.prompt-asset-improver/shared/custom-points.md` only when the user explicitly marks them project-level.
    - Leave one-time task directions, requested edits for the current asset, rules already covered by this skill, and the current request out of custom points.
    - When the user confirms a reusable cleanup preference, record the user's wording, date, source, and scope. Deduplicate without changing meaning.
-   - When validation or repeated use reveals a weakness in this skill, queue it in `.prompt-asset-improver/local/skill-improvements.md` with date, evidence, affected section, and proposed rule change.
-   - At workflow start, ask the user to `add to proposed changes`, `discard`, or `keep pending` for each queued candidate before proposing other edits.
-   - Treat accepted candidates as proposed edits; apply them only after the user confirms the full change list and backups succeed.
-   - After applying confirmed candidate edits, remove accepted or discarded entries and delete the queue file when no candidates remain.
-   - Do not apply queued candidates without explicit user confirmation.
-   - If the user explicitly asks to update `prompt-asset-improver`, treat the request as confirmed scope and do not queue that same request.
 
 3. Run a pre-edit audit.
-   - Search only confirmed editable files and related prompt-asset directories where the same rule can be duplicated.
+   - Search only confirmed editable files and related prompt-asset surfaces where the same rule can be duplicated, such as paired counterparts, interface metadata, catalog rows, bundled references, and prompt templates.
    - Do not scan session logs, dependencies, generated caches, or whole home directories.
    - Check for duplicate rules, stale language, vague advice, unjustified language drift, low-value frontmatter, hidden dependencies, paired-asset drift, repeated examples, pitfall notes without evidence, local references, bundled resource paths, external links, stale skill names, and low-value negative or failure prose.
    - Use concrete target names and section titles as search terms; do not run placeholder searches.
@@ -54,15 +49,17 @@ Inventory describes assets; it never expands scope by itself.
 
 4. Present the proposed change list and wait for user confirmation.
    - List each path and section that would change.
-   - State the intended direction for each change, not just the topic.
-   - State scoped sections or files that will remain unchanged.
+   - State the intended edit for each change, including whether it adds, removes, compresses, or rewrites behavior.
+   - For high-risk or easily misunderstood edits, include representative wording or a short before/after sketch.
+   - State scoped sections or files that will remain unchanged when the user could reasonably expect them to change.
    - State preserved mechanisms, data structures, and paired-asset differences.
    - Stop before backup or editing until the user confirms the list or gives revisions.
+   - If the actual edit would differ materially from the confirmed list, stop and present the revised change before editing it.
 
-5. Back up assets that may change.
-   - Back up every editable prompt asset before editing.
+5. Back up confirmed editable assets that may change.
+   - Back up every confirmed editable prompt asset that may change before editing.
    - Store backups under `<target-root>/.prompt-asset-improver/local/backups/<timestamp>/`.
-   - Include `manifest.json` with `created_at`, `root`, `reason`, and each file's `original_path`, `backup_path`, and hash when available.
+   - Include `manifest.json` with `created_at`, `root`, `reason`, and each file's `original_path`, `backup_path`, and original pre-edit `hash` when available.
    - Back up only assets in confirmed editable scope; check-only counterparts are backed up only after scope expansion.
    - Stop if the backup cannot be written.
    - Prune only manifest-backed backup directories named `YYYYMMDDTHHMMSSZ`; keep the current backup, every backup from the last 7 days, and at least the newest 10.
@@ -73,26 +70,26 @@ Inventory describes assets; it never expands scope by itself.
 
 ## Edit Decisions
 
-Choose the smallest edit that satisfies the confirmed change list. Rewrite a section or asset directly when the requested change would modify most of a long passage.
+Choose the smallest edit that satisfies the confirmed change list. Rewrite a section or asset directly when a local patch would leave duplicate rules, contradictions, or require changing most sentences in the section.
 
-Treat trigger selection, tool contracts, safety boundaries, permission rules, session behavior, backup rules, validation gates, failure handling, and this skill's workflow as high-risk content. For high-risk content, keep the change list explicit and the final validation strict.
+Treat trigger selection, tool contracts, safety boundaries, permission rules, session behavior, backup rules, validation gates, failure handling, and this skill's workflow as high-risk content. For high-risk content, keep the change list explicit and the final validation strict. If the edit reveals another behavior change, return to the proposed change list before editing it.
 
-Leave already-lean scoped assets unchanged unless the confirmed change list names a concrete behavior improvement.
+Leave already-lean confirmed editable assets unchanged unless the confirmed change list names a concrete behavior improvement.
 
 ## Editing Standards
 
 Optimize for executable value, not coverage for its own sake.
 
-- Keep high-value rules: safety boundaries, approval gates, validation gates, scope rules, failure handling, and data-location contracts.
+- Keep high-value rules: safety boundaries, tool contracts, permission rules, session behavior, approval gates, validation gates, scope rules, failure handling, and data-location contracts.
 - Remove or compress repeated summaries, exhaustive report fields, historical prose, obvious tool explanations, and examples that do not teach a different decision.
 - Keep one source of truth for each rule. Use cross-references only when the reader is guaranteed to load the referenced source.
-- Put trigger information in frontmatter descriptions; keep execution detail in the body unless it changes trigger selection.
+- Put trigger information in frontmatter descriptions, interface metadata, and catalog descriptions; keep execution detail in the body unless it changes trigger selection.
 - Write current facts in imperative language: "do X", "reject Y", "run Z". Replace vague advice with exact actions or exception boundaries.
 - Keep fallback, failover, and recovery instructions only when they name the next action.
 - Write maintainer- and agent-facing prompt assets in English by default. Use another language only for user request, audience need, product copy, project convention, deliberate trigger anchors, or quoted/source text.
 - Use one language within the same asset type or domain unless the exception is explicit.
 - Keep pitfall notes only when they cite evidence such as an incident, issue id, failing command, file path, or user decision.
-- Do not make a general asset assume another skill, plugin, product, repository, vendor, or tool exists unless the asset is the integration point or the dependency changes trigger selection.
+- Do not make a general asset assume another skill, plugin, product, repository, vendor, or tool exists unless the asset is the integration point or the dependency changes trigger selection, required action, or validation.
 - Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
 
 Remove or rewrite low-value negative and failure prose when it matches these patterns:
@@ -109,6 +106,7 @@ Preserve each asset's job:
 - System or environment prompts: preserve priority, safety, tool contracts, session behavior, and project-specific rules; remove workflow detail that belongs in a skill.
 - Agents and role instructions: clarify role, input contract, output format, discipline, and failure handling.
 - `SKILL.md`: strengthen trigger selection, keep workflow executable, and move supporting detail into bundled resources.
+- Skill interface metadata and catalog descriptions: match trigger and scope at summary level; do not promise workflow details absent from the body.
 - MCP/tool descriptions: state when to call the tool, required parameters, permission boundaries, and errors that change the caller's next step.
 
 For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirms one-sided scope.
@@ -117,21 +115,22 @@ For paired Claude/Codex assets, keep behavior, triggers, validation, and failure
 
 Before finishing, validate every changed prompt asset.
 
-- Re-read the first sentence of every changed section and every `description`; each must say when to use the asset or what action to take.
+- Re-read the first sentence of every changed section, every `description`, changed interface metadata, and changed catalog descriptions; each must say when to use the asset or what action to take and must not promise workflow details absent from the body.
 - Check Markdown links, direct relative paths, and bundled resource paths such as `references/`, `scripts/`, `assets/`, and `agents/`.
 - Resolve `SKILL.md` resource paths from the skill directory.
 - For prompt templates, classify references as bundled resources or generated-project paths before judging them.
 - Fix missing local files, renamed directories, and stale `$skill-name` examples.
 - Validate external links only when the user asks or the asset relies on the source; otherwise report them as unchecked.
-- Validate frontmatter and changed JSON/YAML.
-- Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, and resource-path checks and report the missing validator.
+- Validate frontmatter, changed JSON/YAML, interface metadata, and catalog rows.
+- Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, resource-path, and paired-behavior checks and report the missing validator.
 - For paired assets, confirm behavior is aligned and adapter differences are intentional.
+- Check backup `manifest.json` and original hashes; verify `inventory.json` hashes were refreshed after edits.
 - Confirm no unrelated project policy moved into a reusable asset and no one-time task direction was recorded as a custom point.
 
 ## Final Report
 
 Start with `User Custom Points` listing active points or `none`. Write user-facing report text in plain language.
 
-Report the scope confirmation source, inventory freshness, backup path and restore method, pending self-improvement candidates, changed sections, validation results, and any skipped gate.
+Report the scope confirmation source, proposed-change confirmation source, inventory freshness, inventory hash refresh result, backup path, backup manifest status, original hash check, restore method, changed files, sections, metadata keys, catalog rows, validation results, and any skipped gate.
 
-For each changed asset, explain how the change improves task-time behavior and note preserved adapter differences. State the decision for scoped assets left unchanged, and report pitfall notes kept or removed when relevant.
+For each changed asset, explain how the change improves task-time behavior and note preserved adapter differences. State the decision for confirmed editable assets left unchanged and check-only counterparts inspected, and report pitfall notes kept or removed when relevant.
