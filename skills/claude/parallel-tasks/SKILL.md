@@ -47,7 +47,7 @@ Route each task independently. Determine adapter family first, then tier, then c
 | T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | fable-5 xhigh |
 | T2 | Multi-file implementation, complex refactor, long-chain reasoning | gpt-5.6-sol xhigh |
 | T3 | Single-module implementation or refactor with clear boundaries | gpt-5.6-terra xhigh |
-| T4 | Mechanical edits, batch search, documentation, boilerplate tests | opus xhigh |
+| T4 | Mechanical edits, batch search, documentation, boilerplate tests | opus-4.8 xhigh |
 
 - Reference targets calibrate capability and effort; actual dispatch still follows the family policy above, using the closest same-family equivalent when the reference target is cross-family.
 - Map the tier to the closest same-family model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
