@@ -44,10 +44,10 @@ Route each task independently. Determine adapter family first, then tier, then c
 
 | Tier | Criteria | Reference target |
 |---|---|---|
-| T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | gpt-5.5 xhigh |
-| T2 | Multi-file implementation, complex refactor, long-chain reasoning | opus xhigh |
-| T3 | Single-module implementation or refactor with clear boundaries | gpt-5.5 medium |
-| T4 | Mechanical edits, batch search, documentation, boilerplate tests | sonnet xhigh |
+| T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | fable-5 xhigh |
+| T2 | Multi-file implementation, complex refactor, long-chain reasoning | gpt-5.6-sol xhigh |
+| T3 | Single-module implementation or refactor with clear boundaries | gpt-5.6-terra xhigh |
+| T4 | Mechanical edits, batch search, documentation, boilerplate tests | opus xhigh |
 
 - Reference targets calibrate capability and effort; actual dispatch still follows the family policy above, using the closest same-family equivalent when the reference target is cross-family.
 - Map the tier to the closest same-family model and reasoning-effort setting the dispatch mechanism exposes; when effort is not configurable, the model choice alone selects the tier.
@@ -55,10 +55,18 @@ Route each task independently. Determine adapter family first, then tier, then c
 - When torn between two tiers, pick the higher one.
 - After routing, record the task's resolved family, tier, target model, reasoning effort when available, and any substitution before dispatch.
 
+## Dispatch Approval Gate
+
+- Before the first dispatch of each batch, present the concrete dispatch plan through the environment's user-confirmation mechanism. For every task, include its goal, allowed write areas, tier, resolved model, reasoning effort when available, substitutions, and validation.
+- Wait for explicit user approval. A general request to parallelize, silence, timeout, rejection, or revision request does not approve a concrete batch. On revision, update and re-present the plan; otherwise stop without dispatching.
+- Approval covers only the presented batch. Except for the retry rule below, reconfirm before dispatch when a task goal, allowed write area, tier, model, reasoning effort, substitution, or validation changes materially.
+- One retry for a transient failure remains covered when the task stays within its approved scope, family, tier, and substitution constraints. Any same-tier model substitution must stay within the approved substitution rules. Require new approval for every scope expansion or cross-family or cross-tier reroute.
+- If the environment has no dedicated confirmation mechanism, ask in chat and end the turn until the user replies; never poll for approval.
+
 ## Dispatch
 
-- Dispatch through whatever parallel-agent mechanism the current environment provides, following that mechanism's own contract. Pass each task's adapter family, model, and reasoning effort through the mechanism's parameters where exposed; otherwise substitute per the routing rules above.
-- Launch the selected independent task batch together. There is no fixed concurrency cap; size each batch to what the lead can integrate and the environment can run.
+- After the batch passes the Dispatch Approval Gate, dispatch through whatever parallel-agent mechanism the current environment provides, following that mechanism's own contract. Pass each task's adapter family, model, and reasoning effort through the mechanism's parameters where exposed; otherwise substitute per the routing rules above.
+- Launch only the approved independent task batch together. There is no fixed concurrency cap; size each batch to what the lead can integrate and the environment can run.
 - Record each dispatch handle or agent id together with the task, resolved family, tier, target model, reasoning effort when available, and any substitution.
 - Follow the environment's wait protocol: synchronous mechanisms return results in place; message-based mechanisms inject replies later. Send the work, end the current turn, and continue when replies arrive. Never busy-wait or poll.
 
@@ -71,7 +79,7 @@ Route each task independently. Determine adapter family first, then tier, then c
 
 ## Failure Handling
 
-- Classify the failure before retrying. Retry once on the same family and tier only for transient failures such as rate limits, crashes, or recoverable environment errors.
+- Classify the failure before retrying. Retry once on the same family and tier only for transient failures such as rate limits, crashes, or recoverable environment errors, and only while the Dispatch Approval Gate's retry exception remains satisfied.
 - If the failure comes from an unclear assignment, missing context, unavailable tools, permission limits, or write-set overlap, fix the assignment brief, adjust the allowed write area, or have the lead run the task instead of repeating the same dispatch.
 - When rerouting a failed task, use the Model Routing substitution rules: prefer same family and same tier, then the nearest available same-family tier, and record the substitution in the dispatch record and final report.
 - Partial or missing results: never fabricate the gap; rerun the task, have the lead finish it, or report it as open with the missing validation.
