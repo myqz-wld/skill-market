@@ -11,13 +11,21 @@ Once started by explicit user request or approval, use this skill for complex im
 
 This skill defines the planning method only. Follow the active environment or project contract for plan paths, task tools, worktrees, review, archive, and handoff mechanics.
 
+## Deterministic Work Boundary
+
+Separate semantic inference from deterministic state transitions in both the proposed design and the planning workflow. Use an LLM only when the result requires language understanding, synthesis, or judgment. Implement operations that can be specified exactly and verified mechanically—such as copying, concatenation, ordering, exact-rule filtering, indexing, hashing, schema validation, aggregation, persistence, and state transitions—with code or a deterministic tool.
+
+Give each LLM call only the minimum context needed to produce a new semantic delta. Preserve accepted state outside the model, and use deterministic code to append, merge, validate, or otherwise carry that delta forward. Never ask an LLM to reproduce unchanged content, preserve text byte for byte, or perform an exact transformation that ordinary code can complete. When deterministic tooling does not exist, plan its implementation instead of substituting model work.
+
+For every proposed LLM call, identify the semantic responsibility, minimum inputs, smallest useful output or delta schema, deterministic assembly step, and mechanical validation. Remove the model call when no semantic responsibility remains.
+
 ## Workflow
 
 1. **Clarify the request.** Define the goal, non-goals, scope boundaries, constraints, success checks, and candidate decisions without silently filling material product gaps.
 2. **Explore the project.** Inspect relevant code, tests, docs, configuration, and runtime paths. Record current behavior, evidence, constraints, and affected boundaries.
 3. **Run a blindspot pass.** Surface historical traps, implicit conventions, boundary conditions, risky assumptions, missing references, and context the user may need to provide.
 4. **Build the decision ledger.** Record and classify every material choice through the Decision Interview Protocol.
-5. **Brainstorm and select a route.** Compare viable approaches by benefits, costs, risks, validation needs, and impact. Pass Checkpoint A before helping the user choose and detail a route.
+5. **Brainstorm and select a route.** Compare viable approaches by benefits, costs, risks, validation needs, impact, and compliance with the Deterministic Work Boundary. Pass Checkpoint A before helping the user choose and detail a route.
 6. **Run targeted spikes.** Test unverified assumptions with the smallest sufficient investigation. Record the question, method, command or file inspected, observed result, conclusion, and remaining risk. Apply Checkpoint B to any new user-owned choice.
 7. **Keep the plan current and split the work.** Record the cross-task validation strategy in the Plan Content and synchronize any task system before deriving independently executable tasks with ownership, dependencies, write areas, implementation steps, validation targets, and done criteria.
 8. **Review the final plan.** Pass Checkpoint C, then challenge assumptions, evidence, dependencies, parallelization safety, validation, rollback, and handoff readiness. If review creates a user-owned choice, return to Checkpoint B and pass Checkpoint C again before requesting separate final-plan approval.
@@ -55,6 +63,7 @@ Keep the durable plan sufficient for a cold implementation session:
 
 - **Identity and goal:** plan id, status, created date, base commit or branch, worktree path when used, goal, and invariants.
 - **Evidence and design:** project evidence, current behavior and boundaries, blindspot findings, route options and tradeoffs, selected design, and evidence that should not be re-litigated without new data.
+- **Model boundary:** each proposed LLM call's semantic responsibility, minimum inputs, delta output schema, deterministic assembly, and mechanical validation; deterministic tooling tasks required to remove model-owned exact work.
 - **Decisions and uncertainty:** the ledger defined by the Decision Interview Protocol, including recorded answers and delegations, checkpoint evidence, and spike reports with remaining risk.
 - **Tasks and review:** executable tasks with owner, status, dependencies, write areas, steps, validation, done criteria, parallelization notes, and task-system ids; reviewer findings, resolutions, accepted residual risks, and caveats.
 - **Execution state:** task status and progress, last completed step, verification performed, validation state, blockers, dirty workspace or worktree state, remaining uncertainty, isolation path and status, and the next implementation action. Require implementation sessions to update this after each meaningful task.
