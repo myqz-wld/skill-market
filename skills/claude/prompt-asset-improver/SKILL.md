@@ -43,7 +43,7 @@ Inventory describes assets; it never expands scope by itself.
 3. Run a pre-edit audit.
    - Search only confirmed editable files and related prompt-asset surfaces where the same rule can be duplicated, such as paired counterparts, interface metadata, catalog rows, bundled references, and prompt templates.
    - Do not scan session logs, dependencies, generated caches, or whole home directories.
-   - Check for duplicate rules, stale language, vague advice, unjustified language drift, low-value frontmatter, hidden dependencies, paired-asset drift, repeated examples, pitfall notes without evidence, local references, bundled resource paths, external links, stale skill names, and low-value negative or failure prose.
+   - Check for duplicate rules, stale language, vague advice, unjustified language drift, low-value frontmatter, hidden dependencies, paired-asset drift, incomplete tool contracts, under-specified errors, repeated examples, pitfall notes without evidence, local references, bundled resource paths, external links, stale skill names, and low-value negative or failure prose.
    - Use concrete target names and section titles as search terms; do not run placeholder searches.
    - If one side of a paired asset is confirmed and the audit shows a shared protocol change, ask whether to expand scope before proposing edits.
 
@@ -92,6 +92,12 @@ Optimize for executable value, not coverage for its own sake.
 - Do not make a general asset assume another skill, plugin, product, repository, vendor, or tool exists unless the asset is the integration point or the dependency changes trigger selection, required action, or validation.
 - Keep `SKILL.md` lean. Move detailed references into `references/`, executable repeat work into `scripts/`, and output assets into `assets/`.
 
+### Tool and Error Contracts
+
+When an asset enables or instructs an agent to call a tool, put the complete effective contract in the agent-visible prompt before the first tool decision. Include the exact tool name and call conditions; complete input and output schemas; every field's type, required or optional status, accepted format, enum or range, default, and nullability; cross-field dependencies and mutual exclusions; permissions, preconditions, side effects, idempotency, retry and timeout behavior; and the success criteria and errors that change the caller's next action. If the complete contract is unavailable, stop and obtain it; do not authorize the call or let the agent infer missing behavior from examples, prior knowledge, implementation details, or unloaded documentation.
+
+Make every specified error self-sufficient for recovery. Include the failed operation and phase, affected field or resource, received value when safe, complete violated constraint, expected schema or allowed values, relevant state and identifiers, whether retry is valid, and the exact next action. Replace generic errors such as `invalid input`, hidden-log dependencies, or partial hints that still require the agent to guess.
+
 Remove or rewrite low-value negative and failure prose when it matches these patterns:
 
 - "Avoid X", "do not X", or "never X" without the required alternative action, exception boundary, or stop condition.
@@ -107,7 +113,7 @@ Preserve each asset's job:
 - Agents and role instructions: clarify role, input contract, output format, discipline, and failure handling.
 - `SKILL.md`: strengthen trigger selection, keep workflow executable, and move supporting detail into bundled resources.
 - Skill interface metadata and catalog descriptions: match trigger and scope at summary level; do not promise workflow details absent from the body.
-- MCP/tool descriptions: state when to call the tool, required parameters, permission boundaries, and errors that change the caller's next step.
+- MCP/tool descriptions: implement the complete Tool and Error Contracts above.
 
 For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirms one-sided scope.
 
