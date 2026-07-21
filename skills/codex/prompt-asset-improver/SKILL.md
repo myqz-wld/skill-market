@@ -26,11 +26,11 @@ Inventory describes assets; it never expands scope by itself.
 
 1. Load project instructions and prompt-asset records.
    - Refresh inventory for each confirmed target root. Use the owning repository, workspace, or user config root as `<target-root>`.
-   - Store records under `<target-root>/.prompt-asset-improver/`; put private machine data, local exclusions, backups, and user preferences under `local/`.
+   - Store records under `<target-root>/.prompt-asset-improver/`; put private machine data, local exclusions, backups, user preferences, and the asset inventory under `local/`.
    - Put shared project criteria under `shared/` only when the user confirms they belong with the project.
    - In a git repo, ensure `.prompt-asset-improver/local/` is ignored before writing local records.
-   - Write `inventory.json` with `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets containing `path`, `type`, `scope`, `reason`, optional `exists`, and optional current `hash`.
-   - After editing and validation, refresh `inventory.json` hashes for changed assets.
+   - Write the inventory only to `<target-root>/.prompt-asset-improver/local/inventory.json`, never to `.prompt-asset-improver/` directly or `shared/`. Include `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets containing `path`, `type`, `scope`, `reason`, optional `exists`, and optional current `hash`.
+   - After editing and validation, refresh hashes for changed assets in `.prompt-asset-improver/local/inventory.json`.
    - Use `scope: "confirmed"` for editable assets and `scope: "counterpart-check-only"` for paired assets inspected only to prevent drift.
    - Use a 7-day expiry. Refresh inventory when it is missing, expired, points at another root, lists missing files, or the user says the asset set changed.
 
@@ -130,7 +130,7 @@ Before finishing, validate every changed prompt asset.
 - Validate frontmatter, changed JSON/YAML, interface metadata, and catalog rows.
 - Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, resource-path, and paired-behavior checks and report the missing validator.
 - For paired assets, confirm behavior is aligned and adapter differences are intentional.
-- Check backup `manifest.json` and original hashes; verify `inventory.json` hashes were refreshed after edits.
+- Check backup `manifest.json` and original hashes; verify `.prompt-asset-improver/local/inventory.json` hashes were refreshed after edits.
 - Confirm no unrelated project policy moved into a reusable asset and no one-time task direction was recorded as a custom point.
 
 ## Final Report
