@@ -1,6 +1,6 @@
 {
   "name": "skill-market-codex",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Provides a bundled CLI and ten focused Codex skills for local inventory, catalog discovery, package lifecycle, and pull-request proposals.",
   "author": {
     "name": "Skill Market"

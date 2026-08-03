@@ -192,7 +192,7 @@ Standalone mutations use locks, path-containment checks, content digests, stagin
 | Concern | Claude | Codex | Grok |
 |---|---|---|---|
 | Plugin install | Native marketplace selector; user/project/local scope | Native marketplace selector | Exact catalog package path; explicit trust |
-| Plugin update | Native update; preserves detected scope | Confirmed bounded remove/add; Git marketplaces refresh first | Native update after source-provenance check |
+| Plugin update | Native update; preserves detected scope | Confirmed bounded remove/add; Git marketplaces refresh first | Native for remote sources; verified local sources use keep-data reinstall |
 | Plugin enable/disable | Native except managed-policy scope | Unsupported; uninstall is never substituted | Native |
 | Plugin uninstall data | Kept by default; `--remove-data` expands deletion | Native remove behavior | Kept by default; `--remove-data` expands deletion |
 | Apply update | Restart Claude Code | Start a new Codex session | Follow native result |

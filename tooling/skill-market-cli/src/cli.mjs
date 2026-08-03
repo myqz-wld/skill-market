@@ -22,7 +22,7 @@ import {
 } from "./proposal.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
-export const CLI_VERSION = "0.1.2";
+export const CLI_VERSION = "0.1.3";
 
 const GLOBAL_OPTIONS = {
   pretty: { key: "pretty", type: "boolean" },
@@ -292,6 +292,7 @@ function lifecycleHelpContract() {
         grok: {
           trust: "plugin install requires --confirm-trust",
           provenance: "installed source must match the effective repository or require --confirm-source-change",
+          pluginUpdate: "native for remote sources; verified local sources use a keep-data reinstall and restore disabled state",
           persistentData: "kept by default on uninstall",
         },
       },
