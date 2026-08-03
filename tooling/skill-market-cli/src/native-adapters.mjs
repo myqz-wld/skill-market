@@ -92,12 +92,20 @@ async function runCodex({
   env,
 }) {
   const selector = `${entry.name}@skill-market`;
+  let verifiedMarketplace = null;
   if (["enable", "disable"].includes(operation)) {
     const capability = getAdapterCapabilities("codex").plugin.operations[operation];
     throw unsupported("codex", operation, capability.detail);
   }
   if (["install", "update"].includes(operation)) {
-    await verifyNativeMarketplace({ adapter: "codex", snapshot, repository, execute, git, env });
+    verifiedMarketplace = await verifyNativeMarketplace({
+      adapter: "codex",
+      snapshot,
+      repository,
+      execute,
+      git,
+      env,
+    });
   } else if (installed && operation === "uninstall") {
     await verifyNativeMarketplace({ adapter: "codex", repository, execute, git, env });
   }
@@ -118,7 +126,9 @@ async function runCodex({
         nextAction: "Confirm the bounded reinstall risk, then retry with --confirm-reinstall.",
       });
     }
-    await execute("codex", ["plugin", "marketplace", "upgrade", "skill-market", "--json"], env);
+    if (!verifiedMarketplace.identity.localPath) {
+      await execute("codex", ["plugin", "marketplace", "upgrade", "skill-market", "--json"], env);
+    }
     await execute("codex", ["plugin", "remove", selector, "--json"], env);
     try {
       await execute("codex", ["plugin", "add", selector, "--json"], env);

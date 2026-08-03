@@ -16,7 +16,7 @@
     },
     {
       "path": "src/capabilities.mjs",
-      "sha256": "afb4a109f14001d0451d70eefee9fb5a803bc984c7cae334712e23b5191ffb05"
+      "sha256": "6013c7392cfbf1a81d5014094ac2d05c73ea34333f22f5ce886e21f521b03a2b"
     },
     {
       "path": "src/catalog.mjs",
@@ -24,7 +24,7 @@
     },
     {
       "path": "src/cli.mjs",
-      "sha256": "5f8bfe1796127ed17ea86c3ff5ecbd5c93100234978c61b280de8e47f0ee6fb1"
+      "sha256": "018cb789f7f89e7233bec72d9dfa4330f55a78ac9da310c3bdbb0dc66fa63c0c"
     },
     {
       "path": "src/config.mjs",
@@ -84,7 +84,7 @@
     },
     {
       "path": "src/native-adapters.mjs",
-      "sha256": "e7044e534be14a995e9c41fb8cf5307d7fd2d1688622b8fc707615de2fea2672"
+      "sha256": "951d6a84da10222a5952590cb7adb570d7228947e76fa306fcfa3c5102183675"
     },
     {
       "path": "src/native-exec.mjs",

@@ -22,7 +22,7 @@ import {
 } from "./proposal.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
-export const CLI_VERSION = "0.1.0";
+export const CLI_VERSION = "0.1.1";
 
 const GLOBAL_OPTIONS = {
   pretty: { key: "pretty", type: "boolean" },
@@ -259,7 +259,7 @@ function lifecycleHelpContract() {
           type: "boolean",
           default: false,
           appliesTo: ["Codex plugin update"],
-          effect: "authorize marketplace upgrade followed by remove/add and at most one add retry",
+          effect: "authorize a Git-marketplace refresh when applicable, followed by remove/add and at most one add retry",
         },
         "--scope": {
           type: "enum",
@@ -281,7 +281,7 @@ function lifecycleHelpContract() {
       },
       adapters: {
         codex: {
-          pluginUpdate: "composed marketplace upgrade plus confirmed remove/add with one bounded add retry",
+          pluginUpdate: "optional Git-marketplace refresh plus confirmed remove/add with one bounded add retry",
           pluginEnableDisable: "unsupported; uninstall is never substituted",
         },
         claude: {
