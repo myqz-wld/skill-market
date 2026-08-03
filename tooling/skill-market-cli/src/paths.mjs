@@ -47,6 +47,7 @@ export function resolveStatePaths(env = process.env) {
     managedStatePath: path.join(marketHome, "managed-state.json"),
     defaultCachePath: path.join(marketHome, "cache", "skill-market"),
     downloadsRoot: path.join(marketHome, "downloads"),
+    proposalsRoot: path.join(marketHome, "proposals"),
     locksRoot: path.join(marketHome, "locks"),
   });
 }

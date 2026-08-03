@@ -9,6 +9,10 @@ import { runCli } from "../src/cli.mjs";
 import { SkillMarketError } from "../src/errors.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import {
+  createBareRemote,
+  createProposalRepository,
+} from "./helpers/proposal-fixture.mjs";
+import {
   makeTempDirectory,
   removeTempDirectory,
   withTemporaryHome,
@@ -29,15 +33,91 @@ test("help exposes canonical commands and obsolete names are not aliases", async
     "enable",
     "disable",
     "uninstall",
+    "proposal",
     "config",
   ]);
   assert.equal(help.data.commands.list.options["--history"].default, false);
   assert.match(help.data.lifecycle.catalogPolicy.explicitStale, /exact/u);
   assert.match(help.data.lifecycle.adapters.codex.pluginEnableDisable, /unsupported/u);
+  assert.deepEqual(Object.keys(help.data.commands.proposal.actions), [
+    "plan",
+    "prepare",
+    "submit",
+    "status",
+    "abort",
+  ]);
+  assert.deepEqual(help.data.proposal.spec.action.values, ["add", "update", "retire", "remove"]);
+  assert.match(help.data.proposal.safety.externalEffects, /--confirm-external-effects/u);
   const obsolete = await runCli(["search"]);
   assert.equal(obsolete.ok, false);
   assert.equal(obsolete.error.code, "unknown-command");
   assert.ok(!obsolete.error.details.allowed.includes("search"));
+  const upload = await runCli(["upload"]);
+  assert.equal(upload.ok, false);
+  assert.equal(upload.error.code, "unknown-command");
+});
+
+test("proposal CLI dispatches exact action contracts and rejects cross-action options", async () => {
+  let planned;
+  const result = await runCli(
+    [
+      "proposal",
+      "plan",
+      "--spec",
+      "/tmp/proposal.json",
+      "--repo-path",
+      "/tmp/repository",
+    ],
+    {
+      planProposal: async (input) => {
+        planned = input;
+        return {
+          status: "ok",
+          summary: "planned fixture",
+          data: { proposal: { id: "proposal-0123456789abcdef", status: "planned" } },
+        };
+      },
+    },
+  );
+  assert.equal(result.ok, true);
+  assert.equal(result.command, "proposal plan");
+  assert.equal(planned.specPath, "/tmp/proposal.json");
+  assert.equal(planned.options.repoPath, "/tmp/repository");
+
+  const unknown = await runCli(["proposal", "publish"]);
+  assert.equal(unknown.error.code, "unknown-proposal-action");
+  assert.deepEqual(unknown.error.details.allowed, ["plan", "prepare", "submit", "status", "abort"]);
+
+  const irrelevant = await runCli([
+    "proposal",
+    "prepare",
+    "proposal-0123456789abcdef",
+    "--push-url",
+    "/tmp/remote.git",
+  ]);
+  assert.equal(irrelevant.error.code, "invalid-arguments");
+
+  let submitted = false;
+  const conflicting = await runCli(
+    [
+      "proposal",
+      "submit",
+      "proposal-0123456789abcdef",
+      "--confirm-external-effects",
+      "--push-mode",
+      "direct",
+      "--fork-push-url",
+      "/tmp/fork.git",
+    ],
+    {
+      submitProposal: async () => {
+        submitted = true;
+        throw new Error("must not dispatch");
+      },
+    },
+  );
+  assert.equal(conflicting.error.code, "invalid-arguments");
+  assert.equal(submitted, false);
 });
 
 test("lifecycle CLI maps exact options and domain warnings into the v1 envelope", async () => {
@@ -283,5 +363,116 @@ test("the executable runs the full standalone lifecycle in an isolated HOME", as
       "--history",
     );
     assert.equal(history.data.items[0].localState, "absent");
+  });
+});
+
+test("the executable prepares and submits a proposal through a local remote and fake gh", async () => {
+  await withTemporaryHome(async (home) => {
+    const catalog = structuredClone(fixtureCatalog);
+    const readRepoUrl = "https://github.com/example/skill-market.git";
+    catalog.defaults.readRepoUrl = readRepoUrl;
+    const fixture = await createProposalRepository({ catalog });
+    const binaryDirectory = await makeTempDirectory("skill-market-proposal-bin-");
+    try {
+      const sourcePath = path.join(fixture.container, "proposal-source");
+      await mkdir(sourcePath);
+      await writeFile(
+        path.join(sourcePath, "SKILL.md"),
+        "---\nname: fixture-skill\ndescription: fixture\n---\n\nversion two\n",
+        "utf8",
+      );
+      const specPath = path.join(fixture.container, "proposal.json");
+      await writeFile(
+        specPath,
+        `${JSON.stringify({
+          schemaVersion: 1,
+          action: "update",
+          summary: "Update Codex fixture skill",
+          targets: [{
+            id: "codex:standalone:fixture-skill",
+            sourcePath,
+            version: "0.0.2",
+          }],
+        }, null, 2)}\n`,
+        "utf8",
+      );
+      const remote = await createBareRemote(fixture.container);
+      const ghLog = path.join(binaryDirectory, "gh.log");
+      await writeFakeBinary(
+        binaryDirectory,
+        "gh",
+        `
+const fs = require("node:fs");
+const args = process.argv.slice(2);
+fs.appendFileSync(process.env.GH_LOG, JSON.stringify(args) + "\\n");
+if (args[0] === "auth" && args[1] === "status") process.exit(0);
+if (args[0] === "repo" && args[1] === "view" && args.includes("viewerPermission")) {
+  process.stdout.write("WRITE"); process.exit(0);
+}
+if (args[0] === "api" && args[1] === "user") {
+  process.stdout.write("alice"); process.exit(0);
+}
+if (args[0] === "pr" && args[1] === "list") {
+  process.stdout.write("[]"); process.exit(0);
+}
+if (args[0] === "pr" && args[1] === "create") {
+  process.stdout.write("https://github.com/example/skill-market/pull/51\\n"); process.exit(0);
+}
+if (args[0] === "pr" && args[1] === "view") {
+  process.stdout.write(JSON.stringify({number: 51, url: "https://github.com/example/skill-market/pull/51", state: "OPEN", headRefOid: process.env.GH_COMMIT})); process.exit(0);
+}
+process.stderr.write("unexpected command: " + args.join(" ")); process.exit(9);
+`,
+      );
+      const executable = path.resolve("tooling/skill-market-cli/bin/skill-market.mjs");
+      const baseEnv = {
+        ...process.env,
+        HOME: home,
+        PATH: [binaryDirectory, path.dirname(process.execPath), process.env.PATH].join(path.delimiter),
+        GH_LOG: ghLog,
+      };
+      const invoke = async (args, extraEnv = {}) => {
+        const { stdout } = await execFileAsync(process.execPath, [executable, ...args], {
+          env: { ...baseEnv, ...extraEnv },
+        });
+        return JSON.parse(stdout);
+      };
+      const planned = await invoke([
+        "proposal",
+        "plan",
+        "--spec",
+        specPath,
+        "--repo-path",
+        fixture.root,
+        "--read-repo-url",
+        readRepoUrl,
+      ]);
+      const id = planned.data.proposal.id;
+      const prepared = await invoke(["proposal", "prepare", id]);
+      const commit = prepared.data.proposal.workspace.preparedCommit;
+      const submitted = await invoke(
+        [
+          "proposal",
+          "submit",
+          id,
+          "--confirm-external-effects",
+          "--push-mode",
+          "direct",
+          "--push-url",
+          remote,
+        ],
+        { GH_COMMIT: commit },
+      );
+      assert.equal(submitted.data.proposal.status, "submitted");
+      assert.equal(submitted.data.proposal.submission.pr.number, 51);
+      const callsBefore = (await readFile(ghLog, "utf8")).trim().split("\n").length;
+      const repeated = await invoke(["proposal", "submit", id]);
+      assert.equal(repeated.status, "noop");
+      const callsAfter = (await readFile(ghLog, "utf8")).trim().split("\n").length;
+      assert.equal(callsAfter, callsBefore);
+    } finally {
+      await removeTempDirectory(binaryDirectory);
+      await removeTempDirectory(fixture.container);
+    }
   });
 });

@@ -13,6 +13,13 @@ import {
 } from "./cache.mjs";
 import { collectLocalInventory } from "./inventory.mjs";
 import { executeLifecycle } from "./lifecycle.mjs";
+import {
+  abortProposal,
+  planProposal,
+  prepareProposal,
+  statusProposal,
+  submitProposal,
+} from "./proposal.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
 export const CLI_VERSION = "0.1.0";
@@ -57,6 +64,38 @@ const DISCOVER_OPTIONS = {
 };
 
 const CONFIG_OPTIONS = { ...GLOBAL_OPTIONS };
+
+const PROPOSAL_PLAN_OPTIONS = {
+  ...GLOBAL_OPTIONS,
+  ...SOURCE_OPTIONS,
+  spec: { key: "specPath", type: "value" },
+};
+
+const PROPOSAL_PREPARE_OPTIONS = { ...GLOBAL_OPTIONS };
+const PROPOSAL_STATUS_OPTIONS = { ...GLOBAL_OPTIONS };
+
+const PROPOSAL_SUBMIT_OPTIONS = {
+  ...GLOBAL_OPTIONS,
+  "confirm-external-effects": { key: "confirmExternalEffects", type: "boolean" },
+  "push-mode": { key: "pushMode", type: "value" },
+  "push-url": { key: "pushUrl", type: "value" },
+  "fork-push-url": { key: "forkPushUrl", type: "value" },
+  "head-owner": { key: "headOwner", type: "value" },
+  draft: { key: "draft", type: "boolean" },
+};
+
+const PROPOSAL_ABORT_OPTIONS = {
+  ...GLOBAL_OPTIONS,
+  "confirm-discard": { key: "confirmDiscard", type: "boolean" },
+};
+
+const PROPOSAL_ACTION_OPTIONS = Object.freeze({
+  plan: PROPOSAL_PLAN_OPTIONS,
+  prepare: PROPOSAL_PREPARE_OPTIONS,
+  submit: PROPOSAL_SUBMIT_OPTIONS,
+  status: PROPOSAL_STATUS_OPTIONS,
+  abort: PROPOSAL_ABORT_OPTIONS,
+});
 
 const CATALOG_MUTATION_OPTIONS = {
   ...GLOBAL_OPTIONS,
@@ -311,8 +350,141 @@ function lifecycleHelpContract() {
   };
 }
 
+function proposalHelpContract() {
+  const proposalId = {
+    name: "proposal-id",
+    type: "string",
+    format: "proposal-<16 lowercase hexadecimal characters>",
+    required: true,
+    source: "use the exact id returned by proposal plan",
+  };
+  return {
+    contract: {
+      purpose: "Turn explicit package content and catalog actions into a validated local commit, then optionally push that exact commit and open one pull request.",
+      state: {
+        path: "~/.skill-market/proposals/<proposal-id>/proposal.json (or the equivalent configured SKILL_MARKET_HOME)",
+        ownership: "CLI-owned durable JSON with an integrity digest; callers must not edit it",
+        statuses: ["planned", "preparing", "prepared", "pushed", "submitted", "aborted"],
+        transitions: [
+          "planned -> preparing -> prepared",
+          "prepared -> pushed -> submitted",
+          "planned/preparing/prepared -> aborted",
+          "aborted -> planned only by re-running the identical proposal plan",
+        ],
+      },
+      spec: {
+        format: "UTF-8 JSON file",
+        schemaVersion: { type: "integer", required: true, value: 1 },
+        action: { type: "enum", required: true, values: ["add", "update", "retire", "remove"] },
+        summary: { type: "single-line string", required: true, range: "1..160 trimmed characters", use: "commit/PR summary" },
+        targets: {
+          type: "array",
+          required: true,
+          range: "1..50 unique targets, sorted canonically by the CLI",
+          item: {
+            id: { type: "canonical package id", required: true, format: "<claude|codex|grok>:<plugin|standalone>:<kebab-case-name>" },
+            sourcePath: { type: "path", requiredFor: ["add", "update"], forbiddenFor: ["retire", "remove"], resolution: "absolute, ~/ relative to HOME, or relative to the spec file" },
+            version: { type: "semver string", requiredFor: ["add", "update"], forbiddenFor: ["retire", "remove"], constraints: ["update must be greater than catalog version", "new standalone must equal 0.0.1", "plugin manifest must match name/version"] },
+            description: { type: "non-empty string", requiredFor: ["add"], optionalFor: ["update"], forbiddenFor: ["retire", "remove"] },
+            category: { type: "non-empty string", required: false, appliesTo: ["add", "update"] },
+            keywords: { type: "unique string array", required: false, range: "0..20 items; each 1..64 trimmed characters", appliesTo: ["add", "update"] },
+          },
+        },
+        unknownFields: "rejected at the root and target level",
+        pairing: "every adapter variant is a separate explicit target; no cross-adapter translation or implicit expansion",
+        bootstrap: "skill-market-codex, skill-market-claude, and skill-market-grok self-proposals are blocked",
+        removeSemantics: "delete exact package content in the isolated worktree and retain the catalog entry as status=removed tombstone",
+        retireSemantics: "retain package content and set an active catalog entry to status=deprecated",
+      },
+      result: {
+        proposal: {
+          id: "proposal id",
+          revision: "positive integer",
+          status: "proposal status enum",
+          action: "proposal action enum",
+          summary: "string",
+          targets: "array of id, proposed version or null, and captured source digest or null",
+          source: "repository identity, base ref, immutable base commit, and freshness",
+          workspace: "null or branch, prepared commit, diff hash, and managed worktree path",
+          submission: "null or strategy, base/head repository, branch, pushed commit, and PR record",
+          createdAt: "ISO timestamp",
+          updatedAt: "ISO timestamp",
+        },
+      },
+      safety: {
+        localBase: "proposal plan requires catalog source identity agreement, exact base-ref HEAD, and a clean local checkout; a cache may contain only its managed marker",
+        sourceContent: "plan captures each package digest; prepare rejects content or topology changes and nested .git metadata",
+        worktree: "prepare uses a proposal-owned bare repository and isolated worktree; the source checkout is never edited",
+        changedPaths: "only explicit package targets, catalog/entries.json, and the four generated catalog views may change",
+        remoteBranch: "an existing remote branch must already equal the prepared commit; force-push is unsupported",
+        externalEffects: "only submit with --confirm-external-effects may authenticate, create/verify a fork, push, or create a PR",
+      },
+      recovery: {
+        "proposal-source-changed | proposal-base-changed": "inspect current content and create a new plan; do not edit durable state",
+        "proposal-submit-confirmation": "verify preparedCommit and diffHash, then retry submit with --confirm-external-effects",
+        "github-auth-required": "run gh auth login for the intended account, then retry the same submit",
+        "proposal-branch-collision | pull-request-branch-collision": "inspect the existing remote object and create a new proposal; never force-push automatically",
+        pushed: "retry submit with confirmation; the CLI verifies the exact remote commit and discovers an existing PR before creating one",
+        "proposal-abort-confirmation": "inspect and preserve any wanted commits or changes in the exact managed worktree, then retry abort with --confirm-discard only to delete them",
+        "proposal-workspace-recovery-required": "stop proposal mutations and reconcile only the canonical proposal directory named by the error",
+      },
+    },
+    command: {
+      purpose: "Manage a durable pull-request proposal through explicit local and external phases.",
+      actions: {
+        plan: {
+          syntax: "proposal plan --spec <json-file> [source options]",
+          positionals: [],
+          requiredOptions: ["--spec"],
+          options: ["--spec", "--read-repo-url", "--base-ref", "--cache-path", "--cache-ttl-seconds", "--repo-path"],
+          sideEffects: "May strictly refresh the configured read cache and writes durable local proposal state; creates no branch, commit, fork, push, or PR.",
+          idempotent: "the same normalized spec, source digests, base commit, and catalog digest return the same proposal id and noop; an identical aborted proposal is reactivated",
+        },
+        prepare: {
+          syntax: "proposal prepare <proposal-id>",
+          positionals: proposalId,
+          options: [],
+          sideEffects: "Creates only proposal-managed local bare/worktree/body artifacts and one validated commit; no network write occurs.",
+          idempotent: "an exact prepared/pushed/submitted workspace returns noop; incomplete preparing state is cleaned and resumed only inside its managed directory",
+        },
+        submit: {
+          syntax: "proposal submit <proposal-id> --confirm-external-effects [submit options]",
+          positionals: proposalId,
+          options: {
+            "--confirm-external-effects": { type: "boolean", default: false, effect: "authorize fork creation when required, exact branch push, and PR creation" },
+            "--push-mode": { type: "enum", values: ["auto", "direct", "fork"], default: "auto", effect: "auto chooses direct for write permission and fork otherwise" },
+            "--push-url": { type: "credential-free Git target", requiredWhen: "selected strategy is direct", appliesTo: ["auto", "direct"] },
+            "--fork-push-url": { type: "credential-free Git target", required: false, appliesTo: ["auto", "fork"], effect: "use an already-configured fork instead of creating/verifying one" },
+            "--head-owner": { type: "GitHub login", required: false, dependency: "allowed only with --fork-push-url; defaults to authenticated login" },
+            "--draft": { type: "boolean", default: false, effect: "mark only a newly-created PR as draft" },
+          },
+          sideEffects: "After confirmation, reads GitHub auth/permission, may create a personal fork, pushes the exact prepared commit to a non-conflicting branch, then discovers or creates one PR.",
+          idempotent: "submitted returns noop without remote calls; pushed resumes PR discovery; exact existing branch/PR is reused",
+        },
+        status: {
+          syntax: "proposal status <proposal-id>",
+          positionals: proposalId,
+          options: [],
+          sideEffects: "Reads durable state and local worktree health only; no network or state write.",
+          idempotent: true,
+        },
+        abort: {
+          syntax: "proposal abort <proposal-id> [--confirm-discard]",
+          positionals: proposalId,
+          options: {
+            "--confirm-discard": { type: "boolean", default: false, effect: "delete extra commits or uncommitted drift only inside the exact proposal-managed worktree" },
+          },
+          sideEffects: "Removes only this proposal's local Git workspace/body and records aborted; pushed/submitted proposals are blocked and external objects are never undone.",
+          idempotent: "already aborted is noop",
+        },
+      },
+    },
+  };
+}
+
 export function helpContract() {
   const lifecycle = lifecycleHelpContract();
+  const proposal = proposalHelpContract();
   return {
     contractVersion: 1,
     version: CLI_VERSION,
@@ -380,6 +552,7 @@ export function helpContract() {
         idempotent: true,
       },
       ...lifecycle.commands,
+      proposal: proposal.command,
       config: {
         purpose: "Inspect or explicitly change Skill Market configuration.",
         actions: {
@@ -393,6 +566,7 @@ export function helpContract() {
       },
     },
     lifecycle: lifecycle.contract,
+    proposal: proposal.contract,
     sourceOptions: {
       "--read-repo-url": { type: "HTTPS URL without embedded credentials", default: "https://github.com/myqz-wld/skill-market.git" },
       "--base-ref": { type: "safe Git ref", default: "main" },
@@ -539,6 +713,82 @@ async function runLifecycle(operation, options, positionals, services, env) {
   });
 }
 
+function invalidProposalOptions(issue, details) {
+  throw new SkillMarketError({
+    code: "invalid-arguments",
+    message: `Invalid proposal arguments: ${issue}.`,
+    details,
+    nextAction: "Run skill-market help, inspect commands.proposal, and retry with the documented action shape.",
+  });
+}
+
+function validateSubmitOptions(options) {
+  const mode = options.pushMode ?? "auto";
+  if (!["auto", "direct", "fork"].includes(mode)) {
+    invalidProposalOptions("--push-mode must be auto, direct, or fork", {
+      option: "push-mode",
+      value: options.pushMode,
+    });
+  }
+  if (mode === "direct" && (options.forkPushUrl || options.headOwner)) {
+    invalidProposalOptions("--fork-push-url and --head-owner do not apply to direct mode", {
+      pushMode: mode,
+      forkPushUrl: options.forkPushUrl ?? null,
+      headOwner: options.headOwner ?? null,
+    });
+  }
+  if (mode === "fork" && options.pushUrl) {
+    invalidProposalOptions("--push-url does not apply to fork mode", {
+      pushMode: mode,
+      pushUrl: options.pushUrl,
+    });
+  }
+  if (options.headOwner && !options.forkPushUrl) {
+    invalidProposalOptions("--head-owner requires --fork-push-url", {
+      headOwner: options.headOwner,
+    });
+  }
+}
+
+async function runProposal(action, options, positionals, services, env) {
+  let result;
+  if (action === "plan") {
+    requirePositionals(positionals, { min: 0, usage: "proposal plan --spec <json-file>" });
+    if (!options.specPath) {
+      invalidProposalOptions("proposal plan requires --spec <json-file>", {
+        action,
+        required: ["--spec"],
+      });
+    }
+    result = await services.planProposal({
+      specPath: options.specPath,
+      options,
+      env,
+    });
+  } else {
+    const [id] = requirePositionals(positionals, {
+      min: 1,
+      usage: `proposal ${action} <proposal-id> [options]`,
+    });
+    if (action === "prepare") {
+      result = await services.prepareProposal({ id, env });
+    } else if (action === "submit") {
+      validateSubmitOptions(options);
+      result = await services.submitProposal({ id, options, env });
+    } else if (action === "status") {
+      result = await services.statusProposal({ id, env });
+    } else {
+      result = await services.abortProposal({ id, options, env });
+    }
+  }
+  return successResult({
+    command: `proposal ${action}`,
+    status: result.status,
+    summary: result.summary,
+    data: result.data,
+  });
+}
+
 async function runConfig(positionals, services, env) {
   const [action = "show", ...values] = positionals;
   if (action === "show") {
@@ -595,6 +845,11 @@ function servicesWithDefaults(dependencies) {
     loadCatalogSnapshot,
     collectLocalInventory,
     executeLifecycle,
+    planProposal,
+    prepareProposal,
+    submitProposal,
+    statusProposal,
+    abortProposal,
     updateConfig,
     nativeReader: undefined,
     git: undefined,
@@ -633,6 +888,23 @@ export async function runCli(argv, { env = process.env, ...dependencies } = {}) 
       if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
       return await runLifecycle(command, parsed.options, parsed.positionals, services, env);
     }
+    if (command === "proposal") {
+      const action = argv[1];
+      if (action === undefined || action === "--help" || action === "help") {
+        return runCli(["help"], { env, ...dependencies });
+      }
+      if (!Object.hasOwn(PROPOSAL_ACTION_OPTIONS, action)) {
+        throw new SkillMarketError({
+          code: "unknown-proposal-action",
+          message: `Unknown proposal action: ${action}.`,
+          details: { action, allowed: Object.keys(PROPOSAL_ACTION_OPTIONS) },
+          nextAction: "Use proposal plan, prepare, submit, status, or abort.",
+        });
+      }
+      const parsed = parseOptions(argv.slice(2), PROPOSAL_ACTION_OPTIONS[action]);
+      if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
+      return await runProposal(action, parsed.options, parsed.positionals, services, env);
+    }
     if (command === "config") {
       const parsed = parseOptions(argv.slice(1), CONFIG_OPTIONS);
       if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
@@ -652,6 +924,7 @@ export async function runCli(argv, { env = process.env, ...dependencies } = {}) 
           "enable",
           "disable",
           "uninstall",
+          "proposal",
           "config",
           "help",
         ],
