@@ -114,7 +114,7 @@ test("Codex and Claude marketplace verification binds native mutation to the cat
   }
 });
 
-test("Codex update requires confirmation and bounds reinstall retries", async () => {
+test("Codex local-marketplace update requires confirmation and bounds reinstall retries", async () => {
   await withTemporaryHome(async (home) => {
     const fixture = await nativeFixture(home, "codex");
     const item = installed(fixture.entry);
@@ -154,11 +154,54 @@ test("Codex update requires confirmation and bounds reinstall retries", async ()
     assert.equal(result.warnings[0].code, "codex-reinstall-retried");
     assert.equal(addAttempts, 2);
     assert.deepEqual(
-      calls.slice(-4).map(([, args]) => args.slice(0, 3)),
+      calls.slice(-3).map(([, args]) => args.slice(0, 3)),
+      [
+        ["plugin", "remove", "fixture-codex@skill-market"],
+        ["plugin", "add", "fixture-codex@skill-market"],
+        ["plugin", "add", "fixture-codex@skill-market"],
+      ],
+    );
+    assert.equal(
+      calls.some(([, args]) => args.slice(0, 3).join(" ") === "plugin marketplace upgrade"),
+      false,
+    );
+  });
+});
+
+test("Codex Git-marketplace update refreshes before the confirmed reinstall", async () => {
+  await withTemporaryHome(async (home) => {
+    const fixture = await nativeFixture(home, "codex");
+    const calls = [];
+    const repositoryUrl = "https://example.test/skill-market.git";
+    const result = await runNativePluginLifecycle({
+      operation: "update",
+      entry: fixture.entry,
+      snapshot: fixture.snapshot,
+      repository: fixture.repository,
+      options: { confirmReinstall: true },
+      git: { remoteUrl: async () => repositoryUrl },
+      readPlugins: async () => [installed(fixture.entry)],
+      execute: async (command, args) => {
+        calls.push([command, args]);
+        if (args.join(" ") === "plugin marketplace list --json") {
+          return {
+            marketplaces: [
+              {
+                name: "skill-market",
+                marketplaceSource: { sourceType: "git", source: repositoryUrl },
+              },
+            ],
+          };
+        }
+        return {};
+      },
+    });
+    assert.equal(result.status, "ok");
+    assert.deepEqual(
+      calls.slice(-3).map(([, args]) => args.slice(0, 3)),
       [
         ["plugin", "marketplace", "upgrade"],
         ["plugin", "remove", "fixture-codex@skill-market"],
-        ["plugin", "add", "fixture-codex@skill-market"],
         ["plugin", "add", "fixture-codex@skill-market"],
       ],
     );
