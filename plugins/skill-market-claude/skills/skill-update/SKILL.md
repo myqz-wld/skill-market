@@ -1,27 +1,16 @@
 ---
 name: skill-update
-description: Update an installed Claude Skill Market plugin or standalone Claude skill from the remote catalog.
+description: "Update one installed Claude Skill Market package while preserving local activation and native scope. Use for refresh, upgrade, reinstall, or update-available requests."
 disable-model-invocation: true
 ---
-
 # Skill Update for Claude
 
-Use this skill when the user wants an installed Claude Skill Market item refreshed from the remote catalog.
+Use the installed plugin root in `CLAUDE_PLUGIN_ROOT`. Run only `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-## Repository Source
+Confirm one exact ID, then run `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs" update claude:<plugin|standalone>:<kebab-case-name> [options] --json`. Applicable options: --read-repo-url, --base-ref, --cache-path, --cache-ttl-seconds, --repo-path, --allow-stale-head, --force, --confirm-drift, --confirm-source-change, --scope.
 
-Before changing local state:
+Requires a fresh eligible catalog unless an exact cached commit is explicitly pinned. Preserve disabled state and detected scope; drift/source/force flags require intent. Report the CLI restart warning.
 
-- Ensure `~/.skill-market/config.json` exists; if missing, create it with default `repoUrl: git@github.com:myqz-wld/skill-market.git`, `cachePath: ~/.skill-market/cache/skill-market`, and `cacheTtlSeconds: 86400`.
-- Resolve settings as environment variable > config field > default. `SKILL_MARKET_REPO_URL` and `SKILL_MARKET_CACHE` map to `repoUrl` and `cachePath`.
-- Use `repoUrl` as the source of truth and `cachePath` only as a working copy. Use `SKILL_MARKET_REPO` or config `repoPath` only when the user explicitly chooses a local development checkout; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, markers, and TTL.
-- Without `repoPath`, clone the cache when missing, then fetch the remote and fast-forward the cache before copying files. After fetch, write the cache marker with `repoUrl`, `fetchedAt`, and `head`.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-## Update
-
-- Plugin: run `claude plugin marketplace update skill-market`, then `claude plugin update <plugin-name>@skill-market`.
-- Standalone Claude skill: read its catalog `Version` from `skills/INDEX.md`, then copy `skills/claude/<skill-name>/` from the cache to `~/.claude/skills/<skill-name>/`.
-
-Before updating a standalone skill already present under `~/.claude/skills/`, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before adopting or overwriting it. When updating a managed skill, compare `installedVersion` with the catalog `Version`; if they match, report that it is already current unless the user asked to force a reinstall. After copying to `activePath`, remove or replace any existing files at `disabledPath`, set `installedVersion` to the catalog version, and set status to `installed`.
-
-Report when Claude requires a new session or restart before the updated plugin takes effect.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.

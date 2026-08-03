@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill Market Install"
+  short_description: "Install a Skill Market package safely"
+  default_prompt: "Use $skill-install to install this exact Skill Market package."
+policy:
+  allow_implicit_invocation: false

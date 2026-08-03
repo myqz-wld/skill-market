@@ -1,20 +1,16 @@
 ---
 name: skill-uninstall
-description: Remove an installed Claude Skill Market plugin or standalone Claude skill from the local machine.
+description: "Uninstall one exact Claude Skill Market package. Use for local removal while retaining standalone history and native persistent data by default."
 disable-model-invocation: true
 ---
-
 # Skill Uninstall for Claude
 
-Use this skill when the user wants a Claude Skill Market installation removed from local disk. Do not mutate the remote marketplace repository.
+Use the installed plugin root in `CLAUDE_PLUGIN_ROOT`. Run only `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-If the user wants to preserve local files, use `skill-disable` instead of uninstalling.
+Confirm one exact ID, then run `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs" uninstall claude:<plugin|standalone>:<kebab-case-name> [options] --json`. Applicable options: --read-repo-url, --cache-path, --repo-path, --adopt, --confirm-drift, --scope, --remove-data.
 
-## Uninstall
+Already absent is a no-op and standalone history remains. Preserve native scope and data; use --remove-data only after explicit approval.
 
-- Plugin: run `claude plugin remove <plugin-name>@skill-market`.
-- Standalone Claude skill: remove `~/.claude/skills/<skill-name>/`.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-Before uninstalling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before deleting it. When uninstalling a managed skill, remove both `activePath` and `disabledPath` when either exists, keep `installedVersion`, then set status to `uninstalled` instead of dropping the record.
-
-If the user wants the item removed from Skill Market itself, route that to `skill-upload` as a deletion PR.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.

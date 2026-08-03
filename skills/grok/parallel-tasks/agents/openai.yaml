@@ -1,0 +1,4 @@
+interface:
+  display_name: "Parallel Tasks"
+  short_description: "Route parallel tasks through enforceable controls"
+  default_prompt: "Use $parallel-tasks to inventory dispatch capabilities, route already-separated tasks through enforceable controls, and integrate validated results."

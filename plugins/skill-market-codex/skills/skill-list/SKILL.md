@@ -1,27 +1,15 @@
 ---
 name: skill-list
-description: List Codex skills managed by Skill Market with installed and catalog versions, without scanning unrelated local skills.
+description: "List local Codex Skill Market plugins and managed standalone skills without refreshing the catalog. Use for installed, active, disabled, broken, ownership, history, or update-state inventory questions."
 ---
-
 # Skill List for Codex
 
-Use this skill when the user wants Codex entries managed by Skill Market, not a scan of every local Codex skill.
+Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-## Repository Source
+Run `node "<plugin-root>/cli/bin/skill-market.mjs" list --adapter codex [filters] --json`. Filters: `--kind`, `--local-state`, `--ownership`, `--update-state`, `--history`, `--offset`, and `--limit`; comma-separate enum values.
 
-Before reading the catalog or cache:
+Default to active, disabled, and broken items. Add `--history` for absent history; use `--adapter all` only when explicitly requested. The command reads native plugin inventory, managed standalone state, and an existing cache only; it never clones, fetches, or writes.
 
-- Ensure `~/.skill-market/config.json` exists; if missing, create it with default `repoUrl: git@github.com:myqz-wld/skill-market.git`, `cachePath: ~/.skill-market/cache/skill-market`, and `cacheTtlSeconds: 86400`.
-- Resolve settings as environment variable > config field > default. `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `SKILL_MARKET_CACHE_TTL_SECONDS` map to `repoUrl`, `cachePath`, and `cacheTtlSeconds`.
-- Use `repoUrl` as the source of truth and `cachePath` only as a working copy. Use `SKILL_MARKET_REPO` or config `repoPath` only when the user explicitly chooses a local development checkout; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, markers, and TTL.
-- Without `repoPath`, clone the cache when missing. Fetch when the user asks for latest status or `<cachePath>/.skill-market-cache.json` is missing or older than `cacheTtlSeconds`; `0` disables automatic TTL refresh.
-- After clone or fetch, write the cache marker with `repoUrl`, `fetchedAt`, and `head`. If fetch fails and cache exists, use the stale cache and report that it may be stale.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-## List
-
-1. Read `~/.skill-market/managed-skills.json`; this is the local managed state file.
-2. Report only Codex entries from that state file, including name, local status, `installedVersion`, `catalogPath`, `activePath`, and `disabledPath`.
-3. Read `skills/INDEX.md` only to enrich managed entries with remote catalog version, status, and description. Flag entries where `installedVersion` differs from the catalog `Version`.
-4. If the state file is missing or has no Codex entries, report that no Codex skills are currently managed.
-
-Do not scan or list unrelated local skills from `~/.codex/skills/` by default. If the user names a specific local skill and asks to manage it, ask for confirmation before adding it to `managed-skills.json`.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.

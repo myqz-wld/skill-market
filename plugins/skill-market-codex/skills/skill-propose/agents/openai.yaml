@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill Market Propose"
+  short_description: "Prepare a validated Skill Market proposal"
+  default_prompt: "Use $skill-propose to prepare this Skill Market catalog proposal."
+policy:
+  allow_implicit_invocation: false

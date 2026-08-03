@@ -1,27 +1,15 @@
 ---
 name: skill-install
-description: Install a Codex Skill Market plugin or standalone Codex skill.
+description: "Install one exact Codex Skill Market plugin or standalone skill through the bundled CLI with catalog, source, and adoption gates."
 ---
-
 # Skill Install for Codex
 
-Use this skill when the user wants a Skill Market entry installed locally. Download-only requests belong to `skill-download`; install changes local Codex state.
+Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-## Repository Source
+Confirm one exact ID, then run `node "<plugin-root>/cli/bin/skill-market.mjs" install codex:<plugin|standalone>:<kebab-case-name> [options] --json`. Applicable options: --read-repo-url, --base-ref, --cache-path, --cache-ttl-seconds, --repo-path, --allow-stale-head, --allow-deprecated, --adopt.
 
-Before reading the catalog or cache:
+Installs active entries from a fresh catalog by default. Deprecated install or adoption requires explicit intent; disabled/removed entries block.
 
-- Ensure `~/.skill-market/config.json` exists; if missing, create it with default `repoUrl: git@github.com:myqz-wld/skill-market.git`, `cachePath: ~/.skill-market/cache/skill-market`, and `cacheTtlSeconds: 86400`.
-- Resolve settings as environment variable > config field > default. `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `SKILL_MARKET_CACHE_TTL_SECONDS` map to `repoUrl`, `cachePath`, and `cacheTtlSeconds`.
-- Use `repoUrl` as the source of truth and `cachePath` only as a working copy. Use `SKILL_MARKET_REPO` or config `repoPath` only when the user explicitly chooses a local development checkout; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, markers, and TTL.
-- Without `repoPath`, clone the cache when missing. Fetch when the user asks for latest before install or `<cachePath>/.skill-market-cache.json` is missing or older than `cacheTtlSeconds`; `0` disables automatic TTL refresh.
-- After clone or fetch, write the cache marker with `repoUrl`, `fetchedAt`, and `head`. If fetch fails and cache exists, use the stale cache and report that it may be stale before installing.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-## Install
-
-- Plugin: run `codex plugin add <plugin-name>@skill-market`.
-- Standalone Codex skill: read its `Version` from `skills/INDEX.md`, then copy `skills/codex/<skill-name>/` from the cache to `~/.codex/skills/<skill-name>/`.
-
-Before installing over an existing active or disabled local skill absent from `~/.skill-market/managed-skills.json`, ask the user before adopting or overwriting it.
-
-After installing a standalone skill, add or update its entry in `~/.skill-market/managed-skills.json` with `adapter: "codex"`, `catalogPath: "skills/codex/<skill-name>"`, `installedVersion: "<catalog-version>"`, `activePath: "~/.codex/skills/<skill-name>"`, `disabledPath: "~/.codex/skills.disabled/<skill-name>"`, and `status: "installed"`. If a managed disabled copy already exists at `disabledPath`, remove or replace it before setting status to `installed`.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.

@@ -1,7 +1,7 @@
 {
   "name": "skill-market-codex",
-  "version": "0.0.3",
-  "description": "Provides Codex skills for listing, searching, downloading, installing, disabling, uninstalling, updating, and uploading Skill Market entries through git and pull requests.",
+  "version": "0.1.0",
+  "description": "Provides a bundled CLI and ten focused Codex skills for local inventory, catalog discovery, package lifecycle, and pull-request proposals.",
   "author": {
     "name": "Skill Market"
   },
@@ -10,15 +10,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Skill Market",
-    "shortDescription": "List, search, download, install, disable, update, uninstall, and upload marketplace skills.",
-    "longDescription": "Manage Skill Market entries from a remote Git repository with local cache support and PR-based uploads.",
+    "shortDescription": "List, discover, download, install, update, activate, remove, and propose Skill Market packages.",
+    "longDescription": "Manage local Skill Market inventory and catalog packages through one bundled, structured CLI with explicit adapter-specific safety gates and resumable pull-request proposals.",
     "developerName": "Skill Market",
     "category": "Productivity",
-    "capabilities": ["Workflow", "Git"],
+    "capabilities": ["Workflow", "Local CLI", "Git"],
     "defaultPrompt": [
-      "List managed Skill Market skills.",
-      "Install a Skill Market skill.",
-      "Upload this skill through a PR."
+      "List my local Skill Market inventory.",
+      "Discover and install a Skill Market package.",
+      "Prepare a Skill Market catalog proposal."
     ],
     "brandColor": "#4F7CFF"
   }
