@@ -1,0 +1,25 @@
+{
+  "name": "skill-market",
+  "description": "Fixture marketplace for all adapters.",
+  "owner": {
+    "name": "Skill Market"
+  },
+  "plugins": [
+    {
+      "name": "fixture-grok",
+      "description": "Grok fixture plugin.",
+      "category": "Productivity",
+      "source": {
+        "type": "local",
+        "path": "./plugins/fixture-grok"
+      },
+      "version": "0.1.0",
+      "author": {
+        "name": "Skill Market"
+      },
+      "keywords": [
+        "skills"
+      ]
+    }
+  ]
+}
