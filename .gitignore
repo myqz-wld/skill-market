@@ -4,5 +4,6 @@
 *.tmp
 *.tar
 .prompt-asset-improver/local/
+.agent-deck/
 /CLAUDE.md
 /AGENTS.md

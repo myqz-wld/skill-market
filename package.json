@@ -1,0 +1,15 @@
+{
+  "name": "skill-market-workspace",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "catalog:generate": "node tooling/skill-market-cli/scripts/generate-catalogs.mjs",
+    "catalog:check": "node tooling/skill-market-cli/scripts/generate-catalogs.mjs --check",
+    "test": "node --test tooling/skill-market-cli/test/*.test.mjs",
+    "validate": "npm run catalog:check && npm test"
+  }
+}

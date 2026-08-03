@@ -1,0 +1,27 @@
+{
+  "name": "skill-market",
+  "description": "Marketplace for managing Claude, Codex, and Grok skills and plugins through local inventory, catalog discovery, lifecycle commands, and pull-request proposals.",
+  "owner": {
+    "name": "Skill Market"
+  },
+  "plugins": [
+    {
+      "name": "skill-market-grok",
+      "description": "Use this Grok plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
+      "category": "Productivity",
+      "source": {
+        "type": "local",
+        "path": "./plugins/skill-market-grok"
+      },
+      "version": "0.1.0",
+      "author": {
+        "name": "Skill Market"
+      },
+      "keywords": [
+        "skills",
+        "plugins",
+        "marketplace"
+      ]
+    }
+  ]
+}
