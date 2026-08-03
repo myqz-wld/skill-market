@@ -62,7 +62,11 @@ function rawEntries(adapter, payload) {
   return Array.isArray(payload?.installed) ? payload.installed : null;
 }
 
-export function parseNativePluginList(adapter, raw, { marketplaceName = "skill-market" } = {}) {
+export function parseNativePluginList(
+  adapter,
+  raw,
+  { marketplaceName = "skill-market", packageNames = [] } = {},
+) {
   if (!ADAPTERS.includes(adapter)) {
     throw new TypeError(`unsupported adapter: ${adapter}`);
   }
@@ -84,7 +88,10 @@ export function parseNativePluginList(adapter, raw, { marketplaceName = "skill-m
     const split = splitPluginId(entry.pluginId ?? entry.id);
     const name = entry.name ?? split.name;
     const market = entry.marketplaceName ?? split.marketplaceName;
-    if (market !== marketplaceName || entry.installed === false) {
+    const belongsToMarket =
+      market === marketplaceName ||
+      (adapter === "grok" && market === undefined && packageNames.includes(name));
+    if (!belongsToMarket || entry.installed === false) {
       continue;
     }
     if (!isKebabCase(name)) {
@@ -97,6 +104,7 @@ export function parseNativePluginList(adapter, raw, { marketplaceName = "skill-m
       name,
       installedVersion: typeof entry.version === "string" ? entry.version : null,
       localState: entry.enabled === false ? "disabled" : "active",
+      drifted: null,
       ownership: "native",
       location: entry.source?.path ?? entry.installPath ?? null,
       native: {
@@ -104,6 +112,7 @@ export function parseNativePluginList(adapter, raw, { marketplaceName = "skill-m
         pluginId: entry.pluginId ?? entry.id ?? `${name}@${market}`,
         scope: entry.scope ?? null,
         marketplaceSource: entry.marketplaceSource ?? null,
+        source: entry.source ?? entry.repository ?? null,
       },
     });
   }
@@ -124,10 +133,11 @@ function invalidNativeOutput(adapter, issue, cause) {
 export async function readNativePlugins({
   adapter,
   marketplaceName = "skill-market",
+  packageNames = adapter === "grok" ? ["skill-market-grok"] : [],
   env = process.env,
   execute = executeNative,
 } = {}) {
   const [command, args] = commandFor(adapter, marketplaceName);
   const raw = await execute(command, args, env);
-  return parseNativePluginList(adapter, raw, { marketplaceName });
+  return parseNativePluginList(adapter, raw, { marketplaceName, packageNames });
 }

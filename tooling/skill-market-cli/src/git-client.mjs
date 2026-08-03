@@ -49,5 +49,11 @@ export function createGitClient({ env = process.env } = {}) {
     async head(root) {
       return (await runGit(["-C", root, "rev-parse", "HEAD"], { env })).stdout;
     },
+    async status(root) {
+      return (await runGit(
+        ["-C", root, "status", "--porcelain=v1", "--untracked-files=all"],
+        { env },
+      )).stdout;
+    },
   });
 }

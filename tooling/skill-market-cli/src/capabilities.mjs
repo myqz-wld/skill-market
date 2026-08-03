@@ -49,7 +49,7 @@ const BASELINES = {
         install: operation("native", null),
         update: operation(
           "composed",
-          "Use a guarded remove/install transaction that preserves source identity and restores the prior installation on failure.",
+          "Refresh the verified marketplace, require explicit reinstall confirmation, then remove and reinstall with one bounded retry if installation fails.",
         ),
         enable: operation(
           "unsupported",

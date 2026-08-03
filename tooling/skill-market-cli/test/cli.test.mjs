@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { access, readFile } from "node:fs/promises";
+import { access, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
 
 import { runCli } from "../src/cli.mjs";
+import { SkillMarketError } from "../src/errors.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import {
   makeTempDirectory,
@@ -19,11 +20,76 @@ const execFileAsync = promisify(execFile);
 test("help exposes canonical commands and obsolete names are not aliases", async () => {
   const help = await runCli(["help"]);
   assert.equal(help.ok, true);
-  assert.deepEqual(Object.keys(help.data.commands), ["list", "discover", "config"]);
+  assert.deepEqual(Object.keys(help.data.commands), [
+    "list",
+    "discover",
+    "download",
+    "install",
+    "update",
+    "enable",
+    "disable",
+    "uninstall",
+    "config",
+  ]);
+  assert.equal(help.data.commands.list.options["--history"].default, false);
+  assert.match(help.data.lifecycle.catalogPolicy.explicitStale, /exact/u);
+  assert.match(help.data.lifecycle.adapters.codex.pluginEnableDisable, /unsupported/u);
   const obsolete = await runCli(["search"]);
   assert.equal(obsolete.ok, false);
   assert.equal(obsolete.error.code, "unknown-command");
   assert.ok(!obsolete.error.details.allowed.includes("search"));
+});
+
+test("lifecycle CLI maps exact options and domain warnings into the v1 envelope", async () => {
+  let received;
+  const result = await runCli(
+    [
+      "update",
+      "codex:plugin:fixture-codex",
+      "--repo-path",
+      "/tmp/fixture-repo",
+      "--allow-stale-head",
+      "a".repeat(40),
+      "--force",
+      "--confirm-reinstall",
+    ],
+    {
+      executeLifecycle: async (input) => {
+        received = input;
+        return {
+          status: "ok",
+          summary: "fixture update",
+          data: { id: input.id },
+          warnings: [{ code: "restart-required", message: "restart" }],
+        };
+      },
+    },
+  );
+  assert.equal(result.ok, true);
+  assert.equal(result.command, "update");
+  assert.equal(received.options.sourceOverrides.repoPath, "/tmp/fixture-repo");
+  assert.equal(received.options.allowStaleHead, "a".repeat(40));
+  assert.equal(received.options.force, true);
+  assert.equal(received.options.confirmReinstall, true);
+  assert.equal(result.data.warnings[0].code, "restart-required");
+});
+
+test("lifecycle confirmation failures retain status, recovery, and exit-class data", async () => {
+  const result = await runCli(["install", "grok:plugin:fixture-grok"], {
+    executeLifecycle: async () => {
+      throw new SkillMarketError({
+        code: "grok-trust-confirmation",
+        message: "Trust is required.",
+        status: "needs_confirmation",
+        details: { id: "grok:plugin:fixture-grok" },
+        nextAction: "Inspect the source and retry with --confirm-trust.",
+      });
+    },
+  });
+  assert.equal(result.ok, false);
+  assert.equal(result.status, "needs_confirmation");
+  assert.equal(result.error.code, "grok-trust-confirmation");
+  assert.match(result.error.nextAction, /--confirm-trust/u);
 });
 
 test("list reads local state without creating config or cache", async () => {
@@ -147,5 +213,75 @@ test("the executable lists three adapters through fake binaries without network 
     } finally {
       await removeTempDirectory(binaryDirectory);
     }
+  });
+});
+
+test("the executable runs the full standalone lifecycle in an isolated HOME", async () => {
+  await withTemporaryHome(async (home) => {
+    const repoRoot = path.join(home, "fixture-repo");
+    const catalogPath = path.join(repoRoot, "catalog", "entries.json");
+    const skillPath = path.join(repoRoot, "skills", "codex", "fixture-skill");
+    await mkdir(skillPath, { recursive: true });
+    await mkdir(path.dirname(catalogPath), { recursive: true });
+    const catalog = structuredClone(fixtureCatalog);
+    await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
+    await writeFile(path.join(skillPath, "SKILL.md"), "fixture v1\n", "utf8");
+    const executable = path.resolve("tooling/skill-market-cli/bin/skill-market.mjs");
+    const env = {
+      HOME: home,
+      PATH: path.dirname(process.execPath),
+    };
+    const invoke = async (...args) => {
+      const { stdout } = await execFileAsync(process.execPath, [executable, ...args], { env });
+      return JSON.parse(stdout);
+    };
+    const id = "codex:standalone:fixture-skill";
+
+    assert.equal((await invoke("install", id, "--repo-path", repoRoot)).status, "ok");
+    assert.equal((await invoke("disable", id)).data.activation, "disabled");
+
+    catalog.packages.find((entry) => entry.id === id).version = "0.0.2";
+    await writeFile(catalogPath, `${JSON.stringify(catalog, null, 2)}\n`, "utf8");
+    await writeFile(path.join(skillPath, "SKILL.md"), "fixture v2\n", "utf8");
+    const updated = await invoke("update", id, "--repo-path", repoRoot);
+    assert.equal(updated.data.activation, "disabled");
+    assert.equal(updated.data.version, "0.0.2");
+
+    const listed = await invoke(
+      "list",
+      "--adapter",
+      "codex",
+      "--kind",
+      "standalone",
+      "--repo-path",
+      repoRoot,
+    );
+    assert.equal(listed.data.items[0].localState, "disabled");
+    assert.equal(listed.data.items[0].drifted, false);
+    assert.equal(listed.data.items[0].updateState, "current");
+
+    assert.equal((await invoke("enable", id)).data.activation, "active");
+    assert.equal((await invoke("uninstall", id)).status, "ok");
+    const withoutHistory = await invoke(
+      "list",
+      "--adapter",
+      "codex",
+      "--kind",
+      "standalone",
+      "--repo-path",
+      repoRoot,
+    );
+    assert.equal(withoutHistory.data.page.total, 0);
+    const history = await invoke(
+      "list",
+      "--adapter",
+      "codex",
+      "--kind",
+      "standalone",
+      "--repo-path",
+      repoRoot,
+      "--history",
+    );
+    assert.equal(history.data.items[0].localState, "absent");
   });
 });

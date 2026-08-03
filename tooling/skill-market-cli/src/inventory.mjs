@@ -1,3 +1,5 @@
+import path from "node:path";
+
 import { ADAPTERS, PACKAGE_KINDS } from "./contracts.mjs";
 import { readManagedPackages } from "./managed-state.mjs";
 import { readNativePlugins } from "./native-inventory.mjs";
@@ -42,7 +44,14 @@ export async function collectLocalInventory({
     const results = await Promise.all(
       adapters.map(async (adapter) => {
         try {
-          return await nativeReader({ adapter, marketplaceName, env });
+          const packageNames = catalogSnapshot
+            ? catalogSnapshot.catalog.packages
+                .filter((entry) => entry.adapter === adapter && entry.kind === "plugin")
+                .map((entry) => entry.name)
+            : adapter === "grok"
+              ? ["skill-market-grok"]
+              : [];
+          return await nativeReader({ adapter, marketplaceName, packageNames, env });
         } catch (error) {
           warnings.push({
             code: error.code ?? "native-list-failed",
@@ -57,7 +66,10 @@ export async function collectLocalInventory({
   }
   if (kinds.includes("standalone")) {
     try {
-      const managed = await readManagedPackages(statePath);
+      const managed = await readManagedPackages(statePath, {
+        home: env.HOME,
+        marketHome: path.dirname(statePath),
+      });
       items.push(...managed.filter((item) => adapters.includes(item.adapter)));
     } catch (error) {
       warnings.push({
