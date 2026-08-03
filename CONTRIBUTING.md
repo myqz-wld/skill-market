@@ -185,7 +185,7 @@ Do not reintroduce legacy aliases or manual cache, state, filesystem, native CLI
 - `list` must not clone, fetch, or refresh a catalog.
 - Catalog mutations must not automatically fall back to stale data.
 - Native marketplace/source identity must match the effective catalog source before mutation.
-- Standalone mutations must remain contained to canonical managed paths and preserve transactional rollback.
+- Standalone mutations must remain contained to canonical managed paths and preserve transactional rollback. An exact adapter root may resolve through a symbolic link to an existing real directory, but managed descendants below that resolved containment root must not be symbolic links.
 - Update must preserve activation state.
 - Disable must never be emulated by uninstall.
 - Grok trust requires explicit confirmation after source inspection.

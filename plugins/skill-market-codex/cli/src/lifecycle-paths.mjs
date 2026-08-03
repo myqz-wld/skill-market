@@ -1,6 +1,6 @@
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-import { lstat } from "node:fs/promises";
+import { lstat, realpath } from "node:fs/promises";
 
 import { ADAPTERS, isKebabCase } from "./contracts.mjs";
 import { SkillMarketError } from "./errors.mjs";
@@ -155,15 +155,42 @@ async function assertManagedFile(filePath, label) {
   }
 }
 
+async function resolveAdapterTopologyRoot(paths) {
+  const metadata = await metadataIfExists(paths.adapterRoot);
+  if (!metadata?.isSymbolicLink()) {
+    await assertDirectoryChain(paths.home, paths.adapterRoot, "adapterRoot");
+    return paths.adapterRoot;
+  }
+
+  // The adapter-owned root is the one supported relocation boundary. Descendants
+  // are validated against its resolved directory and must remain real directories.
+  let resolvedRoot;
+  try {
+    resolvedRoot = await realpath(paths.adapterRoot);
+  } catch {
+    throw unsafeTopology(
+      "adapterRoot",
+      paths.adapterRoot,
+      "symbolic-link adapter root does not resolve to an existing directory",
+    );
+  }
+  await assertDirectoryChain(resolvedRoot, resolvedRoot, "adapterRoot", {
+    rootRequired: true,
+  });
+  return resolvedRoot;
+}
+
 export async function assertStandalonePathTopology(paths, statePath) {
   await assertDirectoryChain(paths.home, paths.home, "HOME", { rootRequired: true });
+  const topologyRoot = await resolveAdapterTopologyRoot(paths);
   for (const target of [
-    paths.adapterRoot,
     paths.activeRoot,
     paths.disabledRoot,
     path.dirname(paths.transactionRoot),
   ]) {
-    await assertDirectoryChain(paths.home, target, "adapterRoot");
+    const relative = path.relative(paths.adapterRoot, target);
+    const topologyTarget = path.join(topologyRoot, relative);
+    await assertDirectoryChain(topologyRoot, topologyTarget, "adapterRoot");
   }
   await assertManagedStatePathTopology({
     marketHome: paths.marketHome,

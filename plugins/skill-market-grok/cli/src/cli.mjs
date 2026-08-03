@@ -22,7 +22,7 @@ import {
 } from "./proposal.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
-export const CLI_VERSION = "0.1.3";
+export const CLI_VERSION = "0.1.4";
 
 const GLOBAL_OPTIONS = {
   pretty: { key: "pretty", type: "boolean" },
@@ -295,6 +295,10 @@ function lifecycleHelpContract() {
           pluginUpdate: "native for remote sources; verified local sources use a keep-data reinstall and restore disabled state",
           persistentData: "kept by default on uninstall",
         },
+      },
+      standalonePathTopology: {
+        adapterRoot: "~/.claude, ~/.codex, or ~/.grok may be a symbolic link resolving to an existing real directory; the resolved directory is the containment root",
+        descendants: "skills, skills.disabled, transaction roots, package state, and lock ancestors must not redirect through symbolic links",
       },
       recovery: {
         "needs_confirmation": "inspect the exact details and retry only with the nextAction flag named by the error",
