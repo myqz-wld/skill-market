@@ -24,7 +24,7 @@
     },
     {
       "path": "src/cli.mjs",
-      "sha256": "018cb789f7f89e7233bec72d9dfa4330f55a78ac9da310c3bdbb0dc66fa63c0c"
+      "sha256": "ff4a61cf2aafa9d6bbf31fe7f8f57d59c4b0fe1a64f5344254690d60312bf225"
     },
     {
       "path": "src/config.mjs",
@@ -92,7 +92,7 @@
     },
     {
       "path": "src/native-inventory.mjs",
-      "sha256": "0585b1eb3dee786026eab06e0a133ae8ddafd1a4a5fe518393de7f4f372638e4"
+      "sha256": "62c3f122e8aa462d05c10c74908b07f834d2797d6acaa68e31549a75bfe0ffee"
     },
     {
       "path": "src/native-source.mjs",

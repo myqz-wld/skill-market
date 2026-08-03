@@ -87,10 +87,10 @@ export function parseNativePluginList(
     }
     const split = splitPluginId(entry.pluginId ?? entry.id);
     const name = entry.name ?? split.name;
-    const market = entry.marketplaceName ?? split.marketplaceName;
+    const market = entry.marketplaceName ?? entry.marketplace ?? split.marketplaceName ?? null;
     const belongsToMarket =
       market === marketplaceName ||
-      (adapter === "grok" && market === undefined && packageNames.includes(name));
+      (adapter === "grok" && market === null && packageNames.includes(name));
     if (!belongsToMarket || entry.installed === false) {
       continue;
     }
@@ -106,10 +106,10 @@ export function parseNativePluginList(
       localState: entry.enabled === false ? "disabled" : "active",
       drifted: null,
       ownership: "native",
-      location: entry.source?.path ?? entry.installPath ?? null,
+      location: entry.source?.path ?? entry.installPath ?? entry.path ?? null,
       native: {
         marketplaceName: market,
-        pluginId: entry.pluginId ?? entry.id ?? `${name}@${market}`,
+        pluginId: entry.pluginId ?? entry.id ?? (market ? `${name}@${market}` : name),
         scope: entry.scope ?? null,
         marketplaceSource: entry.marketplaceSource ?? null,
         source: entry.source ?? entry.repository ?? null,
