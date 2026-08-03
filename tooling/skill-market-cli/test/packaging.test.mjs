@@ -75,7 +75,7 @@ test("checked-in plugin bundles execute the canonical CLI", async () => {
     });
     const result = JSON.parse(stdout);
     assert.equal(result.ok, true, adapter);
-    assert.equal(result.data.version, "0.1.2", adapter);
+    assert.equal(result.data.version, "0.1.3", adapter);
 
     const help = await execFileAsync(process.execPath, [cli, "help"], {
       env: { ...process.env },

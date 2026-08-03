@@ -213,6 +213,59 @@ async function runClaude({
   return nativeSuccess(operation, entry, warnings, { scope });
 }
 
+function grokInstalledSource(installed) {
+  const raw = installed?.native?.source;
+  if (typeof raw === "string") return raw;
+  return raw?.path ?? raw?.url ?? raw?.source ?? null;
+}
+
+async function reinstallLocalGrok({ entry, installed, source, execute, env }) {
+  await execute(
+    "grok",
+    ["plugin", "uninstall", entry.name, "--confirm", "--keep-data"],
+    env,
+  );
+  let retried = false;
+  try {
+    await execute("grok", ["plugin", "install", source, "--trust"], env);
+  } catch (firstError) {
+    try {
+      await execute("grok", ["plugin", "install", source, "--trust"], env);
+      retried = true;
+    } catch (secondError) {
+      throw new SkillMarketError({
+        code: "grok-reinstall-failed",
+        message: "Grok removed the old local-source plugin but both bounded reinstall attempts failed.",
+        status: "blocked",
+        details: {
+          id: entry.id,
+          source,
+          firstError: firstError.message,
+          secondError: secondError.message,
+        },
+        nextAction: `Restore source access, then run grok plugin install ${JSON.stringify(source)} --trust immediately.`,
+        cause: secondError,
+      });
+    }
+  }
+  if (installed.localState === "disabled") {
+    await execute("grok", ["plugin", "disable", entry.name], env);
+  }
+  const warnings = [
+    {
+      code: "grok-local-source-reinstalled",
+      message: "Grok local-source version metadata was refreshed with a keep-data reinstall.",
+    },
+  ];
+  if (retried) {
+    warnings.unshift({
+      code: "grok-reinstall-retried",
+      message: "The first Grok reinstall failed; one bounded retry succeeded.",
+    });
+  }
+  return nativeSuccess("update", entry, warnings);
+}
+
 async function runGrok({
   operation,
   entry,
@@ -257,6 +310,10 @@ async function runGrok({
       git,
       confirmSourceChange: options.confirmSourceChange,
     });
+    const source = grokInstalledSource(installed);
+    if (source && path.isAbsolute(source)) {
+      return reinstallLocalGrok({ entry, installed, source, execute, env });
+    }
     await execute("grok", ["plugin", "update", entry.name], env);
   } else if (operation === "enable" || operation === "disable") {
     if (!installed) throw nativeMissing(entry, operation);

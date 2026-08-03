@@ -74,7 +74,15 @@ const BASELINES = {
     nativeCommand: "grok",
     plugin: {
       operations: Object.fromEntries(
-        NATIVE_PLUGIN_OPERATIONS.map((name) => [name, operation("native", null)]),
+        NATIVE_PLUGIN_OPERATIONS.map((name) => [
+          name,
+          name === "update"
+            ? operation(
+                "composed",
+                "Use native update for remote sources; refresh verified local-source metadata with a keep-data reinstall and restore disabled state.",
+              )
+            : operation("native", null),
+        ]),
       ),
       preserveInstallScope: false,
       requiresExplicitTrust: true,

@@ -25,7 +25,10 @@ test("Codex capability gaps are explicit and recoverable", () => {
 
 test("Claude scope and Grok trust requirements remain adapter-specific", () => {
   assert.equal(getAdapterCapabilities("claude").plugin.preserveInstallScope, true);
-  assert.equal(getAdapterCapabilities("grok").plugin.requiresExplicitTrust, true);
+  const grok = getAdapterCapabilities("grok");
+  assert.equal(grok.plugin.requiresExplicitTrust, true);
+  assert.equal(grok.plugin.operations.update.level, "composed");
+  assert.match(grok.plugin.operations.update.detail, /local-source metadata/u);
 });
 
 test("capability validation rejects incomplete operation contracts", () => {

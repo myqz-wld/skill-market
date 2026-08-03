@@ -430,7 +430,7 @@ test("Grok installation requires trust and local lifecycle verifies source prove
   });
 });
 
-test("Grok exposes native update, enable, disable, and uninstall with keep-data defaults", async () => {
+test("Grok refreshes local-source metadata, preserves activation, and keeps data by default", async () => {
   await withTemporaryHome(async (home) => {
     const fixture = await nativeFixture(home, "grok");
     const source = { path: path.join(fixture.root, fixture.entry.path) };
@@ -456,17 +456,78 @@ test("Grok exposes native update, enable, disable, and uninstall with keep-data 
         ],
       });
 
-    await invoke("update");
+    const updated = await invoke("update", { localState: "disabled" });
+    assert.equal(updated.warnings[0].code, "grok-local-source-reinstalled");
     await invoke("enable", { localState: "disabled" });
     await invoke("disable");
     await invoke("uninstall");
     await invoke("uninstall", {}, { removeData: true });
     assert.deepEqual(calls, [
-      ["grok", ["plugin", "update", "fixture-grok"]],
+      ["grok", ["plugin", "uninstall", "fixture-grok", "--confirm", "--keep-data"]],
+      ["grok", ["plugin", "install", source.path, "--trust"]],
+      ["grok", ["plugin", "disable", "fixture-grok"]],
       ["grok", ["plugin", "enable", "fixture-grok"]],
       ["grok", ["plugin", "disable", "fixture-grok"]],
       ["grok", ["plugin", "uninstall", "fixture-grok", "--confirm", "--keep-data"]],
       ["grok", ["plugin", "uninstall", "fixture-grok", "--confirm"]],
     ]);
+  });
+});
+
+test("Grok keeps native update for non-local sources", async () => {
+  await withTemporaryHome(async (home) => {
+    const fixture = await nativeFixture(home, "grok");
+    const calls = [];
+    const result = await runNativePluginLifecycle({
+      operation: "update",
+      entry: fixture.entry,
+      snapshot: fixture.snapshot,
+      repository: fixture.repository,
+      options: { confirmSourceChange: true },
+      execute: async (command, args) => {
+        calls.push([command, args]);
+        return [];
+      },
+      git: fixture.git,
+      readPlugins: async () => [
+        installed(fixture.entry, {
+          native: { source: "https://example.test/skill-market.git" },
+        }),
+      ],
+    });
+    assert.equal(result.status, "ok");
+    assert.deepEqual(calls, [["grok", ["plugin", "update", "fixture-grok"]]]);
+  });
+});
+
+test("Grok bounds local-source reinstall retries after preserving data", async () => {
+  await withTemporaryHome(async (home) => {
+    const fixture = await nativeFixture(home, "grok");
+    const source = path.join(fixture.root, fixture.entry.path);
+    let installAttempts = 0;
+    await assert.rejects(
+      runNativePluginLifecycle({
+        operation: "update",
+        entry: fixture.entry,
+        snapshot: fixture.snapshot,
+        repository: fixture.repository,
+        execute: async (command, args) => {
+          if (args[1] === "install") {
+            installAttempts += 1;
+            throw new Error(`install failure ${installAttempts}`);
+          }
+          return [];
+        },
+        git: fixture.git,
+        readPlugins: async () => [
+          installed(fixture.entry, { native: { source: { path: source } } }),
+        ],
+      }),
+      (error) =>
+        error.code === "grok-reinstall-failed" &&
+        error.status === "blocked" &&
+        /grok plugin install/u.test(error.nextAction),
+    );
+    assert.equal(installAttempts, 2);
   });
 });
