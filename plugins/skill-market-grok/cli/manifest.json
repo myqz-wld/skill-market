@@ -24,7 +24,7 @@
     },
     {
       "path": "src/cli.mjs",
-      "sha256": "0a0b54dbf42aea99030b836bb9b5a61a27fbc9142cc3d36dba710fe06fdd182f"
+      "sha256": "d74ac4799de17ed9cde859d3ad48f5cfcb1bf25dca932fbc7db62e4d48c85bb2"
     },
     {
       "path": "src/config.mjs",
@@ -64,7 +64,7 @@
     },
     {
       "path": "src/lifecycle-paths.mjs",
-      "sha256": "eedaf7c95ce47d40f98ef616c8df496715a04b97525903e2c81c6fb4bfc21060"
+      "sha256": "d7fcf0cb3c9f85c769cb4094bc956f83b4fc2cc820a81dbaf96cf8bdaae9995a"
     },
     {
       "path": "src/lifecycle-source.mjs",

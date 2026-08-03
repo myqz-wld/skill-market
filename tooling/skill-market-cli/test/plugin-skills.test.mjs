@@ -169,7 +169,7 @@ test("focused Skills name every command-specific option from the CLI contract", 
   }
 });
 
-test("plugin manifests expose v0.1.3 without legacy search or upload promises", async () => {
+test("plugin manifests expose v0.1.4 without legacy search or upload promises", async () => {
   const manifests = {
     codex: ".codex-plugin/plugin.json",
     claude: ".claude-plugin/plugin.json",
@@ -179,7 +179,7 @@ test("plugin manifests expose v0.1.3 without legacy search or upload promises", 
     const file = path.resolve(`plugins/skill-market-${adapter}`, manifests[adapter]);
     const manifest = JSON.parse(await readFile(file, "utf8"));
     assert.equal(manifest.name, `skill-market-${adapter}`);
-    assert.equal(manifest.version, "0.1.3");
+    assert.equal(manifest.version, "0.1.4");
     assert.match(manifest.description, /bundled CLI/u);
     assert.doesNotMatch(JSON.stringify(manifest), /searching|uploading|skill-search|skill-upload/u);
   }

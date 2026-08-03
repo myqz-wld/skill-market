@@ -185,7 +185,7 @@ Downloads default to:
 ~/.skill-market/downloads/<adapter>/<kind>/<name>/<version>
 ```
 
-Standalone mutations use locks, path-containment checks, content digests, staging, atomic swaps, and rollback. Drift, unmanaged collisions, source changes, and incomplete rollback produce explicit confirmation or recovery results instead of silent overwrite.
+Standalone mutations use locks, path-containment checks, content digests, staging, atomic swaps, and rollback. The exact adapter root (`~/.claude`, `~/.codex`, or `~/.grok`) may be a symbolic link to an existing real directory; its resolved directory becomes the containment root. Symbolic links below that boundary, including `skills`, `skills.disabled`, and transaction directories, remain blocked, as do dangling adapter-root links. Drift, unmanaged collisions, source changes, and incomplete rollback produce explicit confirmation or recovery results instead of silent overwrite.
 
 ## Native Adapter Differences
 

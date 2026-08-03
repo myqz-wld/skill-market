@@ -14,7 +14,11 @@ import {
   updateStandalone,
 } from "../src/standalone-lifecycle.mjs";
 import { createStandaloneFixture } from "./helpers/lifecycle-fixture.mjs";
-import { withTemporaryHome } from "./helpers/temp-env.mjs";
+import {
+  makeTempDirectory,
+  removeTempDirectory,
+  withTemporaryHome,
+} from "./helpers/temp-env.mjs";
 
 const FIXED_NOW = () => Date.parse("2026-08-03T00:00:00.000Z");
 
@@ -212,7 +216,61 @@ test("duplicate active and disabled paths are treated as broken, not guessed", a
   });
 });
 
-test("symlinked adapter roots cannot redirect managed writes outside HOME", async () => {
+for (const adapter of ["claude", "codex", "grok"]) {
+  test(`${adapter} writes through a symlinked adapter root`, async () => {
+    await withTemporaryHome(async (home) => {
+      const fixture = await createStandaloneFixture(home, { adapter });
+      const relocatedRoot = await makeTempDirectory(`skill-market-${adapter}-root-`);
+      try {
+        assert.ok(path.relative(home, relocatedRoot).startsWith(".."));
+        await symlink(relocatedRoot, path.join(home, `.${adapter}`));
+
+        const installed = await installStandalone({ ...fixture, home, now: FIXED_NOW });
+        const logicalPaths = resolveStandalonePaths({
+          adapter,
+          name: fixture.entry.name,
+          home,
+          marketHome: fixture.marketHome,
+        });
+        assert.equal(installed.data.path, logicalPaths.activePath);
+        assert.equal(
+          await readFile(
+            path.join(relocatedRoot, "skills", fixture.entry.name, "SKILL.md"),
+            "utf8",
+          ),
+          "fixture v1\n",
+        );
+
+        await setStandaloneActivation({
+          id: fixture.entry.id,
+          identity: fixture.entry,
+          desired: "disabled",
+          statePath: fixture.statePath,
+          home,
+          marketHome: fixture.marketHome,
+          now: FIXED_NOW,
+        });
+        assert.equal(
+          await readFile(
+            path.join(relocatedRoot, "skills.disabled", fixture.entry.name, "SKILL.md"),
+            "utf8",
+          ),
+          "fixture v1\n",
+        );
+        const [managed] = await readManagedPackages(fixture.statePath, {
+          home,
+          marketHome: fixture.marketHome,
+        });
+        assert.equal(managed.localState, "disabled");
+        assert.equal(managed.location, logicalPaths.disabledPath);
+      } finally {
+        await removeTempDirectory(relocatedRoot);
+      }
+    });
+  });
+}
+
+test("symlinked skills roots cannot redirect managed writes outside the adapter root", async () => {
   await withTemporaryHome(async (home) => {
     const fixture = await createStandaloneFixture(home);
     const outside = path.join(home, "outside");
@@ -224,6 +282,17 @@ test("symlinked adapter roots cannot redirect managed writes outside HOME", asyn
       (error) => error instanceof SkillMarketError && error.code === "unsafe-path-topology",
     );
     await assert.rejects(access(path.join(outside, fixture.entry.name)), { code: "ENOENT" });
+  });
+});
+
+test("dangling adapter-root symlinks remain blocked", async () => {
+  await withTemporaryHome(async (home) => {
+    const fixture = await createStandaloneFixture(home);
+    await symlink(path.join(home, "missing-codex"), path.join(home, ".codex"));
+    await assert.rejects(
+      installStandalone({ ...fixture, home, now: FIXED_NOW }),
+      (error) => error instanceof SkillMarketError && error.code === "unsafe-path-topology",
+    );
   });
 });
 
