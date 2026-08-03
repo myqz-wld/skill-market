@@ -102,6 +102,29 @@ test("list filters only normalized local inventory and retains provenance", () =
   assert.equal(result.catalog.loaded, false);
 });
 
+test("list excludes absent history by default and requires an explicit history view", () => {
+  const inventory = {
+    catalog: { loaded: false, freshness: null, source: null },
+    warnings: [],
+    items: [
+      {
+        id: "codex:standalone:past",
+        adapter: "codex",
+        kind: "standalone",
+        localState: "absent",
+        ownership: "skill-market",
+        updateState: "unknown",
+      },
+    ],
+  };
+  assert.equal(listInventory({ inventory }).page.total, 0);
+  assert.equal(listInventory({ inventory, history: true }).page.total, 1);
+  assert.throws(
+    () => listInventory({ inventory, localStates: ["absent"] }),
+    (error) => error.code === "history-required",
+  );
+});
+
 test("query validation rejects invalid filters and unbounded pages", () => {
   assert.throws(() => discoverCatalog({ catalog, adapters: ["other"] }), /unsupported values/u);
   assert.throws(() => discoverCatalog({ catalog, limit: 101 }), /1 through 100/u);

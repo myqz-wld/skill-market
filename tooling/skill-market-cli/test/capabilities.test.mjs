@@ -18,7 +18,7 @@ test("baseline capability contracts cover Claude, Codex, and Grok", () => {
 test("Codex capability gaps are explicit and recoverable", () => {
   const codex = getAdapterCapabilities("codex");
   assert.equal(codex.plugin.operations.update.level, "composed");
-  assert.match(codex.plugin.operations.update.detail, /restores the prior installation/u);
+  assert.match(codex.plugin.operations.update.detail, /explicit reinstall confirmation/u);
   assert.equal(codex.plugin.operations.enable.level, "unsupported");
   assert.equal(codex.plugin.operations.disable.level, "unsupported");
 });

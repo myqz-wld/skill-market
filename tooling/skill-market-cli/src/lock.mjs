@@ -22,6 +22,19 @@ async function removeStaleLock(lockPath, staleMs, now) {
   if (now() - metadata.mtimeMs < staleMs) {
     return false;
   }
+  try {
+    const owner = JSON.parse(await readFile(path.join(lockPath, "owner.json"), "utf8"));
+    if (Number.isInteger(owner.pid) && owner.pid > 0) {
+      try {
+        process.kill(owner.pid, 0);
+        return false;
+      } catch (error) {
+        if (error.code !== "ESRCH") return false;
+      }
+    }
+  } catch {
+    // Missing or invalid owner metadata cannot prove that the stale lock is active.
+  }
   const stalePath = `${lockPath}.stale-${randomUUID()}`;
   try {
     await rename(lockPath, stalePath);

@@ -67,6 +67,9 @@ function fakeGit(overrides = {}) {
     async head() {
       return HEAD;
     },
+    async status() {
+      return "";
+    },
     ...overrides,
   };
 }
@@ -217,5 +220,20 @@ test("invalid cache marker JSON is surfaced without rewriting it", async () => {
     assert.equal(optional.snapshot, null);
     assert.equal(optional.warnings[0].code, "invalid-cache-marker");
     assert.equal(await readFile(markerPath, "utf8"), "{invalid");
+  });
+});
+
+test("invalid catalog content returns a typed blocked recovery", async () => {
+  await withTemporaryHome(async (home) => {
+    const repoPath = path.join(home, "checkout");
+    await mkdir(path.join(repoPath, "catalog"), { recursive: true });
+    await writeFile(path.join(repoPath, "catalog/entries.json"), "{invalid", "utf8");
+    await assert.rejects(
+      loadCatalogSnapshot({ config: configFor(home, { repoPath }), offline: true }),
+      (error) =>
+        error.code === "invalid-catalog" &&
+        error.status === "blocked" &&
+        /catalog\/entries\.json/u.test(error.nextAction),
+    );
   });
 });

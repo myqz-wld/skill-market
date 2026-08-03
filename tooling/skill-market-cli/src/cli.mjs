@@ -12,6 +12,7 @@ import {
   loadOptionalCatalogSnapshot,
 } from "./cache.mjs";
 import { collectLocalInventory } from "./inventory.mjs";
+import { executeLifecycle } from "./lifecycle.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
 export const CLI_VERSION = "0.1.0";
@@ -38,6 +39,7 @@ const LIST_OPTIONS = {
   "local-state": { key: "localStates", type: "list" },
   ownership: { key: "ownership", type: "list" },
   "update-state": { key: "updateStates", type: "list" },
+  history: { key: "history", type: "boolean" },
   offset: { key: "offset", type: "value" },
   limit: { key: "limit", type: "value" },
 };
@@ -56,7 +58,261 @@ const DISCOVER_OPTIONS = {
 
 const CONFIG_OPTIONS = { ...GLOBAL_OPTIONS };
 
+const CATALOG_MUTATION_OPTIONS = {
+  ...GLOBAL_OPTIONS,
+  ...SOURCE_OPTIONS,
+  "allow-stale-head": { key: "allowStaleHead", type: "value" },
+};
+
+const DOWNLOAD_OPTIONS = {
+  ...CATALOG_MUTATION_OPTIONS,
+  "allow-deprecated": { key: "allowDeprecated", type: "boolean" },
+  destination: { key: "destination", type: "value" },
+  force: { key: "force", type: "boolean" },
+};
+
+const INSTALL_OPTIONS = {
+  ...CATALOG_MUTATION_OPTIONS,
+  "allow-deprecated": { key: "allowDeprecated", type: "boolean" },
+  adopt: { key: "adopt", type: "boolean" },
+  "confirm-source-change": { key: "confirmSourceChange", type: "boolean" },
+  "confirm-trust": { key: "confirmTrust", type: "boolean" },
+  scope: { key: "scope", type: "value" },
+};
+
+const UPDATE_OPTIONS = {
+  ...CATALOG_MUTATION_OPTIONS,
+  force: { key: "force", type: "boolean" },
+  "confirm-drift": { key: "confirmDrift", type: "boolean" },
+  "confirm-source-change": { key: "confirmSourceChange", type: "boolean" },
+  "confirm-reinstall": { key: "confirmReinstall", type: "boolean" },
+  scope: { key: "scope", type: "value" },
+};
+
+const LOCAL_PROVENANCE_OPTIONS = {
+  "read-repo-url": SOURCE_OPTIONS["read-repo-url"],
+  "cache-path": SOURCE_OPTIONS["cache-path"],
+  "repo-path": SOURCE_OPTIONS["repo-path"],
+};
+
+const ACTIVATION_OPTIONS = {
+  ...GLOBAL_OPTIONS,
+  ...LOCAL_PROVENANCE_OPTIONS,
+  "confirm-drift": { key: "confirmDrift", type: "boolean" },
+  "confirm-source-change": { key: "confirmSourceChange", type: "boolean" },
+  scope: { key: "scope", type: "value" },
+};
+
+const UNINSTALL_OPTIONS = {
+  ...ACTIVATION_OPTIONS,
+  adopt: { key: "adopt", type: "boolean" },
+  "remove-data": { key: "removeData", type: "boolean" },
+};
+
+const LIFECYCLE_DEFINITIONS = Object.freeze({
+  download: DOWNLOAD_OPTIONS,
+  install: INSTALL_OPTIONS,
+  update: UPDATE_OPTIONS,
+  enable: ACTIVATION_OPTIONS,
+  disable: ACTIVATION_OPTIONS,
+  uninstall: UNINSTALL_OPTIONS,
+});
+
+const LIFECYCLE_OPTION_KEYS = Object.freeze([
+  "allowStaleHead",
+  "allowDeprecated",
+  "destination",
+  "force",
+  "adopt",
+  "confirmDrift",
+  "confirmSourceChange",
+  "confirmTrust",
+  "confirmReinstall",
+  "scope",
+  "removeData",
+]);
+
+function lifecycleHelpContract() {
+  const stableId = {
+    name: "id",
+    type: "canonical package id",
+    format: "<adapter>:<kind>:<kebab-case-name>",
+    adapters: ["claude", "codex", "grok"],
+    kinds: ["plugin", "standalone"],
+    required: true,
+  };
+  const catalogMutation = [
+    "--read-repo-url",
+    "--base-ref",
+    "--cache-path",
+    "--cache-ttl-seconds",
+    "--repo-path",
+    "--allow-stale-head",
+  ];
+  const localSource = [
+    "--read-repo-url",
+    "--cache-path",
+    "--repo-path",
+  ];
+  return {
+    contract: {
+      identity: stableId,
+      localProvenanceOptions: "--read-repo-url, --cache-path, and --repo-path apply only to native plugin enable/disable/uninstall source verification; standalone local operations reject source overrides",
+      catalogPolicy: {
+        default: "download/install/update request the latest catalog and reject refresh failure; no automatic stale fallback",
+        explicitStale: "--allow-stale-head pins the exact already-cached commit and forces offline mode; marker head, actual Git HEAD, and a clean cache worktree must agree",
+        active: "eligible for download, install, and update",
+        deprecated: "update is allowed; new download/install requires --allow-deprecated",
+        disabled: "download/install/update are blocked",
+        removed: "download/install/update are blocked; local disable/enable/uninstall remains available",
+      },
+      options: {
+        "--allow-stale-head": {
+          type: "lowercase commit id",
+          format: "exactly 40 or 64 hexadecimal characters",
+          default: null,
+          appliesTo: ["download", "install", "update"],
+          effect: "read the matching configured cache offline; reject any head mismatch",
+        },
+        "--allow-deprecated": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["download", "install"],
+          effect: "accept a deprecated catalog entry for a new copy or installation",
+        },
+        "--destination": {
+          type: "absolute path or ~/ path",
+          default: "~/.skill-market/downloads/<adapter>/<kind>/<name>/<version>",
+          appliesTo: ["download"],
+          constraint: "must remain below ~/.skill-market/downloads (or the configured SKILL_MARKET_HOME downloads root)",
+        },
+        "--force": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["download", "update"],
+          effect: "replace differing download content or reinstall an already-current package",
+        },
+        "--adopt": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["standalone install", "standalone uninstall"],
+          effect: "authorize replacing or removing an exact unmanaged canonical package path after inspection",
+        },
+        "--confirm-drift": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["standalone update", "standalone enable", "standalone disable", "standalone uninstall"],
+          effect: "authorize overwrite, move, or deletion after the local digest differs from managed state",
+        },
+        "--confirm-source-change": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["standalone update", "Grok plugin install/update/enable/disable/uninstall"],
+          effect: "accept a verified source-identity change or missing/mismatched Grok provenance",
+        },
+        "--confirm-trust": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["Grok plugin install"],
+          effect: "pass Grok --trust only after the caller inspected the exact catalog package",
+        },
+        "--confirm-reinstall": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["Codex plugin update"],
+          effect: "authorize marketplace upgrade followed by remove/add and at most one add retry",
+        },
+        "--scope": {
+          type: "enum",
+          values: ["user", "project", "local", "managed"],
+          default: "detected installed scope, otherwise user for a new install; missing installed scope blocks until --scope is explicit",
+          appliesTo: ["Claude plugin install/update/enable/disable/uninstall"],
+          constraints: [
+            "install accepts user, project, or local",
+            "managed is update-only; managed enable/disable/uninstall is controlled by policy",
+            "an explicit scope cannot differ from a detected installed scope",
+          ],
+        },
+        "--remove-data": {
+          type: "boolean",
+          default: false,
+          appliesTo: ["Claude plugin uninstall", "Grok plugin uninstall"],
+          effect: "omit the native --keep-data flag and allow native persistent plugin data removal",
+        },
+      },
+      adapters: {
+        codex: {
+          pluginUpdate: "composed marketplace upgrade plus confirmed remove/add with one bounded add retry",
+          pluginEnableDisable: "unsupported; uninstall is never substituted",
+        },
+        claude: {
+          scope: "detect and preserve user/project/local/managed scope within native capability limits",
+          persistentData: "kept by default on uninstall",
+          updateWarning: "restart Claude Code to apply an updated plugin",
+        },
+        grok: {
+          trust: "plugin install requires --confirm-trust",
+          provenance: "installed source must match the effective repository or require --confirm-source-change",
+          persistentData: "kept by default on uninstall",
+        },
+      },
+      recovery: {
+        "needs_confirmation": "inspect the exact details and retry only with the nextAction flag named by the error",
+        blocked: "do not retry unchanged; repair source, catalog status, path topology, state, or rollback condition named by nextAction",
+        unsupported: "choose the documented native alternative; do not emulate disable with uninstall",
+        error: "retry only when error.retryable is true after completing error.nextAction",
+        transaction: "successful rollback returns transaction-rolled-back; incomplete rollback returns rollback-failed and blocks further mutation",
+      },
+    },
+    commands: {
+      download: {
+        purpose: "Copy one exact catalog package into the managed downloads area without installing it.",
+        positionals: stableId,
+        options: [...catalogMutation, "--allow-deprecated", "--destination", "--force"],
+        sideEffects: "May refresh the catalog cache and atomically create or replace only the resolved download destination; never changes installed package state.",
+        idempotent: "matching content is noop; different content requires --force",
+      },
+      install: {
+        purpose: "Install one exact catalog plugin or standalone skill with adapter-specific safety gates.",
+        positionals: stableId,
+        options: [...catalogMutation, "--allow-deprecated", "--adopt", "--confirm-source-change", "--confirm-trust", "--scope"],
+        sideEffects: "May refresh the catalog cache; invokes the selected native plugin CLI or atomically writes one canonical standalone path plus managed state.",
+        idempotent: "matching existing installation is noop; version/content mismatch routes to update",
+      },
+      update: {
+        purpose: "Update one installed package from an eligible catalog entry while preserving activation and native scope.",
+        positionals: stableId,
+        options: [...catalogMutation, "--force", "--confirm-drift", "--confirm-source-change", "--confirm-reinstall", "--scope"],
+        sideEffects: "Refreshes or pins the catalog, then invokes the selected native updater or atomically swaps standalone content and managed state.",
+        idempotent: "current matching content is noop unless --force",
+      },
+      enable: {
+        purpose: "Enable one installed package without fetching catalog content.",
+        positionals: stableId,
+        options: [...localSource, "--confirm-drift", "--confirm-source-change", "--scope"],
+        sideEffects: "Moves one managed standalone directory or invokes the native adapter; Codex plugins return unsupported.",
+        idempotent: "already active is noop",
+      },
+      disable: {
+        purpose: "Disable one installed package while preserving its files and persistent data.",
+        positionals: stableId,
+        options: [...localSource, "--confirm-drift", "--confirm-source-change", "--scope"],
+        sideEffects: "Moves one managed standalone directory or invokes the native adapter; Codex plugins return unsupported.",
+        idempotent: "already disabled is noop",
+      },
+      uninstall: {
+        purpose: "Remove one installed package while retaining standalone history and native persistent data by default.",
+        positionals: stableId,
+        options: [...localSource, "--adopt", "--confirm-drift", "--confirm-source-change", "--scope", "--remove-data"],
+        sideEffects: "Atomically removes an exact standalone path and records absent history, or invokes native uninstall; --remove-data expands native deletion for Claude/Grok.",
+        idempotent: "already absent is noop",
+      },
+    },
+  };
+}
+
 export function helpContract() {
+  const lifecycle = lifecycleHelpContract();
   return {
     contractVersion: 1,
     version: CLI_VERSION,
@@ -96,11 +352,12 @@ export function helpContract() {
         options: {
           "--adapter": { type: "comma-separated enum", values: ["claude", "codex", "grok", "all"], default: "all" },
           "--kind": { type: "comma-separated enum", values: ["plugin", "standalone", "all"], default: "all" },
-          "--local-state": { type: "comma-separated enum", values: ["active", "disabled", "absent", "broken", "all"], default: "all" },
+          "--local-state": { type: "comma-separated enum", values: ["active", "disabled", "absent", "broken", "all"], default: "active,disabled,broken" },
           "--ownership": { type: "comma-separated enum", values: ["native", "skill-market", "adopted", "all"], default: "all" },
           "--update-state": { type: "comma-separated enum", values: ["current", "update_available", "ahead", "unknown", "catalog_missing", "all"], default: "all" },
           "--offset": { type: "integer", range: ">= 0", default: 0 },
           "--limit": { type: "integer", range: "1..100", default: 20 },
+          "--history": { type: "boolean", default: false, effect: "include expected absent standalone uninstall records; required when --local-state explicitly selects absent" },
         },
         sideEffects: "Runs adapter-native plugin list commands and reads managed state. It never clones, fetches, or writes config/cache/package state.",
         idempotent: true,
@@ -122,6 +379,7 @@ export function helpContract() {
         stalePolicy: "Refresh failure may return the existing cache with freshness=stale and a warning; source/ref mismatches always block.",
         idempotent: true,
       },
+      ...lifecycle.commands,
       config: {
         purpose: "Inspect or explicitly change Skill Market configuration.",
         actions: {
@@ -134,6 +392,7 @@ export function helpContract() {
         idempotent: true,
       },
     },
+    lifecycle: lifecycle.contract,
     sourceOptions: {
       "--read-repo-url": { type: "HTTPS URL without embedded credentials", default: "https://github.com/myqz-wld/skill-market.git" },
       "--base-ref": { type: "safe Git ref", default: "main" },
@@ -160,6 +419,19 @@ function sourceOverrides(options) {
       .filter((key) => options[key] !== undefined)
       .map((key) => [key, options[key]]),
   );
+}
+
+function lifecycleOptions(options) {
+  const selected = Object.fromEntries(
+    LIFECYCLE_OPTION_KEYS
+      .filter((key) => options[key] !== undefined)
+      .map((key) => [key, options[key]]),
+  );
+  const overrides = sourceOverrides(options);
+  if (Object.keys(overrides).length > 0) {
+    selected.sourceOverrides = overrides;
+  }
+  return selected;
 }
 
 async function runList(options, services, env) {
@@ -245,6 +517,28 @@ async function runDiscover(options, positionals, services, env) {
   });
 }
 
+async function runLifecycle(operation, options, positionals, services, env) {
+  const [id] = requirePositionals(positionals, {
+    min: 1,
+    usage: `${operation} <adapter>:<kind>:<name> [options]`,
+  });
+  const result = await services.executeLifecycle({
+    operation,
+    id,
+    options: lifecycleOptions(options),
+    env,
+  });
+  return successResult({
+    command: operation,
+    status: result.status,
+    summary: result.summary,
+    data: {
+      ...(result.data ?? {}),
+      warnings: result.warnings ?? [],
+    },
+  });
+}
+
 async function runConfig(positionals, services, env) {
   const [action = "show", ...values] = positionals;
   if (action === "show") {
@@ -300,6 +594,7 @@ function servicesWithDefaults(dependencies) {
     loadOptionalCatalogSnapshot,
     loadCatalogSnapshot,
     collectLocalInventory,
+    executeLifecycle,
     updateConfig,
     nativeReader: undefined,
     git: undefined,
@@ -333,6 +628,11 @@ export async function runCli(argv, { env = process.env, ...dependencies } = {}) 
       if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
       return await runDiscover(parsed.options, parsed.positionals, services, env);
     }
+    if (Object.hasOwn(LIFECYCLE_DEFINITIONS, command)) {
+      const parsed = parseOptions(argv.slice(1), LIFECYCLE_DEFINITIONS[command]);
+      if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
+      return await runLifecycle(command, parsed.options, parsed.positionals, services, env);
+    }
     if (command === "config") {
       const parsed = parseOptions(argv.slice(1), CONFIG_OPTIONS);
       if (parsed.options.help) return runCli(["help"], { env, ...dependencies });
@@ -341,7 +641,21 @@ export async function runCli(argv, { env = process.env, ...dependencies } = {}) 
     throw new SkillMarketError({
       code: "unknown-command",
       message: `Unknown Skill Market command: ${command}.`,
-      details: { command, allowed: ["list", "discover", "config", "help"] },
+      details: {
+        command,
+        allowed: [
+          "list",
+          "discover",
+          "download",
+          "install",
+          "update",
+          "enable",
+          "disable",
+          "uninstall",
+          "config",
+          "help",
+        ],
+      },
       nextAction: "Run skill-market help and choose a canonical command.",
     });
   } catch (error) {

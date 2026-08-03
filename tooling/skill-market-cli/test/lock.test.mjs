@@ -58,3 +58,25 @@ test("stale locks are quarantined before a new owner proceeds", async () => {
     await assert.rejects(access(lockPath), { code: "ENOENT" });
   });
 });
+
+test("an old lock owned by a live process is not stolen", async () => {
+  await withTemporaryHome(async (home) => {
+    const lockPath = path.join(home, "locks/cache.lock");
+    await mkdir(lockPath, { recursive: true });
+    await writeFile(
+      path.join(lockPath, "owner.json"),
+      JSON.stringify({ pid: process.pid }),
+      "utf8",
+    );
+    const old = new Date(Date.now() - 120_000);
+    await utimes(lockPath, old, old);
+    await assert.rejects(
+      withFileLock(lockPath, async () => {}, {
+        timeoutMs: 20,
+        retryMs: 5,
+        staleMs: 1,
+      }),
+      (error) => error.code === "lock-timeout",
+    );
+  });
+});

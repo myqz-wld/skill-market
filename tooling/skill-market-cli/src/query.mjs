@@ -134,6 +134,7 @@ export function discoverCatalog({
       ownership: installed?.ownership ?? null,
       installedVersion: installed?.installedVersion ?? null,
       updateState: installed?.updateState ?? null,
+      drifted: installed?.drifted ?? null,
       freshness,
       match: normalizedQuery ? ranking.bucket : null,
       _rank: ranking.order,
@@ -159,12 +160,30 @@ export function listInventory({
   localStates,
   ownership,
   updateStates,
+  history = false,
   offset,
   limit,
 } = {}) {
   const selectedAdapters = normalizeSet(adapters, ADAPTERS, "adapter", ADAPTERS);
   const selectedKinds = normalizeSet(kinds, PACKAGE_KINDS, "kind", PACKAGE_KINDS);
-  const selectedLocalStates = normalizeSet(localStates, LOCAL_STATES, "local-state", LOCAL_STATES);
+  const requestedLocalStates = normalizeSet(
+    localStates,
+    LOCAL_STATES,
+    "local-state",
+    history ? LOCAL_STATES : LOCAL_STATES.filter((state) => state !== "absent"),
+  );
+  const explicitLocalStates = Array.isArray(localStates) ? localStates : [localStates];
+  if (!history && explicitLocalStates.includes("absent")) {
+    throw new SkillMarketError({
+      code: "history-required",
+      message: "Absent package history is available only when history is explicitly enabled.",
+      details: { localStates, history },
+      nextAction: "Retry with --history, or remove absent from --local-state.",
+    });
+  }
+  const selectedLocalStates = history
+    ? requestedLocalStates
+    : requestedLocalStates.filter((state) => state !== "absent");
   const selectedOwnership = normalizeSet(
     ownership,
     OWNERSHIP_STATES,
@@ -192,6 +211,7 @@ export function listInventory({
       localStates: selectedLocalStates,
       ownership: selectedOwnership,
       updateStates: selectedUpdateStates,
+      history: Boolean(history),
     },
     catalog: inventory.catalog,
     warnings: inventory.warnings,

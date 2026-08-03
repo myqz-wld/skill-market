@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
@@ -107,6 +107,16 @@ test("managed v2 state reconciles active, disabled, and broken paths", async () 
             catalogPath: "skills/codex/fixture-skill",
             activePath,
             disabledPath,
+            contentDigest: "b".repeat(64),
+            activation: "active",
+            installedAt: "2026-08-03T00:00:00.000Z",
+            updatedAt: "2026-08-03T00:00:00.000Z",
+            uninstalledAt: null,
+            source: {
+              repoIdentity: "example.test/skill-market",
+              head: "a".repeat(40),
+              freshness: "fresh",
+            },
           },
           "grok:standalone:fixture-skill": {
             adapter: "grok",
@@ -117,6 +127,16 @@ test("managed v2 state reconciles active, disabled, and broken paths", async () 
             catalogPath: "skills/grok/fixture-skill",
             activePath: brokenActive,
             disabledPath: brokenDisabled,
+            contentDigest: "c".repeat(64),
+            activation: "active",
+            installedAt: "2026-08-03T00:00:00.000Z",
+            updatedAt: "2026-08-03T00:00:00.000Z",
+            uninstalledAt: null,
+            source: {
+              repoIdentity: "example.test/skill-market",
+              head: "a".repeat(40),
+              freshness: "fresh",
+            },
           },
         },
       }),
@@ -167,4 +187,61 @@ test("semantic version comparison and catalog absence states are deterministic",
   assert.equal(compareSemver("1.0.0", "1.0.0-rc.1"), 1);
   assert.equal(updateStateFor("1.0.0", null, false), "unknown");
   assert.equal(updateStateFor("1.0.0", null, true), "catalog_missing");
+});
+
+test("inventory reports unsafe recorded paths as broken without trusting their location", async () => {
+  await withTemporaryHome(async (home) => {
+    const statePath = path.join(home, ".skill-market/managed-state.json");
+    const outside = path.join(home, "outside", "fixture-skill");
+    await mkdir(outside, { recursive: true });
+    await mkdir(path.dirname(statePath), { recursive: true });
+    await writeFile(
+      statePath,
+      JSON.stringify({
+        schemaVersion: 2,
+        packages: {
+          "codex:standalone:fixture-skill": {
+            adapter: "codex",
+            kind: "standalone",
+            name: "fixture-skill",
+            installedVersion: "1.0.0",
+            ownership: "skill-market",
+            catalogPath: "skills/codex/fixture-skill",
+            activePath: outside,
+            disabledPath: path.join(home, ".codex/skills.disabled/fixture-skill"),
+            contentDigest: "b".repeat(64),
+            activation: "active",
+            installedAt: "2026-08-03T00:00:00.000Z",
+            updatedAt: "2026-08-03T00:00:00.000Z",
+            uninstalledAt: null,
+            source: {
+              repoIdentity: "example.test/skill-market",
+              head: "a".repeat(40),
+              freshness: "fresh",
+            },
+          },
+        },
+      }),
+      "utf8",
+    );
+    const [item] = await readManagedPackages(statePath, { home });
+    assert.equal(item.localState, "broken");
+    assert.equal(item.location, null);
+    assert.match(item.diagnostic, /paths do not match/u);
+  });
+});
+
+test("inventory rejects a symlinked managed-state file before reading it", async () => {
+  await withTemporaryHome(async (home) => {
+    const marketHome = path.join(home, ".skill-market");
+    const outside = path.join(home, "outside-state.json");
+    const statePath = path.join(marketHome, "managed-state.json");
+    await mkdir(marketHome, { recursive: true });
+    await writeFile(outside, JSON.stringify({ schemaVersion: 2, packages: {} }), "utf8");
+    await symlink(outside, statePath);
+    await assert.rejects(
+      readManagedPackages(statePath, { home, marketHome }),
+      (error) => error.code === "unsafe-path-topology",
+    );
+  });
 });

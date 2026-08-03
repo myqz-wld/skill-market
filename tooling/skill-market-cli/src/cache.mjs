@@ -122,7 +122,19 @@ function assertSourceMatches({ expectedIdentity, actualUrl, marker, cachePath })
 
 async function snapshotFromRoot({ root, freshness, source, warnings = [] }) {
   const catalogPath = path.join(root, "catalog", "entries.json");
-  const catalog = await loadCatalog(catalogPath);
+  let catalog;
+  try {
+    catalog = await loadCatalog(catalogPath);
+  } catch (error) {
+    throw new SkillMarketError({
+      code: "invalid-catalog",
+      message: `The catalog at ${catalogPath} cannot be loaded: ${error.message}.`,
+      status: "blocked",
+      details: { catalogPath, issues: error.issues ?? null },
+      nextAction: "Fix or restore catalog/entries.json in the verified repository source, then retry.",
+      cause: error,
+    });
+  }
   return Object.freeze({ root, catalogPath, catalog, freshness, source, warnings });
 }
 

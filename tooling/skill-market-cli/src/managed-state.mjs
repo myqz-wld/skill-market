@@ -3,13 +3,24 @@ import path from "node:path";
 
 import {
   ADAPTERS,
+  FRESHNESS_STATES,
   OWNERSHIP_STATES,
   isKebabCase,
   makePackageId,
 } from "./contracts.mjs";
 import { SkillMarketError } from "./errors.mjs";
 import { readJsonIfExists } from "./fs-utils.mjs";
+import { contentDigest } from "./package-content.mjs";
+import {
+  assertManagedRecordPaths,
+  assertManagedStatePathTopology,
+  assertStandalonePathTopology,
+  resolveStandalonePaths,
+} from "./lifecycle-paths.mjs";
 import { isSemver } from "./versions.mjs";
+
+const SHA256 = /^[0-9a-f]{64}$/u;
+const COMMIT_ID = /^[0-9a-f]{40}(?:[0-9a-f]{24})?$/u;
 
 async function exists(filePath) {
   try {
@@ -53,6 +64,40 @@ function validateRecord(id, record, issues) {
   if (record.catalogPath !== expectedCatalogPath) {
     issues.push(`${field}.catalogPath must equal ${expectedCatalogPath}`);
   }
+  if (!SHA256.test(record.contentDigest)) {
+    issues.push(`${field}.contentDigest must be a lowercase SHA-256 digest`);
+  }
+  if (!["active", "disabled"].includes(record.activation)) {
+    issues.push(`${field}.activation must be active or disabled`);
+  }
+  for (const timestampField of ["installedAt", "updatedAt"]) {
+    if (
+      typeof record[timestampField] !== "string" ||
+      !Number.isFinite(Date.parse(record[timestampField]))
+    ) {
+      issues.push(`${field}.${timestampField} must be an ISO timestamp`);
+    }
+  }
+  if (
+    record.uninstalledAt !== null &&
+    (typeof record.uninstalledAt !== "string" ||
+      !Number.isFinite(Date.parse(record.uninstalledAt)))
+  ) {
+    issues.push(`${field}.uninstalledAt must be null or an ISO timestamp`);
+  }
+  if (record.source === null || typeof record.source !== "object" || Array.isArray(record.source)) {
+    issues.push(`${field}.source must be an object`);
+  } else {
+    if (typeof record.source.repoIdentity !== "string" || record.source.repoIdentity.trim() === "") {
+      issues.push(`${field}.source.repoIdentity must be a non-empty string`);
+    }
+    if (record.source.head !== null && !COMMIT_ID.test(record.source.head)) {
+      issues.push(`${field}.source.head must be null or a lowercase commit id`);
+    }
+    if (!FRESHNESS_STATES.includes(record.source.freshness)) {
+      issues.push(`${field}.source.freshness is invalid`);
+    }
+  }
 }
 
 export function validateManagedState(value, statePath = "managed-state.json") {
@@ -81,7 +126,14 @@ export function validateManagedState(value, statePath = "managed-state.json") {
   return value;
 }
 
-export async function readManagedPackages(statePath) {
+export async function readManagedPackages(
+  statePath,
+  {
+    home = process.env.HOME,
+    marketHome = path.dirname(statePath),
+  } = {},
+) {
+  await assertManagedStatePathTopology({ marketHome, statePath });
   let value;
   try {
     value = await readJsonIfExists(statePath);
@@ -102,12 +154,38 @@ export async function readManagedPackages(statePath) {
   const state = validateManagedState(value, statePath);
   return Promise.all(
     Object.entries(state.packages).map(async ([id, record]) => {
+      let canonicalPaths;
+      try {
+        canonicalPaths = resolveStandalonePaths({
+          adapter: record.adapter,
+          name: record.name,
+          home,
+          marketHome,
+        });
+        assertManagedRecordPaths(record, canonicalPaths);
+        await assertStandalonePathTopology(canonicalPaths, statePath);
+      } catch (error) {
+        return {
+          id,
+          adapter: record.adapter,
+          kind: "standalone",
+          name: record.name,
+          installedVersion: record.installedVersion,
+          localState: "broken",
+          drifted: false,
+          ownership: record.ownership,
+          location: null,
+          diagnostic: `managed path safety check failed: ${error.message}`,
+          managed: structuredClone(record),
+        };
+      }
       const [activeExists, disabledExists] = await Promise.all([
-        exists(record.activePath),
-        exists(record.disabledPath),
+        exists(canonicalPaths.activePath),
+        exists(canonicalPaths.disabledPath),
       ]);
       let localState;
       let diagnostic = null;
+      let drifted = false;
       if (activeExists && disabledExists) {
         localState = "broken";
         diagnostic = "active and disabled paths both exist";
@@ -115,9 +193,36 @@ export async function readManagedPackages(statePath) {
         localState = "active";
       } else if (disabledExists) {
         localState = "disabled";
+      } else if (record.uninstalledAt !== null) {
+        localState = "absent";
       } else {
         localState = "broken";
         diagnostic = "neither active nor disabled path exists";
+      }
+      if (["active", "disabled"].includes(localState) && record.uninstalledAt !== null) {
+        diagnostic = `state records uninstall at ${record.uninstalledAt} but a package path exists`;
+        localState = "broken";
+      }
+      if (
+        ["active", "disabled"].includes(localState) &&
+        record.activation !== localState
+      ) {
+        diagnostic = `state records ${record.activation} but ${localState} path exists`;
+        localState = "broken";
+      }
+      if (["active", "disabled"].includes(localState)) {
+        const location =
+          localState === "active" ? canonicalPaths.activePath : canonicalPaths.disabledPath;
+        try {
+          const actualDigest = await contentDigest(location);
+          drifted = actualDigest !== record.contentDigest;
+          if (drifted) {
+            diagnostic = "local content differs from the recorded installed digest";
+          }
+        } catch (error) {
+          localState = "broken";
+          diagnostic = `package content cannot be inspected: ${error.message}`;
+        }
       }
       return {
         id,
@@ -126,8 +231,14 @@ export async function readManagedPackages(statePath) {
         name: record.name,
         installedVersion: record.installedVersion,
         localState,
+        drifted,
         ownership: record.ownership,
-        location: localState === "disabled" ? record.disabledPath : record.activePath,
+        location:
+          activeExists && !disabledExists
+            ? canonicalPaths.activePath
+            : disabledExists && !activeExists
+              ? canonicalPaths.disabledPath
+              : null,
         diagnostic,
         managed: structuredClone(record),
       };
