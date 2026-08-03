@@ -7,8 +7,8 @@ import {
   isKebabCase,
   makePackageId,
 } from "./contracts.mjs";
+import { isSemver } from "./versions.mjs";
 
-const SEMVER = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/;
 const SAFE_REF = /^(?!-)(?!.*(?:\.\.|@\{|\\|\s))[A-Za-z0-9][A-Za-z0-9._/-]*$/u;
 const PLUGIN_MANIFESTS = Object.freeze({
   claude: ".claude-plugin/plugin.json",
@@ -82,7 +82,7 @@ function validatePackage(entry, index, issues) {
       issues.push(`${path}.id must equal ${expectedId}`);
     }
   }
-  if (typeof entry.version !== "string" || !SEMVER.test(entry.version)) {
+  if (!isSemver(entry.version)) {
     issues.push(`${path}.version must be semver`);
   }
   if (!CATALOG_STATUSES.includes(entry.status)) {
