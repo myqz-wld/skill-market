@@ -22,7 +22,7 @@ import {
 } from "./proposal.mjs";
 import { discoverCatalog, listInventory } from "./query.mjs";
 
-export const CLI_VERSION = "0.1.1";
+export const CLI_VERSION = "0.1.2";
 
 const GLOBAL_OPTIONS = {
   pretty: { key: "pretty", type: "boolean" },

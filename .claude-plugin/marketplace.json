@@ -9,7 +9,7 @@
       "name": "skill-market-claude",
       "source": "./plugins/skill-market-claude",
       "description": "Use this Claude plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
-      "version": "0.1.1",
+      "version": "0.1.2",
       "author": {
         "name": "Skill Market"
       }

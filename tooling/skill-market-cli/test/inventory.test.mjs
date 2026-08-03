@@ -46,10 +46,13 @@ const nativePayloads = {
   ],
   grok: [
     {
-      id: "fixture-grok@skill-market",
+      status: "installed",
+      name: "fixture-grok",
+      repo_key: "fixture-grok-deadbeef",
       version: "0.1.1",
-      enabled: true,
-      installPath: "/plugins/fixture-grok",
+      path: "/plugins/fixture-grok",
+      source: "/catalog/plugins/fixture-grok",
+      marketplace: null,
     },
   ],
 };
@@ -57,12 +60,18 @@ const nativePayloads = {
 test("native JSON variants normalize to one three-adapter inventory contract", () => {
   const codex = parseNativePluginList("codex", nativePayloads.codex);
   const claude = parseNativePluginList("claude", nativePayloads.claude);
-  const grok = parseNativePluginList("grok", nativePayloads.grok);
+  const grok = parseNativePluginList("grok", nativePayloads.grok, {
+    packageNames: ["fixture-grok"],
+  });
   assert.equal(codex.length, 1);
   assert.equal(codex[0].id, "codex:plugin:fixture-codex");
   assert.equal(claude[0].localState, "disabled");
   assert.equal(claude[0].native.scope, "project");
   assert.equal(grok[0].id, "grok:plugin:fixture-grok");
+  assert.equal(grok[0].location, "/plugins/fixture-grok");
+  assert.equal(grok[0].native.marketplaceName, null);
+  assert.equal(grok[0].native.pluginId, "fixture-grok");
+  assert.equal(grok[0].native.source, "/catalog/plugins/fixture-grok");
   assert.ok([...codex, ...claude, ...grok].every((item) => item.ownership === "native"));
 });
 
@@ -156,8 +165,11 @@ test("local inventory joins optional catalog data without scanning unrelated ski
     await mkdir(path.dirname(statePath), { recursive: true });
     await writeFile(statePath, JSON.stringify({ schemaVersion: 2, packages: {} }), "utf8");
     await mkdir(path.join(home, ".codex/skills/unrelated"), { recursive: true });
-    const nativeReader = async ({ adapter }) =>
-      parseNativePluginList(adapter, nativePayloads[adapter]);
+    const nativeReader = async ({ adapter, marketplaceName, packageNames }) =>
+      parseNativePluginList(adapter, nativePayloads[adapter], {
+        marketplaceName,
+        packageNames,
+      });
     const result = await collectLocalInventory({
       statePath,
       nativeReader,

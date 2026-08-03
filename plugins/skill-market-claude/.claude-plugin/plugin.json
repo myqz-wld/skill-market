@@ -1,7 +1,7 @@
 {
   "name": "skill-market-claude",
   "description": "Provides a bundled CLI and ten focused Claude skills for local inventory, catalog discovery, package lifecycle, and pull-request proposals.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": {
     "name": "Skill Market"
   }
