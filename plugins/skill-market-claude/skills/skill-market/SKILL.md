@@ -1,45 +1,11 @@
 ---
 name: skill-market
-description: Route general Claude Skill Market requests to the focused list, search, download, install, disable, uninstall, update, or upload skills.
-disable-model-invocation: true
+description: "Route general Claude Skill Market requests to the focused local inventory, catalog discovery, download, install, update, enable, disable, uninstall, proposal, or configuration workflow."
 ---
-
 # Skill Market for Claude
 
-Use this entry point to choose the focused Claude Skill Market management skill. Dispatch actual work to one of these skills:
+Use the installed plugin root in `CLAUDE_PLUGIN_ROOT`. Run only `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-- `skill-list`: list skills already managed by Skill Market.
-- `skill-search`: search plugins and standalone Claude skills.
-- `skill-download`: download a package without installing it.
-- `skill-install`: install a plugin or standalone Claude skill.
-- `skill-disable`: disable a local installation while preserving files.
-- `skill-uninstall`: remove a local installation.
-- `skill-update`: update a local installation from the remote catalog.
-- `skill-upload`: create a branch and PR for uploads or marketplace deletions.
+Route to one sibling Skill: local inventory → `skill-list`; catalog browse/search/id lookup → `skill-discover`; export → `skill-download`; lifecycle → the same-named Skill; catalog add/update/retire/remove or PR → `skill-propose`. Load that sibling before acting.
 
-## Repository and Configuration
-
-All focused skills use the remote repository as source of truth and the local cache only as a working copy.
-
-- Default `repoUrl`: `git@github.com:myqz-wld/skill-market.git`.
-- Default `cachePath`: `~/.skill-market/cache/skill-market`.
-- Default `cacheTtlSeconds`: `86400`; `0` disables automatic TTL refresh.
-- Required config file: `~/.skill-market/config.json`. Create it with the defaults before any operation that reads the remote or cache if it is missing.
-- Precedence: environment variable > config field > default. Use `SKILL_MARKET_REPO_URL`, `SKILL_MARKET_CACHE`, and `SKILL_MARKET_CACHE_TTL_SECONDS` for the three defaults above.
-- `SKILL_MARKET_REPO` or config `repoPath` is only an explicit local development checkout override; never default to the current directory. When selected, read that checkout directly and skip cache clone, fetch, marker writes, and TTL.
-
-When `repoPath` is not selected, `skill-list`, `skill-search`, `skill-download`, and `skill-install` clone the cache when missing and fetch when the user asks for latest or the cache marker is missing or older than `cacheTtlSeconds`. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`.
-
-When the user asks about Skill Market configuration, read the current config and the four environment variables, report each effective value and source, and flag unknown fields or invalid values.
-
-## Storage
-
-- Bootstrap management skills live inside `plugins/skill-market-claude/skills/`.
-- Managed standalone Claude skills live under `skills/claude/`.
-- Claude plugins are listed in `.claude-plugin/marketplace.json` and live under `plugins/`.
-
-Upload is not publish. A skill or plugin is published only after its PR is merged.
-
-`skills/INDEX.md` is the remote skill catalog index and records each standalone skill's catalog `Version`, status, path, and description. Local Claude management state lives in `~/.skill-market/managed-skills.json` and records each installed standalone skill's `installedVersion`.
-
-Only skills installed through Skill Market or explicitly adopted by the user are managed. Do not list unrelated local Claude skills. If a requested operation touches a local skill absent from `managed-skills.json`, ask the user before adopting or modifying it.
+Default to Claude; use other adapters only when explicitly requested, with no implicit target expansion. For configuration only, run `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs" config show --json`, `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs" config set <key> <value> --json`, or `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs" config unset <key> --json`; `show` must not create config, and set/unset require the exact requested key/value.

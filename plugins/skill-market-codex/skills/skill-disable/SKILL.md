@@ -1,19 +1,15 @@
 ---
 name: skill-disable
-description: Disable a Codex Skill Market standalone skill while preserving local files, or explain that Codex plugins cannot be disabled.
+description: "Disable one installed Codex Skill Market package while preserving its files and persistent data. Use when the user wants it inactive but not removed."
 ---
-
 # Skill Disable for Codex
 
-Use this skill when the user wants a local Codex Skill Market installation disabled but kept on disk. Do not mutate the remote marketplace repository.
+Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-## Disable
+Confirm one exact ID, then run `node "<plugin-root>/cli/bin/skill-market.mjs" disable codex:<plugin|standalone>:<kebab-case-name> [options] --json`. Applicable options: --confirm-drift.
 
-- Standalone Codex skill: move `~/.codex/skills/<skill-name>/` to `~/.codex/skills.disabled/<skill-name>/`.
-- Codex plugin: the current Codex CLI exposes `add`, `list`, `marketplace`, and `remove`, but no plugin disable command. Do not use `codex plugin remove` as a fake disable.
+This idempotent local operation preserves files and never fetches. Standalone drift requires confirmation. Codex plugins return unsupported; never substitute uninstall.
 
-Before disabling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before adopting or moving it. When disabling a managed skill, set status to `disabled`, keep `installedVersion`, keep `activePath` as the restore target, and set `disabledPath` to the moved directory.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-Create `~/.codex/skills.disabled/` if it does not exist. Do not overwrite an existing disabled copy unless the user explicitly asks.
-
-If the user wants the item removed from local disk, route that to `skill-uninstall`. If the user wants the item removed from Skill Market itself, route that to `skill-upload` as a deletion PR.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.

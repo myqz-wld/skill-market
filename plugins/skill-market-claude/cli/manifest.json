@@ -1,0 +1,174 @@
+{
+  "schemaVersion": 1,
+  "generatedFrom": "tooling/skill-market-cli",
+  "files": [
+    {
+      "path": "bin/skill-market.mjs",
+      "sha256": "f89a512f2679f5fb4ed0c7dc36f1c648658c52e2062e44e89d430c5924387160"
+    },
+    {
+      "path": "src/arguments.mjs",
+      "sha256": "b3a21962ad0e816397d4984ed6e067f578c0c0353f7cf878cde61eef699fd251"
+    },
+    {
+      "path": "src/cache.mjs",
+      "sha256": "88ed1d53e2d45f6b061541f9a21b64943d2b07e8a9e108890244b39364f693d1"
+    },
+    {
+      "path": "src/capabilities.mjs",
+      "sha256": "afb4a109f14001d0451d70eefee9fb5a803bc984c7cae334712e23b5191ffb05"
+    },
+    {
+      "path": "src/catalog.mjs",
+      "sha256": "f653bf54e978daff7187f6b01a44b29301e501194563517e476eadff43a15be0"
+    },
+    {
+      "path": "src/cli.mjs",
+      "sha256": "5f8bfe1796127ed17ea86c3ff5ecbd5c93100234978c61b280de8e47f0ee6fb1"
+    },
+    {
+      "path": "src/config.mjs",
+      "sha256": "a53a0e0933fc01105ddc3c36c3d05f1097e836552e36d4470fd8e50b51989d5e"
+    },
+    {
+      "path": "src/contracts.mjs",
+      "sha256": "2517509f9cf5245e771cb34dc81f46fc65551ebde17d2793bc4df48837d40217"
+    },
+    {
+      "path": "src/download.mjs",
+      "sha256": "7902d54aed8b3ef6d2de5675a461a716a0ed805a0c9fc4550f5d93ae05c8e84a"
+    },
+    {
+      "path": "src/errors.mjs",
+      "sha256": "7751fb788c9373055651a37fe6085378dc78b563399d3ae10b9746f2418bf77c"
+    },
+    {
+      "path": "src/fs-utils.mjs",
+      "sha256": "d84f2fea45b326a8b93822b703bf221a4cc4ef6e8b0c562a0aa07216c693e0b2"
+    },
+    {
+      "path": "src/generators.mjs",
+      "sha256": "3f41bde0de070968476c9bbffdc29b04954f01effa2b8650de8076078f5327f1"
+    },
+    {
+      "path": "src/git-client.mjs",
+      "sha256": "6ed3fc750e4a6451b9289f2f594855c80f1358ed65f4fa73acf7f5a575445d0a"
+    },
+    {
+      "path": "src/inventory.mjs",
+      "sha256": "4575c91152d707f058083dc61c4a68ca04bf85bbb59d3e2cc81dcedaa5a29dbc"
+    },
+    {
+      "path": "src/lifecycle-options.mjs",
+      "sha256": "ea4b936a9735d43a2d1de97490dc5dd97eec5e67cc86ac6505d3751d2b55167b"
+    },
+    {
+      "path": "src/lifecycle-paths.mjs",
+      "sha256": "eedaf7c95ce47d40f98ef616c8df496715a04b97525903e2c81c6fb4bfc21060"
+    },
+    {
+      "path": "src/lifecycle-source.mjs",
+      "sha256": "0fd4dc3239fce59915f0ef8f86c2bb4ec6367b643f6c2cc456c97d8823453930"
+    },
+    {
+      "path": "src/lifecycle.mjs",
+      "sha256": "1963e0cc12579fdb36d0ce9fcf1437d90ea586cb38cae147d02f1afa616c9730"
+    },
+    {
+      "path": "src/lock.mjs",
+      "sha256": "c419a90ee9e783ccf5abc8e31c97c7de1449d92a952a7e2ca4538434e963f777"
+    },
+    {
+      "path": "src/managed-state.mjs",
+      "sha256": "7c9b40dc52a553d1ff663c56350d141918bc8b196f25a731294e2754c9da5adc"
+    },
+    {
+      "path": "src/native-adapters.mjs",
+      "sha256": "e7044e534be14a995e9c41fb8cf5307d7fd2d1688622b8fc707615de2fea2672"
+    },
+    {
+      "path": "src/native-exec.mjs",
+      "sha256": "632312db222a9e4927ba9c6754df00017cbc6562183552244dc5a0c34f4c8517"
+    },
+    {
+      "path": "src/native-inventory.mjs",
+      "sha256": "0585b1eb3dee786026eab06e0a133ae8ddafd1a4a5fe518393de7f4f372638e4"
+    },
+    {
+      "path": "src/native-source.mjs",
+      "sha256": "0d2b2d7de19ae61acf537e24f268af0fcf34cc60982e1f9a838ff2e2902714b1"
+    },
+    {
+      "path": "src/package-content.mjs",
+      "sha256": "e32fd8ef83699b44adb91e762884279e054fd6fc3c00bb04a4bcb066033f65a6"
+    },
+    {
+      "path": "src/paths.mjs",
+      "sha256": "c8eb441a5f6d674b7f6ff02a50e3e6d2d115d8d696b279769f30dd30010eff68"
+    },
+    {
+      "path": "src/proposal-apply.mjs",
+      "sha256": "417b833fbfe59df27a65e3b1364f91029737d4fcfc30ce725fe6f67079eb6bd5"
+    },
+    {
+      "path": "src/proposal-contracts.mjs",
+      "sha256": "0c3a6dc327bc2755247ee81d1651a809aa52786fa572f9e518ec3300480f0dc8"
+    },
+    {
+      "path": "src/proposal-git.mjs",
+      "sha256": "e7671220e128e6ac87267cb43a12d1a4e67b72c47c5be691122c4e60fe5fd8a4"
+    },
+    {
+      "path": "src/proposal-host.mjs",
+      "sha256": "e0d6881509ee30dafe0a265f5f1639c3d9485517e9cd029770f3ced32bf4123d"
+    },
+    {
+      "path": "src/proposal-runtime.mjs",
+      "sha256": "5a11cbb83145f94fb55c7af4ceab4d04ac9f39e4a7dd0c680134a3fa8a90fcdd"
+    },
+    {
+      "path": "src/proposal-store.mjs",
+      "sha256": "9ae7a4672d74993d23b62bd293c615fa80df87273f8d8a2c806084428427fef9"
+    },
+    {
+      "path": "src/proposal-submission.mjs",
+      "sha256": "d169b521362336a9d82e6401db04e6f2d9cb4cce74393c7e78778addfe19f0ea"
+    },
+    {
+      "path": "src/proposal-workspace.mjs",
+      "sha256": "aabcd96d3fe2f46a8f0383d0bb047c71f184f1cd65b0d66fb62e7d4b1ae1ffc2"
+    },
+    {
+      "path": "src/proposal.mjs",
+      "sha256": "6277e9590417bc197b3deb401b701c703f4b9d9696e574ae1af6035afb7b7dd4"
+    },
+    {
+      "path": "src/query.mjs",
+      "sha256": "3f3bb04ba66fb62e42d6f030a2dd55e14891da1632d97d5b3fd707506c48ac0b"
+    },
+    {
+      "path": "src/source-identity.mjs",
+      "sha256": "25444a76ccdd7d76f423a611ff061dbe1019bf7cbdce29e6898de59e693c871f"
+    },
+    {
+      "path": "src/standalone-lifecycle.mjs",
+      "sha256": "5789200d92d0eb61906d7a310714b09f2564d827ddf66b9cfac3b12c0a2880ea"
+    },
+    {
+      "path": "src/standalone-support.mjs",
+      "sha256": "7c3ce2290b2a572b08312d23ea51836ab375c445c396bacd092e57ba3ab2dd4a"
+    },
+    {
+      "path": "src/state-store.mjs",
+      "sha256": "f43545b7b12df231f80a2ab1383d9e6849cbc4951aa51460e8dafa4052fe40a7"
+    },
+    {
+      "path": "src/transactions.mjs",
+      "sha256": "617c495c0582dbdd98be83908c000a69f014ef95aee0049cc710e1aad697f00f"
+    },
+    {
+      "path": "src/versions.mjs",
+      "sha256": "18079f8924b26598ee8bbee92f890d19daaf59e97a3fa5814ec78e7dd8bad0f7"
+    }
+  ]
+}
