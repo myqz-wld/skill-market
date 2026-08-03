@@ -36,3 +36,18 @@ test("catalog packages reject symbolic links before copy", async () => {
     );
   });
 });
+
+test("catalog packages reject nested Git metadata", async () => {
+  await withTemporaryHome(async (home) => {
+    const fixture = await createStandaloneFixture(home);
+    await mkdir(path.join(fixture.packagePath, ".git"));
+    await writeFile(path.join(fixture.packagePath, ".git", "config"), "fixture", "utf8");
+    await assert.rejects(
+      validatePackageContent(fixture.entry, fixture.packagePath),
+      (error) =>
+        error instanceof SkillMarketError &&
+        error.code === "invalid-package-content" &&
+        /Git metadata/u.test(error.message),
+    );
+  });
+});

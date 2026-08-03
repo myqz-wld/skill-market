@@ -18,6 +18,9 @@ async function walk(root, relative = "") {
     throw packageError(root, relative || ".", "only regular files and directories are allowed");
   }
   const children = (await readdir(absolute)).sort((left, right) => left.localeCompare(right));
+  if (children.includes(".git")) {
+    throw packageError(root, path.join(relative, ".git"), "nested Git metadata is not allowed");
+  }
   const nested = await Promise.all(
     children.map((child) => walk(root, path.join(relative, child))),
   );
