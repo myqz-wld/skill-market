@@ -1,0 +1,4 @@
+interface:
+  display_name: "Hermes Tweet"
+  short_description: "Operate Hermes X tools with explicit action gates"
+  default_prompt: "Use $hermes-tweet to discover supported X routes, configure Hermes safely, and keep account-changing actions behind explicit approval."

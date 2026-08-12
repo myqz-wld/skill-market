@@ -16,12 +16,19 @@ test("the canonical fixture catalog validates", () => {
 
 test("the repository catalog covers every first-class adapter", async () => {
   const catalog = await loadCatalog(path.resolve("catalog/entries.json"));
-  assert.equal(catalog.packages.length, 18);
-  assert.deepEqual([...new Set(catalog.packages.map((entry) => entry.adapter))], [
+  const adapters = [...new Set(catalog.packages.map((entry) => entry.adapter))];
+  assert.deepEqual(adapters, [
     "claude",
     "codex",
     "grok",
   ]);
+  const standaloneNames = adapters.map((adapter) =>
+    catalog.packages
+      .filter((entry) => entry.adapter === adapter && entry.kind === "standalone")
+      .map((entry) => entry.name),
+  );
+  assert.deepEqual(standaloneNames[1], standaloneNames[0]);
+  assert.deepEqual(standaloneNames[2], standaloneNames[0]);
 });
 
 test("catalog plugins may be bootstrap or ordinary packages", () => {

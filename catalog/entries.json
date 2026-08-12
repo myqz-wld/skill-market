@@ -48,6 +48,22 @@
       ]
     },
     {
+      "id": "claude:standalone:hermes-tweet",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/claude/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
+      ]
+    },
+    {
       "id": "claude:standalone:parallel-tasks",
       "adapter": "claude",
       "kind": "standalone",
@@ -141,6 +157,22 @@
       ]
     },
     {
+      "id": "codex:standalone:hermes-tweet",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/codex/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
+      ]
+    },
+    {
       "id": "codex:standalone:parallel-tasks",
       "adapter": "codex",
       "kind": "standalone",
@@ -231,6 +263,22 @@
         "planning",
         "architecture",
         "handoff"
+      ]
+    },
+    {
+      "id": "grok:standalone:hermes-tweet",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/grok/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
       ]
     },
     {
