@@ -1,0 +1,345 @@
+{
+  "schemaVersion": 1,
+  "marketplace": {
+    "name": "skill-market",
+    "displayName": "Skill Market",
+    "description": "Marketplace for managing Claude, Codex, and Grok skills and plugins through local inventory, catalog discovery, lifecycle commands, and pull-request proposals.",
+    "owner": {
+      "name": "Skill Market"
+    }
+  },
+  "defaults": {
+    "readRepoUrl": "https://github.com/myqz-wld/skill-market.git",
+    "baseRef": "main",
+    "cacheTtlSeconds": 86400
+  },
+  "packages": [
+    {
+      "id": "claude:plugin:skill-market-claude",
+      "adapter": "claude",
+      "kind": "plugin",
+      "name": "skill-market-claude",
+      "version": "0.1.4",
+      "status": "active",
+      "path": "plugins/skill-market-claude",
+      "manifestPath": ".claude-plugin/plugin.json",
+      "description": "Use this Claude plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
+      "category": "Productivity",
+      "keywords": [
+        "skills",
+        "plugins",
+        "marketplace"
+      ],
+      "bootstrap": true
+    },
+    {
+      "id": "claude:standalone:complex-work-planning",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "complex-work-planning",
+      "version": "0.0.9",
+      "status": "active",
+      "path": "skills/claude/complex-work-planning",
+      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "keywords": [
+        "planning",
+        "architecture",
+        "handoff"
+      ]
+    },
+    {
+      "id": "claude:standalone:hermes-tweet",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/claude/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
+      ]
+    },
+    {
+      "id": "claude:standalone:parallel-tasks",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "parallel-tasks",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/claude/parallel-tasks",
+      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
+      "keywords": [
+        "parallel",
+        "delegation",
+        "coordination"
+      ]
+    },
+    {
+      "id": "claude:standalone:plantuml-diagrams",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "plantuml-diagrams",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/claude/plantuml-diagrams",
+      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "keywords": [
+        "plantuml",
+        "diagram",
+        "architecture"
+      ]
+    },
+    {
+      "id": "claude:standalone:project-engineering-foundation",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "project-engineering-foundation",
+      "version": "0.0.12",
+      "status": "active",
+      "path": "skills/claude/project-engineering-foundation",
+      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling.",
+      "keywords": [
+        "repository",
+        "engineering",
+        "foundation"
+      ]
+    },
+    {
+      "id": "claude:standalone:prompt-asset-improver",
+      "adapter": "claude",
+      "kind": "standalone",
+      "name": "prompt-asset-improver",
+      "version": "0.0.11",
+      "status": "active",
+      "path": "skills/claude/prompt-asset-improver",
+      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources.",
+      "keywords": [
+        "prompt",
+        "skill",
+        "validation"
+      ]
+    },
+    {
+      "id": "codex:plugin:skill-market-codex",
+      "adapter": "codex",
+      "kind": "plugin",
+      "name": "skill-market-codex",
+      "version": "0.1.4",
+      "status": "active",
+      "path": "plugins/skill-market-codex",
+      "manifestPath": ".codex-plugin/plugin.json",
+      "description": "Use this Codex plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
+      "category": "Productivity",
+      "keywords": [
+        "skills",
+        "plugins",
+        "marketplace"
+      ],
+      "bootstrap": true
+    },
+    {
+      "id": "codex:standalone:complex-work-planning",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "complex-work-planning",
+      "version": "0.0.9",
+      "status": "active",
+      "path": "skills/codex/complex-work-planning",
+      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "keywords": [
+        "planning",
+        "architecture",
+        "handoff"
+      ]
+    },
+    {
+      "id": "codex:standalone:hermes-tweet",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/codex/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
+      ]
+    },
+    {
+      "id": "codex:standalone:parallel-tasks",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "parallel-tasks",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/codex/parallel-tasks",
+      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
+      "keywords": [
+        "parallel",
+        "delegation",
+        "coordination"
+      ]
+    },
+    {
+      "id": "codex:standalone:plantuml-diagrams",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "plantuml-diagrams",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/codex/plantuml-diagrams",
+      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "keywords": [
+        "plantuml",
+        "diagram",
+        "architecture"
+      ]
+    },
+    {
+      "id": "codex:standalone:project-engineering-foundation",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "project-engineering-foundation",
+      "version": "0.0.12",
+      "status": "active",
+      "path": "skills/codex/project-engineering-foundation",
+      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling.",
+      "keywords": [
+        "repository",
+        "engineering",
+        "foundation"
+      ]
+    },
+    {
+      "id": "codex:standalone:prompt-asset-improver",
+      "adapter": "codex",
+      "kind": "standalone",
+      "name": "prompt-asset-improver",
+      "version": "0.0.11",
+      "status": "active",
+      "path": "skills/codex/prompt-asset-improver",
+      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources.",
+      "keywords": [
+        "prompt",
+        "skill",
+        "validation"
+      ]
+    },
+    {
+      "id": "grok:plugin:skill-market-grok",
+      "adapter": "grok",
+      "kind": "plugin",
+      "name": "skill-market-grok",
+      "version": "0.1.4",
+      "status": "active",
+      "path": "plugins/skill-market-grok",
+      "manifestPath": ".grok-plugin/plugin.json",
+      "description": "Use this Grok plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
+      "category": "Productivity",
+      "keywords": [
+        "skills",
+        "plugins",
+        "marketplace"
+      ],
+      "bootstrap": true
+    },
+    {
+      "id": "grok:standalone:complex-work-planning",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "complex-work-planning",
+      "version": "0.0.9",
+      "status": "active",
+      "path": "skills/grok/complex-work-planning",
+      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "keywords": [
+        "planning",
+        "architecture",
+        "handoff"
+      ]
+    },
+    {
+      "id": "grok:standalone:hermes-tweet",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "hermes-tweet",
+      "version": "0.0.1",
+      "status": "active",
+      "path": "skills/grok/hermes-tweet",
+      "description": "Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions.",
+      "category": "Integrations",
+      "keywords": [
+        "hermes-agent",
+        "x-twitter",
+        "xquik"
+      ]
+    },
+    {
+      "id": "grok:standalone:parallel-tasks",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "parallel-tasks",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/grok/parallel-tasks",
+      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
+      "keywords": [
+        "parallel",
+        "delegation",
+        "coordination"
+      ]
+    },
+    {
+      "id": "grok:standalone:plantuml-diagrams",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "plantuml-diagrams",
+      "version": "0.0.10",
+      "status": "active",
+      "path": "skills/grok/plantuml-diagrams",
+      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "keywords": [
+        "plantuml",
+        "diagram",
+        "architecture"
+      ]
+    },
+    {
+      "id": "grok:standalone:project-engineering-foundation",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "project-engineering-foundation",
+      "version": "0.0.12",
+      "status": "active",
+      "path": "skills/grok/project-engineering-foundation",
+      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling.",
+      "keywords": [
+        "repository",
+        "engineering",
+        "foundation"
+      ]
+    },
+    {
+      "id": "grok:standalone:prompt-asset-improver",
+      "adapter": "grok",
+      "kind": "standalone",
+      "name": "prompt-asset-improver",
+      "version": "0.0.11",
+      "status": "active",
+      "path": "skills/grok/prompt-asset-improver",
+      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources.",
+      "keywords": [
+        "prompt",
+        "skill",
+        "validation"
+      ]
+    }
+  ]
+}

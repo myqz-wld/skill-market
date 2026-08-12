@@ -1,4 +1,4 @@
 interface:
   display_name: "Parallel Tasks"
-  short_description: "Fan out independent files, modules, audits, research tracks, or tests to parallel agents"
-  default_prompt: "Use $parallel-tasks when this work can split into 2+ independent tracks with disjoint write sets: decompose them, route each by complexity, run parallel agents, and integrate validated results."
+  short_description: "Route parallel tasks through enforceable controls"
+  default_prompt: "Use $parallel-tasks to inventory dispatch capabilities, route already-separated tasks through enforceable controls, and integrate validated results."

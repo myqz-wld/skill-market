@@ -3,13 +3,13 @@
   "owner": {
     "name": "Skill Market"
   },
-  "description": "Claude/Codex plugin marketplace for skill and plugin management workflows.",
+  "description": "Marketplace for managing Claude, Codex, and Grok skills and plugins through local inventory, catalog discovery, lifecycle commands, and pull-request proposals.",
   "plugins": [
     {
       "name": "skill-market-claude",
       "source": "./plugins/skill-market-claude",
-      "description": "Claude plugin that provides Skill Market list, search, download, install, disable, uninstall, update, and upload skills.",
-      "version": "0.0.3",
+      "description": "Use this Claude plugin to list local Skill Market inventory, discover catalog packages, download, install, update, enable, disable, uninstall, and propose catalog changes through pull requests.",
+      "version": "0.1.4",
       "author": {
         "name": "Skill Market"
       }

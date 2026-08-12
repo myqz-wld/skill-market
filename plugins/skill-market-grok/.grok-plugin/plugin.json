@@ -1,0 +1,8 @@
+{
+  "name": "skill-market-grok",
+  "description": "Provides a bundled CLI and ten focused Grok skills for local inventory, catalog discovery, package lifecycle, and pull-request proposals.",
+  "version": "0.1.4",
+  "author": {
+    "name": "Skill Market"
+  }
+}

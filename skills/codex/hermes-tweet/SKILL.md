@@ -63,3 +63,5 @@ hermes plugins enable hermes-tweet
 - `tweet_read` requires `XQUIK_API_KEY`.
 - `tweet_action` requires `XQUIK_API_KEY` and `HERMES_TWEET_ENABLE_ACTIONS=true`.
 - Third-party Hermes plugins must be enabled before tools run.
+
+Xquik is an independent third-party service. Not affiliated with X Corp. "Twitter" and "X" are trademarks of X Corp.

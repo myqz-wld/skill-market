@@ -1,33 +1,35 @@
 # Skill Catalog
 
-Standalone skills published by Skill Market live under this directory. The bootstrap `skill-market` management skills stay in `plugins/skill-market-*` so Claude and Codex can install them through their native plugin marketplaces.
+Standalone skills published by Skill Market live under this directory. Bootstrap management skills stay under `plugins/skill-market-*` and are installed through each adapter's native plugin marketplace.
 
-This file is the remote skill catalog index. It records market entries, catalog versions, and catalog status only. Local install/disable/update state is stored on the user's machine in `~/.skill-market/managed-skills.json`.
+This file is generated from `catalog/entries.json`. It records catalog identity, versions, paths, status, and descriptions only. Local installation state is stored under `~/.skill-market/`.
 
-Skill versions use semver strings. Start new standalone skills at `0.0.1` and bump the version whenever the published skill package changes.
+Skill versions use semver strings. Start new standalone skills at `0.0.1` and bump the version whenever the published package changes.
 
 Catalog status values:
 
-- `active`: available for install/update.
-- `disabled`: retained in the catalog but not offered for normal install.
-- `deprecated`: retained for compatibility or historical reference.
-- `removed`: intentionally removed from the market; keep only when a tombstone is useful.
+- `active`: available for normal install and update.
+- `deprecated`: hidden from normal new installs unless explicitly requested.
+- `disabled`: retained in the catalog but unavailable for install or update.
+- `removed`: a tombstone for a package intentionally removed from the market.
 
 | Adapter | Skill | Version | Path | Status | Description |
 |---|---|---|---|---|---|
-| claude | code-slimming | 0.0.4 | skills/claude/code-slimming | active | Use when asked to slim, shrink, deduplicate, or clean code by finding unused files, symbols, dependencies, repeated logic, merge candidates, or oversized files. |
-| claude | complex-plan-workflow | 0.0.5 | skills/claude/complex-plan-workflow | active | Use before coding when work may span sessions, crosses boundaries, needs rollback/isolation, depends on unverified behavior, or has unclear design/user intent. Splits plans into tasks and tracks progress for handoff. |
-| claude | diff-walkthrough | 0.0.1 | skills/claude/diff-walkthrough | active | Use when walking a user through pull-request diffs or merge-conflict resolutions one fragment at a time with explanation and confirmation before continuing. |
-| claude | flow-arch-plantuml | 0.0.9 | skills/claude/flow-arch-plantuml | active | Use when creating or updating PlantUML flow, architecture, sequence, activity, or component diagrams from source evidence. |
-| claude | hermes-tweet | 0.0.1 | skills/claude/hermes-tweet | active | Use when installing, configuring, testing, or operating Hermes Tweet, the native Hermes Agent X/Twitter plugin for Xquik read workflows and approval-gated actions. |
-| claude | parallel-tasks | 0.0.7 | skills/claude/parallel-tasks | active | Use when a task has 2+ independent tracks with disjoint write sets, such as separate modules, files, audits, research questions, tests, or implementation areas, that parallel agents can run concurrently. Also honor explicit requests to parallelize. Keep agents in the lead's family unless requested otherwise; decompose, route by complexity, run in parallel, then integrate and validate. |
-| claude | project-engineering-foundation | 0.0.10 | skills/claude/project-engineering-foundation | active | Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure. |
-| claude | prompt-asset-improver | 0.0.7 | skills/claude/prompt-asset-improver | active | Use before editing durable AI-facing prompt assets; confirms scope, backs up targets, delegates focused edits, and validates material changes. |
-| codex | code-slimming | 0.0.4 | skills/codex/code-slimming | active | Use when asked to slim, shrink, deduplicate, or clean code by finding unused files, symbols, dependencies, repeated logic, merge candidates, or oversized files. |
-| codex | complex-plan-workflow | 0.0.5 | skills/codex/complex-plan-workflow | active | Use before coding when work may span sessions, crosses boundaries, needs rollback/isolation, depends on unverified behavior, or has unclear design/user intent. Splits plans into tasks and tracks progress for handoff. |
-| codex | diff-walkthrough | 0.0.1 | skills/codex/diff-walkthrough | active | Use when walking a user through pull-request diffs or merge-conflict resolutions one fragment at a time with explanation and confirmation before continuing. |
-| codex | flow-arch-plantuml | 0.0.9 | skills/codex/flow-arch-plantuml | active | Use when creating or updating PlantUML flow, architecture, sequence, activity, or component diagrams from source evidence. |
-| codex | hermes-tweet | 0.0.1 | skills/codex/hermes-tweet | active | Use when installing, configuring, testing, or operating Hermes Tweet, the native Hermes Agent X/Twitter plugin for Xquik read workflows and approval-gated actions. |
-| codex | parallel-tasks | 0.0.7 | skills/codex/parallel-tasks | active | Use when a task has 2+ independent tracks with disjoint write sets, such as separate modules, files, audits, research questions, tests, or implementation areas, that parallel agents can run concurrently. Also honor explicit requests to parallelize. Keep agents in the lead's family unless requested otherwise; decompose, route by complexity, run in parallel, then integrate and validate. |
-| codex | project-engineering-foundation | 0.0.10 | skills/codex/project-engineering-foundation | active | Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure. |
-| codex | prompt-asset-improver | 0.0.7 | skills/codex/prompt-asset-improver | active | Use before editing durable AI-facing prompt assets; confirms scope, backs up targets, delegates focused edits, and validates material changes. |
+| claude | complex-work-planning | 0.0.9 | skills/claude/complex-work-planning | active | Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review. |
+| claude | hermes-tweet | 0.0.1 | skills/claude/hermes-tweet | active | Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions. |
+| claude | parallel-tasks | 0.0.10 | skills/claude/parallel-tasks | active | Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results. |
+| claude | plantuml-diagrams | 0.0.10 | skills/claude/plantuml-diagrams | active | Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams. |
+| claude | project-engineering-foundation | 0.0.12 | skills/claude/project-engineering-foundation | active | Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling. |
+| claude | prompt-asset-improver | 0.0.11 | skills/claude/prompt-asset-improver | active | Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources. |
+| codex | complex-work-planning | 0.0.9 | skills/codex/complex-work-planning | active | Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review. |
+| codex | hermes-tweet | 0.0.1 | skills/codex/hermes-tweet | active | Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions. |
+| codex | parallel-tasks | 0.0.10 | skills/codex/parallel-tasks | active | Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results. |
+| codex | plantuml-diagrams | 0.0.10 | skills/codex/plantuml-diagrams | active | Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams. |
+| codex | project-engineering-foundation | 0.0.12 | skills/codex/project-engineering-foundation | active | Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling. |
+| codex | prompt-asset-improver | 0.0.11 | skills/codex/prompt-asset-improver | active | Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources. |
+| grok | complex-work-planning | 0.0.9 | skills/grok/complex-work-planning | active | Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review. |
+| grok | hermes-tweet | 0.0.1 | skills/grok/hermes-tweet | active | Use when installing, configuring, testing, or operating Hermes Tweet for Hermes Agent X/Twitter research and approval-gated actions. |
+| grok | parallel-tasks | 0.0.10 | skills/grok/parallel-tasks | active | Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results. |
+| grok | plantuml-diagrams | 0.0.10 | skills/grok/plantuml-diagrams | active | Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams. |
+| grok | project-engineering-foundation | 0.0.12 | skills/grok/project-engineering-foundation | active | Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, and .ref draft handling. |
+| grok | prompt-asset-improver | 0.0.11 | skills/grok/prompt-asset-improver | active | Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, backs up confirmed editable changes, keeps paired assets and related metadata aligned, and validates resources. |

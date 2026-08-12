@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill Market"
+  short_description: "Route Skill Market management requests"
+  default_prompt: "Use $skill-market to handle this Skill Market request."
+policy:
+  allow_implicit_invocation: true

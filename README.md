@@ -1,169 +1,278 @@
 # Skill Market
 
-Skill Market is a native plugin marketplace repository for Claude and Codex.
+Skill Market is a repository-backed marketplace for Claude, Codex, and Grok plugins and standalone skills. Each adapter has an independent native bootstrap plugin with the same ten focused Skills and the same bundled, zero-dependency management CLI.
 
-It does not provide a service, API, custom CLI, or custom installer. Claude and Codex use their own plugin marketplace mechanisms. The built-in capabilities are management skills packaged as native plugins for each platform.
+The Skills handle intent, adapter selection, and confirmation. The CLI handles deterministic catalog, cache, filesystem, native-plugin, Git, and GitHub work. This keeps routine management out of prompts without introducing a hosted service, registry API, global installer, or npm package.
 
-## Marketplace Layout
+## Supported Surface
+
+| Adapter | Marketplace catalog | Bootstrap manifest | Standalone packages |
+|---|---|---|---|
+| Claude | `.claude-plugin/marketplace.json` | `plugins/skill-market-claude/.claude-plugin/plugin.json` | `skills/claude/` |
+| Codex | `.agents/plugins/marketplace.json` | `plugins/skill-market-codex/.codex-plugin/plugin.json` | `skills/codex/` |
+| Grok | `.grok-plugin/marketplace.json` | `plugins/skill-market-grok/.grok-plugin/plugin.json` | `skills/grok/` |
+
+The adapters share catalog and result semantics, but native scopes, trust, activation, update, restart, and persistent-data behavior remain explicit adapter concerns. One adapter variant is never inferred from another.
+
+Every package has a stable id:
 
 ```text
-.claude-plugin/marketplace.json          # Claude marketplace catalog
-.agents/plugins/marketplace.json        # Codex marketplace catalog
-plugins/
-  skill-market-claude/
-    .claude-plugin/plugin.json
-    skills/
-      skill-market/SKILL.md
-      skill-list/SKILL.md
-      skill-search/SKILL.md
-      skill-download/SKILL.md
-      skill-install/SKILL.md
-      skill-disable/SKILL.md
-      skill-uninstall/SKILL.md
-      skill-update/SKILL.md
-      skill-upload/SKILL.md
-  skill-market-codex/
-    .codex-plugin/plugin.json
-    skills/
-      skill-market/SKILL.md
-      skill-list/SKILL.md
-      skill-search/SKILL.md
-      skill-download/SKILL.md
-      skill-install/SKILL.md
-      skill-disable/SKILL.md
-      skill-uninstall/SKILL.md
-      skill-update/SKILL.md
-      skill-upload/SKILL.md
-skills/
-  INDEX.md
-  claude/<skill-name>/SKILL.md
-  codex/<skill-name>/SKILL.md
+<adapter>:<kind>:<name>
+
+codex:standalone:plantuml-diagrams
+claude:plugin:skill-market-claude
+grok:plugin:skill-market-grok
 ```
 
-Claude and Codex plugins are independent. Claude and Codex managed skills are also independent. If the same workflow needs both platforms, publish two variants and keep their manifests and skills separate.
+The public Skill surface is:
 
-The `plugins/skill-market-*` directories contain only the bootstrap management skills needed for native plugin installation. Marketplace-managed skills live under the top-level `skills/` directory, not inside the bootstrap plugin.
+- `skill-market`
+- `skill-list`
+- `skill-discover`
+- `skill-download`
+- `skill-install`
+- `skill-update`
+- `skill-enable`
+- `skill-disable`
+- `skill-uninstall`
+- `skill-propose`
 
-Management skills must not upload, delete, or modify `skill-market-claude` or `skill-market-codex`. Bootstrap plugin changes are developer-only repository changes.
+`skill-list` and `skill-discover` are deliberately different:
 
-## Register Marketplace
+- `list` reports local native plugins and Skill Market-managed standalone packages. It never clones or refreshes the catalog.
+- `discover` browses or searches canonical catalog metadata. It may refresh the catalog cache under the configured policy, but it never installs anything.
 
-Claude:
+There are no compatibility aliases for the former search or upload entry points.
+
+## Requirements
+
+- Node.js 20 or newer for the bundled CLI
+- Git for catalog caching and proposal preparation
+- The selected adapter CLI for native plugin inventory and lifecycle operations
+- GitHub CLI (`gh`) only when submitting a prepared proposal
+
+Repository development uses the Node version declared in `mise.toml`.
+
+## Install the Bootstrap Plugin
+
+Use the HTTPS repository for catalog reads. Configure push credentials separately only when submitting a proposal.
+
+### Claude
 
 ```bash
-claude plugin marketplace add git@github.com:myqz-wld/skill-market.git
-claude plugin install skill-market-claude@skill-market
-claude plugin marketplace update skill-market
-claude plugin update skill-market-claude@skill-market
+claude plugin marketplace add https://github.com/myqz-wld/skill-market.git
+claude plugin install skill-market-claude@skill-market --scope user
 ```
 
-Codex:
+### Codex
 
 ```bash
-codex plugin marketplace add git@github.com:myqz-wld/skill-market.git
+codex plugin marketplace add https://github.com/myqz-wld/skill-market.git
 codex plugin add skill-market-codex@skill-market
-codex plugin marketplace upgrade skill-market
 ```
 
-For local plugin development only, register `/path/to/skill-market` instead of the remote URL.
+### Grok
 
-## Repository Configuration
+Register the marketplace, inspect the exact plugin source, and then grant trust for that source:
 
-`~/.skill-market/config.json` is the required configuration file: when it is missing, any management skill that reads the remote or cache creates it with the default values before continuing. Environment variables still take precedence over the config file for that run.
-
-The installed management skills use the remote repository as the source of truth:
-
-1. `SKILL_MARKET_REPO_URL` environment variable.
-2. `~/.skill-market/config.json` with a `repoUrl` string.
-3. Default remote: `git@github.com:myqz-wld/skill-market.git`.
-
-They use a local cache to avoid fetching the network on every operation:
-
-1. `SKILL_MARKET_CACHE` environment variable.
-2. `~/.skill-market/config.json` with a `cachePath` string.
-3. Default cache: `~/.skill-market/cache/skill-market`.
-
-For `skill-list`, `skill-search`, `skill-download`, and `skill-install`, cache freshness is controlled by:
-
-1. `SKILL_MARKET_CACHE_TTL_SECONDS` environment variable.
-2. `~/.skill-market/config.json` with a `cacheTtlSeconds` number.
-3. Default TTL: `86400` seconds.
-
-A positive TTL refreshes the cache when the freshness marker is missing or older than the TTL. After clone or fetch, write `<cachePath>/.skill-market-cache.json` with `repoUrl`, `fetchedAt`, and `head`. Set `cacheTtlSeconds` to `0` to disable automatic TTL refresh; explicit latest requests still fetch. `skill-update` and `skill-upload` always fetch before changing local state or creating PRs.
-
-`SKILL_MARKET_REPO` or config field `repoPath` is only an explicit local development override. It is not the default and bypasses cache TTL.
-
-Example config:
-
-```json
-{
-  "repoUrl": "git@github.com:myqz-wld/skill-market.git",
-  "cachePath": "~/.skill-market/cache/skill-market",
-  "cacheTtlSeconds": 86400
-}
+```bash
+grok plugin marketplace add https://github.com/myqz-wld/skill-market.git
+grok plugin install "https://github.com/myqz-wld/skill-market.git#plugins/skill-market-grok" --trust
 ```
 
-After installation, the management skills are available from the installed plugin namespace:
+For local development, replace the repository URL with the checkout path. Grok installs the exact plugin subdirectory:
+
+```bash
+grok plugin marketplace add /path/to/skill-market
+grok plugin install /path/to/skill-market/plugins/skill-market-grok --trust
+```
+
+Invoke the focused Skills through the adapter's normal Skill interface. The bundled CLI is an implementation detail of each bootstrap plugin; users do not need a global `skill-market` executable.
+
+## Command Model
+
+The repository copy can expose the exact machine-readable contract:
+
+```bash
+npm run cli -- help --pretty
+```
+
+Useful local-development examples:
+
+```bash
+npm run cli -- list --adapter codex --pretty
+npm run cli -- discover planning --adapter all --kind standalone --pretty
+npm run cli -- download codex:standalone:plantuml-diagrams --pretty
+```
+
+| Command | Purpose | Default external effect |
+|---|---|---|
+| `list` | Local inventory, ownership, activation, drift, and update state | Native read-only list commands |
+| `discover [query]` | Browse or rank canonical catalog entries | Optional catalog-cache refresh |
+| `download <id>` | Export one exact version without installing | Atomic write below the downloads root |
+| `install <id>` | Install a native plugin or managed standalone package | Exact selected package only |
+| `update <id>` | Update while preserving activation and native scope | Exact installed package only |
+| `enable <id>` / `disable <id>` | Change activation without catalog fetch | Exact installed package only |
+| `uninstall <id>` | Remove a package and retain standalone history | Exact installed package only |
+| `proposal ...` | Plan, prepare, submit, inspect, or abort a catalog PR | Local until confirmed submit |
+| `config ...` | Inspect or explicitly change configuration | `set` and `unset` write config |
+
+Every invocation writes exactly one JSON object to stdout. `--pretty` changes indentation only. Consumers must parse JSON even on a nonzero exit:
+
+| Exit | Status |
+|---:|---|
+| 0 | `ok` or `noop` |
+| 1 | `error` |
+| 2 | `needs_confirmation` |
+| 3 | `blocked` |
+| 4 | `unsupported` |
+
+Failures include a stable error code, retryability, details, and a `nextAction`. Confirmation flags authorize only the condition named in that result.
+
+## Configuration and Cache
+
+Configuration is optional. Missing configuration uses in-memory defaults and is not created by `list`, `discover`, or another read merely to persist defaults.
+
+Precedence is:
 
 ```text
-Claude: /skill-market-claude:skill-market, /skill-market-claude:skill-list, /skill-market-claude:skill-search, /skill-market-claude:skill-download, /skill-market-claude:skill-install, /skill-market-claude:skill-disable, /skill-market-claude:skill-uninstall, /skill-market-claude:skill-update, /skill-market-claude:skill-upload
-Codex:  skill-market, skill-list, skill-search, skill-download, skill-install, skill-disable, skill-uninstall, skill-update, skill-upload
+command option > environment variable > config file > in-memory default
 ```
 
-## What the Built-in Skills Do
+Defaults:
 
-After installing the plugin, use the management skills to:
+| Key | Default | Environment |
+|---|---|---|
+| `readRepoUrl` | `https://github.com/myqz-wld/skill-market.git` | `SKILL_MARKET_READ_REPO_URL` |
+| `baseRef` | `main` | `SKILL_MARKET_BASE_REF` |
+| `cachePath` | `~/.skill-market/cache/skill-market` | `SKILL_MARKET_CACHE_PATH` |
+| `cacheTtlSeconds` | `86400` | `SKILL_MARKET_CACHE_TTL_SECONDS` |
+| `repoPath` | `null` | `SKILL_MARKET_REPO_PATH` |
 
-- list managed skills from `~/.skill-market/managed-skills.json` and enrich them with catalog version and status from `skills/INDEX.md`
-- search marketplace plugins and standalone skills
-- download plugin or skill packages without installing
-- install plugins or standalone skills and record standalone skills in local managed state
-- disable Claude plugins and standalone skills without deleting their files
-- disable Codex standalone skills without deleting their files; Codex plugin disable is unsupported by the current CLI
-- uninstall installed plugins or standalone skills
-- update installed plugins or standalone skills
-- upload new or updated skills/plugins by creating a branch and PR
+`SKILL_MARKET_HOME` changes the state root, and `SKILL_MARKET_CONFIG` changes the config-file path. An explicit `repoPath` is a local-development override that bypasses cache and network behavior.
 
-Upload is not publish. A skill or plugin is published only after the PR is merged.
+Inspect or change explicit configuration through the CLI:
 
-`skills/INDEX.md` is the remote skill catalog index. It records a semver `Version` for each standalone skill. Start new standalone skills at `0.0.1` and bump the version whenever the published skill package changes. Local management state is stored in `~/.skill-market/managed-skills.json`.
+```bash
+npm run cli -- config show --pretty
+npm run cli -- config set cacheTtlSeconds 3600 --pretty
+npm run cli -- config unset cacheTtlSeconds --pretty
+```
 
-`skill-download` exports packages without installing them. If the user does not provide a destination, use `~/.skill-market/downloads/<adapter>/<name>/`.
+`cacheTtlSeconds: 0` disables automatic refresh and reports cached data as stale. Discovery may return an existing stale cache with a warning after a refresh failure. Mutations do not silently use stale data: offline mutation requires `--allow-stale-head <exact-commit>`, which pins the catalog provenance.
 
-Local state example:
+## Catalog and State
+
+`catalog/entries.json` is the execution source of truth. These files are deterministic generated views and must not be hand-edited:
+
+- `.agents/plugins/marketplace.json`
+- `.claude-plugin/marketplace.json`
+- `.grok-plugin/marketplace.json`
+- `skills/INDEX.md`
+
+Catalog status and local state are orthogonal:
+
+- Catalog status: `active`, `deprecated`, `disabled`, or `removed`
+- Local state: `active`, `disabled`, `absent`, or `broken`
+
+New installs accept active entries. Deprecated download/install requires `--allow-deprecated`; disabled and removed entries are blocked.
+
+Standalone state uses schema version 2 at `~/.skill-market/managed-state.json`. Skill Market reconciles only packages it installed or the user explicitly adopted; it does not scan unrelated Skill directories. Active and disabled packages live under each adapter's canonical `skills/` and `skills.disabled/` roots.
+
+Downloads default to:
+
+```text
+~/.skill-market/downloads/<adapter>/<kind>/<name>/<version>
+```
+
+Standalone mutations use locks, path-containment checks, content digests, staging, atomic swaps, and rollback. The exact adapter root (`~/.claude`, `~/.codex`, or `~/.grok`) may be a symbolic link to an existing real directory; its resolved directory becomes the containment root. Symbolic links below that boundary, including `skills`, `skills.disabled`, and transaction directories, remain blocked, as do dangling adapter-root links. Drift, unmanaged collisions, source changes, and incomplete rollback produce explicit confirmation or recovery results instead of silent overwrite.
+
+## Native Adapter Differences
+
+| Concern | Claude | Codex | Grok |
+|---|---|---|---|
+| Plugin install | Native marketplace selector; user/project/local scope | Native marketplace selector | Exact catalog package path; explicit trust |
+| Plugin update | Native update; preserves detected scope | Confirmed bounded remove/add; Git marketplaces refresh first | Native for remote sources; verified local sources use keep-data reinstall |
+| Plugin enable/disable | Native except managed-policy scope | Unsupported; uninstall is never substituted | Native |
+| Plugin uninstall data | Kept by default; `--remove-data` expands deletion | Native remove behavior | Kept by default; `--remove-data` expands deletion |
+| Apply update | Restart Claude Code | Start a new Codex session | Follow native result |
+
+Standalone install, update, enable, disable, and uninstall share the same transactional behavior on all three adapters. Updates preserve whether the package was active or disabled.
+
+## Pull-Request Proposals
+
+`skill-propose` supports four explicit actions: `add`, `update`, `retire`, and `remove`. Every adapter/package tuple is a separate target; the CLI never expands one target into other adapters.
+
+Example update spec:
 
 ```json
 {
-  "version": 1,
-  "skills": [
+  "schemaVersion": 1,
+  "action": "update",
+  "summary": "Update planning skill for three adapters",
+  "targets": [
     {
-      "adapter": "codex",
-      "name": "example-skill",
-      "catalogPath": "skills/codex/example-skill",
-      "installedVersion": "0.0.1",
-      "activePath": "~/.codex/skills/example-skill",
-      "disabledPath": "~/.codex/skills.disabled/example-skill",
-      "status": "installed"
+      "id": "claude:standalone:complex-work-planning",
+      "sourcePath": "./candidate/claude/complex-work-planning",
+      "version": "0.0.10"
+    },
+    {
+      "id": "codex:standalone:complex-work-planning",
+      "sourcePath": "./candidate/codex/complex-work-planning",
+      "version": "0.0.10"
+    },
+    {
+      "id": "grok:standalone:complex-work-planning",
+      "sourcePath": "./candidate/grok/complex-work-planning",
+      "version": "0.0.10"
     }
   ]
 }
 ```
 
-In each entry, `activePath` is the active install location, `disabledPath` is the canonical disabled location and may be precomputed while status is `installed`, and `installedVersion` records the standalone skill version copied from `skills/INDEX.md`.
+The workflow is resumable:
 
-Only skills installed through Skill Market or explicitly adopted by the user are managed. `skill-list` must not list unrelated local skills. When a requested operation touches a local skill absent from `managed-skills.json`, ask the user before adopting or modifying it.
+```bash
+npm run cli -- proposal plan --spec ./proposal.json --pretty
+npm run cli -- proposal prepare <proposal-id> --pretty
+npm run cli -- proposal status <proposal-id> --pretty
+npm run cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
+```
 
-## Upload Policy
+- `plan` validates exact targets, source digests, catalog state, versions, and the base commit.
+- `prepare` creates a proposal-owned isolated worktree, regenerates catalog views, validates the package, and commits the exact diff. It does not push.
+- `submit` revalidates the prepared commit and diff hash, then may authenticate, create or verify a fork, push the exact branch, and open or discover one PR. It requires `--confirm-external-effects`.
+- `status` is read-only.
+- `abort` removes local proposal artifacts; drift requires `--confirm-discard`, and pushed/submitted proposals cannot be aborted.
 
-All uploads must go through PR:
+Bootstrap packages `skill-market-claude`, `skill-market-codex`, and `skill-market-grok` cannot be changed through proposals. They remain developer-maintained.
 
-1. Create branch `market/<type>/<adapter>/<name>`.
-2. For plugin uploads, add or update `plugins/<plugin-name>/` and the corresponding marketplace catalog.
-3. For standalone skill uploads, add or update `skills/<adapter>/<skill-name>/`, bump that skill's `Version` in `skills/INDEX.md`, and keep the catalog row path/status/description current.
-4. Commit and push.
-5. Open a PR.
-6. Merge the PR to publish.
+## Repository Layout
 
-Marketplace deletion follows the same rule: remove or retire the plugin through a PR, then publish only after merge.
+```text
+catalog/entries.json                       # canonical machine-readable catalog
+.agents/plugins/marketplace.json           # generated Codex marketplace
+.claude-plugin/marketplace.json            # generated Claude marketplace
+.grok-plugin/marketplace.json              # generated Grok marketplace
+plugins/skill-market-{codex,claude,grok}/  # independent bootstrap packages
+  cli/                                     # generated self-contained CLI bundle
+  skills/                                  # ten thin adapter-specific Skills
+skills/{codex,claude,grok}/                 # standalone packages
+skills/INDEX.md                             # generated human-readable catalog
+tooling/skill-market-cli/                   # canonical CLI source, tests, generators
+```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md).
+The three checked-in plugin `cli/` directories are generated from one canonical source and must remain byte-identical.
+
+## Development
+
+```bash
+mise install
+npm run catalog:generate
+npm run plugins:generate
+npm run validate
+```
+
+`npm run validate` checks generated catalog views, checks all three packaged CLI bundles, and runs unit and isolated integration tests. Tests use temporary homes, local fixture repositories, fake native CLIs, and fake GitHub operations; they must not mutate real adapter or Skill Market state.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for source-of-truth, versioning, proposal, and validation rules.

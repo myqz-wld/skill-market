@@ -1,19 +1,15 @@
 ---
 name: skill-uninstall
-description: Remove an installed Codex Skill Market plugin or standalone Codex skill from the local machine.
+description: "Uninstall one exact Codex Skill Market package. Use for local removal while retaining standalone history."
 ---
-
 # Skill Uninstall for Codex
 
-Use this skill when the user wants a Codex Skill Market installation removed from local disk. Do not mutate the remote marketplace repository.
+Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
 
-If the user wants to preserve local files, use `skill-disable` instead of uninstalling.
+Confirm one exact ID, then run `node "<plugin-root>/cli/bin/skill-market.mjs" uninstall codex:<plugin|standalone>:<kebab-case-name> [options] --json`. Applicable options: --read-repo-url, --cache-path, --repo-path, --adopt, --confirm-drift.
 
-## Uninstall
+Already absent is a no-op and standalone history remains. Adoption or drift requires confirmation; source options apply only to native-plugin provenance.
 
-- Plugin: run `codex plugin remove <plugin-name>@skill-market`.
-- Standalone Codex skill: remove `~/.codex/skills/<skill-name>/`.
+Parse stdout as JSON even on exit 1–4. Report `ok/noop` summary, data, and warnings. For `needs_confirmation`, show the complete error and ask before retrying with only the named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`, perform it only within scope, and retry only when `retryable` is true.
 
-Before uninstalling a standalone skill, check `~/.skill-market/managed-skills.json`. If the skill is not listed there, it is unmanaged; ask the user to confirm before deleting it. When uninstalling a managed skill, remove both `activePath` and `disabledPath` when either exists, keep `installedVersion`, then set status to `uninstalled` instead of dropping the record.
-
-If the user wants the item removed from Skill Market itself, route that to `skill-upload` as a deletion PR.
+Never hand-edit Skill Market config, cache, managed state, proposal state, catalog, or installed package paths.
