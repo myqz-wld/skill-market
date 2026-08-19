@@ -1,6 +1,6 @@
 ---
 name: project-engineering-foundation
-description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, installable artifact build metadata, time-bucketed ref/ record indexes, ref/ and .ref handling for LLM-facing materials, plan/review lifecycle, review expiry, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
+description: "Use when inspecting, minimally repairing, or fully initializing an AI-coding repository's durable engineering structure: CLAUDE.md/AGENTS.md/UI_COPY_LANGUAGE.md entries, src/build layout, installable artifact build metadata, time-bucketed ref/ record indexes, ref/ and .ref handling for LLM-facing materials, repository-relative path privacy for plans/reviews/records, plan/review lifecycle, review expiry, UI/CLI copy-language SSOT, and 500-line file-size rules. Existing repositories default to inspect-only unless edits are authorized; one-time setup/repair only, not routine maintenance."
 ---
 
 # Project Engineering Foundation
@@ -69,6 +69,7 @@ For final typed `ref/` records, this skill installs the directory and index fram
 - Add both `build/` and `dist/` to `.gitignore`, even if the project currently uses only one.
 - Add `.ref/` to `.gitignore`; it is the non-final AI-work workspace for plans, reviews, raw outputs, spike drafts, scratch notes, and other unarchived LLM-facing material, not a durable reference archive.
 - Keep archived AI-coding reference artifacts in `ref/`; do not ignore `ref/`. Put unarchived drafts, scratch notes, raw logs, and non-final LLM-facing materials in `.ref/`.
+- Treat the repository root as the base for every path recorded in project-authored instructions, plans, reviews, changelogs, indexes, and other LLM-facing materials. Store in-repository paths without the repository or worktree's absolute prefix, and do not persist usernames or home-directory paths. Refer to external resources with a portable environment-variable reference when one exists; otherwise use a non-identifying logical label that preserves the resource's role.
 - Keep `UI_COPY_LANGUAGE.md` at project root; update it before changing the active UI/CLI copy language mode or supported locales.
 
 ## Installable Artifact Metadata
@@ -90,9 +91,11 @@ When repairing oversized existing files, read `assets/file-size-guardrail.md` be
 
 ## Existing Repository Repair
 
-For existing repositories, compare current files, project-owned rules, generated indexes, and copied helpers against the current foundation shape and relevant templates. Classify findings as already satisfied, project-owned rule, missing, conflicting local invariant, or risk.
+For existing repositories, compare current files, project-owned rules, generated indexes, and copied helpers against the current foundation shape and relevant templates. Search project entry instructions and text under `ref/` for the inspected repository, worktree, and home-directory absolute prefixes. Classify findings as already satisfied, project-owned rule, missing, conflicting local invariant, or risk.
 
-In `inspect-only`, report those findings and recommended minimal repairs without editing. In `minimal repair`, add only the missing pieces requested by the repair scope, or merge missing current-template sections into existing generated files. Extend project-owned rules in place; do not delete, rename, or rewrite project-specific invariants, and do not create parallel structures for the same responsibility.
+In `inspect-only`, report those findings and recommended minimal repairs without editing. In `minimal repair`, add only the missing pieces requested by the repair scope, or merge missing current-template sections into existing generated files. When path privacy is authorized, replace in-repository absolute paths with repository-relative paths, nearby repository or worktree paths with stable relative references, and external machine paths with portable environment-variable references or non-identifying logical labels. Preserve the meaning and syntax of serialized evidence. Do not rewrite Git history or ignored local workspaces unless the user explicitly expands scope. Extend project-owned rules in place; do not delete, rename, or rewrite project-specific invariants, and do not create parallel structures for the same responsibility.
+
+After setup or an authorized path-privacy repair, use a transient `rg` scan over the affected project instructions and LLM-facing record roots for the inspected repository, worktree, and home-directory prefixes. Resolve every match before handoff or report the exact unresolved exception; do not persist the scan output as another project record.
 
 ## Resources
 
