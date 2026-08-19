@@ -61,17 +61,17 @@ Final plan approval confirms the assembled plan; it never replaces earlier decis
 
 Keep the durable plan sufficient for a cold implementation session:
 
-- **Identity and goal:** plan id, status, created date, base commit or branch, worktree path when used, goal, and invariants.
+- **Identity and goal:** plan id, status, created date, base commit or branch, repository-relative worktree or isolation identity when used, goal, and invariants.
 - **Evidence and design:** project evidence, current behavior and boundaries, blindspot findings, route options and tradeoffs, selected design, and evidence that should not be re-litigated without new data.
 - **Model boundary:** each proposed LLM call's semantic responsibility, minimum inputs, delta output schema, deterministic assembly, and mechanical validation; deterministic tooling tasks required to remove model-owned exact work.
 - **Decisions and uncertainty:** the ledger defined by the Decision Interview Protocol, including recorded answers and delegations, checkpoint evidence, and spike reports with remaining risk.
 - **Tasks and review:** executable tasks with owner, status, dependencies, write areas, steps, validation, done criteria, parallelization notes, and task-system ids; reviewer findings, resolutions, accepted residual risks, and caveats.
-- **Execution state:** task status and progress, last completed step, verification performed, validation state, blockers, dirty workspace or worktree state, remaining uncertainty, isolation path and status, and the next implementation action. Require implementation sessions to update this after each meaningful task.
+- **Execution state:** task status and progress, last completed step, verification performed, validation state, blockers, dirty workspace or worktree state, remaining uncertainty, isolation identity and status without a machine-specific absolute path, and the next implementation action. Require implementation sessions to update this after each meaningful task.
 - **Completion and abandonment:** project-required finalization with recorded final validation, or the abandonment reason and isolation cleanup.
 - **Cold-start instruction:** the first action an implementation session can execute without chat history.
 
-If spike reports or task details outgrow the main plan, split them into separate files and keep an indexed summary with absolute paths.
+If spike reports or task details outgrow the main plan, split them into separate files and keep an indexed summary with repository-relative paths for in-project artifacts and portable logical references for external artifacts.
 
 ## Handoff Rule
 
-After that final approval, enter the isolated implementation environment and bring the plan and any task system up to date with the Plan Content. Use absolute paths and point code references at the isolated workspace. The cold-start instruction must name the plan path, isolation path, first file or command to inspect, and next edit or validation step. Do not rely on unstated decisions.
+After that final approval, enter the isolated implementation environment and bring the plan and any task system up to date with the Plan Content. Resolve paths from the isolated workspace root and keep machine-specific absolute paths, home-directory paths, and usernames out of durable plans, task records, and handoff prompts. The cold-start instruction must name the repository-relative plan path, isolation identity and status, first repository-relative file or command to inspect, and next edit or validation step. Do not rely on unstated decisions.
