@@ -1,8 +1,8 @@
 # Skill Market
 
-Skill Market is a repository-backed marketplace for Claude, Codex, and Grok plugins and standalone skills. Each adapter has an independent native bootstrap plugin with the same ten focused Skills and the same bundled, zero-dependency management CLI.
+Skill Market is a repository-backed marketplace for Claude, Codex, and Grok plugins and standalone skills. Each adapter has its own native bootstrap plugin, backed by the same ten focused Skills and bundled zero-dependency CLI.
 
-The Skills handle intent, adapter selection, and confirmation. The CLI handles deterministic catalog, cache, filesystem, native-plugin, Git, and GitHub work. This keeps routine management out of prompts without introducing a hosted service, registry API, global installer, or npm package.
+The Skills handle intent and confirmation; the CLI handles deterministic catalog, filesystem, native-plugin, Git, and GitHub work. No hosted service, registry API, global installer, or npm package is required.
 
 ## Supported Surface
 
@@ -14,14 +14,10 @@ The Skills handle intent, adapter selection, and confirmation. The CLI handles d
 
 The adapters share catalog and result semantics, but native scopes, trust, activation, update, restart, and persistent-data behavior remain explicit adapter concerns. One adapter variant is never inferred from another.
 
-Every package has a stable id:
+Every package has a stable id, for example `codex:standalone:plantuml-diagrams`:
 
 ```text
 <adapter>:<kind>:<name>
-
-codex:standalone:plantuml-diagrams
-claude:plugin:skill-market-claude
-grok:plugin:skill-market-grok
 ```
 
 The public Skill surface is:
@@ -185,7 +181,7 @@ Downloads default to:
 ~/.skill-market/downloads/<adapter>/<kind>/<name>/<version>
 ```
 
-Standalone mutations use locks, path-containment checks, content digests, staging, atomic swaps, and rollback. The exact adapter root (`~/.claude`, `~/.codex`, or `~/.grok`) may be a symbolic link to an existing real directory; its resolved directory becomes the containment root. Symbolic links below that boundary, including `skills`, `skills.disabled`, and transaction directories, remain blocked, as do dangling adapter-root links. Drift, unmanaged collisions, source changes, and incomplete rollback produce explicit confirmation or recovery results instead of silent overwrite.
+Standalone mutations use locks, containment checks, content digests, atomic swaps, and rollback. An adapter root may link to an existing real directory, but managed descendants and dangling roots cannot be symbolic links. Drift, unmanaged collisions, source changes, and incomplete rollback produce explicit confirmation or recovery results instead of silent overwrite.
 
 ## Native Adapter Differences
 
@@ -201,36 +197,7 @@ Standalone install, update, enable, disable, and uninstall share the same transa
 
 ## Pull-Request Proposals
 
-`skill-propose` supports four explicit actions: `add`, `update`, `retire`, and `remove`. Every adapter/package tuple is a separate target; the CLI never expands one target into other adapters.
-
-Example update spec:
-
-```json
-{
-  "schemaVersion": 1,
-  "action": "update",
-  "summary": "Update planning skill for three adapters",
-  "targets": [
-    {
-      "id": "claude:standalone:complex-work-planning",
-      "sourcePath": "./candidate/claude/complex-work-planning",
-      "version": "0.0.10"
-    },
-    {
-      "id": "codex:standalone:complex-work-planning",
-      "sourcePath": "./candidate/codex/complex-work-planning",
-      "version": "0.0.10"
-    },
-    {
-      "id": "grok:standalone:complex-work-planning",
-      "sourcePath": "./candidate/grok/complex-work-planning",
-      "version": "0.0.10"
-    }
-  ]
-}
-```
-
-The workflow is resumable:
+`skill-propose` supports `add`, `update`, `retire`, and `remove`. Every adapter/package tuple is an explicit target; the CLI never expands one target into other adapters. The resumable workflow is:
 
 ```bash
 npm run cli -- proposal plan --spec ./proposal.json --pretty
@@ -239,13 +206,15 @@ npm run cli -- proposal status <proposal-id> --pretty
 npm run cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
 ```
 
-- `plan` validates exact targets, source digests, catalog state, versions, and the base commit.
-- `prepare` creates a proposal-owned isolated worktree, regenerates catalog views, validates the package, and commits the exact diff. It does not push.
-- `submit` revalidates the prepared commit and diff hash, then may authenticate, create or verify a fork, push the exact branch, and open or discover one PR. It requires `--confirm-external-effects`.
+- `plan` validates targets, source digests, catalog state, versions, and the base commit.
+- `prepare` creates an isolated worktree, regenerates catalog views, validates the package, and commits the exact diff without pushing.
+- `submit` revalidates the commit and diff, then may authenticate, create or verify a fork, push the branch, and open or discover one PR. It requires `--confirm-external-effects`.
 - `status` is read-only.
 - `abort` removes local proposal artifacts; drift requires `--confirm-discard`, and pushed/submitted proposals cannot be aborted.
 
 Bootstrap packages `skill-market-claude`, `skill-market-codex`, and `skill-market-grok` cannot be changed through proposals. They remain developer-maintained.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the proposal spec, versioning rules, and full contribution policy.
 
 ## Repository Layout
 
