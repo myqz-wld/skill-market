@@ -27,6 +27,27 @@ Do not use this skill for one ambiguous request, a serial dependency chain, work
 3. Keep shared types, integration glue, conflict resolution, and final integrated validation with the lead.
 4. Refine a brief that is not self-contained or run that task serially.
 
+## Dispatch Medium
+
+Classify each task before completing its Dispatch Envelope. A T1 or T2 task is always complex. A T3 or T4 task is simple only when all of these are true:
+
+- it has one bounded outcome and a short, self-contained brief;
+- it has no unresolved material decision, architecture, security, concurrency, migration, rollback, lifecycle, cross-task coordination, or durable resume state;
+- it is read-only or writes within one narrow area; and
+- its work and validation can be completed and reported in one reply.
+
+Every other task is complex.
+
+For a complex task:
+
+1. Use one durable task record as the source of truth for approval, assignment, execution reporting, and acceptance. Put it in the active project or environment's shared task-record location. If no location is readable and writable by both lead and worker, do not dispatch the task; have the lead execute it or ask the user for a different route.
+2. Before dispatch, the lead writes the task id and status, complete Dispatch Envelope, relevant confirmed decisions, and acceptance checklist. Add the exact record path to the worker's allowed writes. After approval, the approval portion is lead-owned; the worker must not alter it.
+3. The dispatch message contains only the task identity, record path, and bootstrap fields required by the selected mechanism; it must not carry a competing copy of the brief.
+4. The worker reads the record before acting, appends the outcome, changed paths, validation output, blockers, and `ready-for-review` state, then replies with the path and status.
+5. The lead independently verifies the result and appends `accepted` or `rejected` with evidence. A success claim in chat does not complete the task.
+
+For a simple task, the approved envelope may be sent in the dispatch message and the worker may report there. The lead still validates the result. If new information breaks any simple-task condition, the worker stops and reports why; the lead creates a complex task record and passes the Dispatch Approval Gate again before work resumes.
+
 ## Dispatch Envelope
 
 Create one dispatch envelope per task and use it as the single source of truth through approval, execution, and reporting:
@@ -34,9 +55,10 @@ Create one dispatch envelope per task and use it as the single source of truth t
 - **Brief:** goal, inputs, allowed writes, expected output, and validation.
 - **Mechanism:** selected identifier, capability inventory, and any proposed fallback with its reason.
 - **Controls:** requested and resolved tier; requested, resolved, and enforceable adapter, model, reasoning effort, context mode, team or messaging mode, filesystem mode, and wait or return behavior; and any proposed substitution with its reason.
-- **Runtime:** pre-dispatch baseline when files are shared, handle or anchor, observed controls, substitutions actually applied, outcome, and validation result.
+- **Delivery:** complexity classification and evidence, file or message mode, and, for file mode, the task-record path plus lead and worker update responsibilities.
+- **Runtime:** pre-dispatch baseline when files are shared, handle or anchor, observed controls, substitutions actually applied, task-record state when used, outcome, validation result, and lead acceptance evidence.
 
-Brief, Mechanism, and Controls form the approval portion; record every proposed fallback or substitution there before approval. Append Runtime evidence only as execution progresses.
+Brief, Mechanism, Controls, and Delivery form the approval portion; record every proposed fallback or substitution there before approval. Append Runtime evidence only as execution progresses.
 
 Append observed values only when returned metadata confirms them; use unknown when no truthful runtime claim is possible. Never present a requested or resolved value as actual without enforcement or observation.
 
@@ -70,7 +92,7 @@ Reference targets calibrate capability and effort; resolve cross-family targets 
 
 Present the complete approval portion of every envelope before the first dispatch of a batch and wait for explicit approval. A general request to parallelize, silence, timeout, rejection, or a revision request is not approval; revise and re-present or stop.
 
-Approval covers only the presented batch. Reconfirm any material change to a brief, mechanism, control, enforceability claim, fallback, or validation. One transient-failure retry remains covered only when every approved field is unchanged. A bounded fallback is covered only when its mechanism and complete approval portion were approved in advance.
+Approval covers only the presented batch. Reconfirm any material change to a brief, mechanism, control, delivery mode, task-record path, enforceability claim, fallback, or validation. One transient-failure retry remains covered only when every approved field is unchanged. A bounded fallback is covered only when its mechanism and complete approval portion were approved in advance.
 
 If no dedicated confirmation mechanism exists, ask in chat and end the turn. Never poll for approval.
 
@@ -84,7 +106,7 @@ Follow the selected wait contract. Synchronous mechanisms return in place. For m
 
 ## Integration And Validation
 
-The lead integrates results, resolves conflicts, runs each task's validation, and runs one cross-task check such as a build, typecheck, targeted or full tests, or key-workflow verification. If that check cannot run, record the reason, substitute validation, and remaining risk.
+The lead integrates results, resolves conflicts, runs each task's validation, and runs one cross-task check such as a build, typecheck, targeted or full tests, or key-workflow verification. For file-mode tasks, integrate only after the record is `ready-for-review`, then write the lead's `accepted` or `rejected` decision and evidence to that record. If the cross-task check cannot run, record the reason, substitute validation, and remaining risk.
 
 Report the completed Dispatch Envelope for each task. Do not accept success without validation output, and never invent an actual runtime value.
 
@@ -93,6 +115,8 @@ Report the completed Dispatch Envelope for each task. Do not accept success with
 - Retry once only for transient failures such as rate limits, crashes, or recoverable environment errors, and only with the exact approved envelope.
 - For an unclear brief, missing context or capability, permission limit, or write overlap, fix the cause, choose an approved capable mechanism, or have the lead run the task.
 - For a rejected routing value, follow the validation hint and obtain approval for any material change.
+- If a message-mode task becomes complex, stop it and promote it to a durable task record before reapproval; do not continue with an expanded message brief.
+- If a complex task record becomes unavailable, repair access, let the lead execute the task, or ask the user for a different route; do not downgrade it to message mode.
 - For observed routing or execution conflicts, quarantine the output and attributable mutations until an exact-envelope retry succeeds or a changed envelope is approved. Keep isolated changes unmerged; on shared filesystems, freeze affected paths, capture the diff against the baseline, and separate task changes without reverting pre-existing or unattributed work.
 - When rerouting, prefer the same family and tier, then the nearest same-family tier, and record the proposal before reapproval.
 - For partial results, rerun, let the lead finish, or report the missing validation; never fabricate the gap.

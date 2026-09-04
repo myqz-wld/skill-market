@@ -26,9 +26,9 @@ For every proposed LLM call, identify the semantic responsibility, minimum input
 3. **Run a blindspot pass.** Surface historical traps, implicit conventions, boundary conditions, risky assumptions, missing references, and context the user may need to provide.
 4. **Build the decision ledger.** Record and classify every material choice through the Decision Interview Protocol.
 5. **Brainstorm and select a route.** Compare viable approaches by benefits, costs, risks, validation needs, impact, and compliance with the Deterministic Work Boundary. Pass Checkpoint A before helping the user choose and detail a route.
-6. **Run targeted spikes.** Test unverified assumptions with the smallest sufficient investigation. Record the question, method, command or file inspected, observed result, conclusion, and remaining risk. Apply Checkpoint B to any new user-owned choice.
-7. **Keep the plan current and split the work.** Record the cross-task validation strategy in the Plan Content and synchronize any task system before deriving independently executable tasks with ownership, dependencies, write areas, implementation steps, validation targets, and done criteria.
-8. **Review the final plan.** Pass Checkpoint C, then challenge assumptions, evidence, dependencies, parallelization safety, validation, rollback, and handoff readiness. If review creates a user-owned choice, return to Checkpoint B and pass Checkpoint C again before requesting separate final-plan approval.
+6. **Run targeted spikes.** Test unverified assumptions with the smallest sufficient investigation. Record the question, method, command or file inspected, observed result, conclusion, and remaining risk. Apply Checkpoint B to any new user-owned choice and apply Delegated Task Records when a spike is delegated.
+7. **Keep the plan current and split the work.** Record the cross-task validation strategy in the Plan Content and synchronize any task system before deriving independently executable tasks with ownership, dependencies, write areas, implementation steps, validation targets, and done criteria. Classify every task that may be delegated through Delegated Task Records.
+8. **Review the final plan.** Pass Checkpoint C, then challenge assumptions, evidence, dependencies, parallelization safety, validation, rollback, and handoff readiness. Apply Delegated Task Records when review is delegated. If review creates a user-owned choice, return to Checkpoint B and pass Checkpoint C again before requesting separate final-plan approval.
 9. **Prepare isolation and hand off.** Complete the Handoff Rule only after the assembled plan is approved through the user-facing or environment-required confirmation process.
 
 ## Decision Interview Protocol
@@ -57,6 +57,27 @@ Apply these checkpoints:
 
 Final plan approval confirms the assembled plan; it never replaces earlier decision confirmation. If no user-owned decision is unresolved, record that conclusion and its evidence without manufacturing a question.
 
+## Delegated Task Records
+
+Apply this section whenever planning delegates a spike, review, or implementation task, including a delegation chosen after the plan or a decision is approved. A delegated task is simple only when all of these are true:
+
+- it has one bounded outcome and a short, self-contained brief;
+- it has no unresolved material decision, architecture, security, concurrency, migration, rollback, lifecycle, cross-task coordination, or durable resume state;
+- it is read-only or writes within one narrow area; and
+- its work and validation can be completed and reported in one reply.
+
+Every other delegated task is complex.
+
+For a complex task:
+
+1. Create one durable task file before dispatch and use it as the source of truth for assignment, execution reporting, and acceptance. Use the active project or environment's task-record location; if none is defined, create a `tasks/` directory beside the plan when policy permits. If no file is readable and writable by both lead and worker, do not delegate the task; have the lead execute it or ask the user for a different route.
+2. The lead writes the stable task id and status, goal, confirmed decisions, exact inputs, allowed writes, dependencies, implementation steps, validation, done criteria, and acceptance checklist, then indexes its path and status in the plan. Add the exact task-file path to the worker's allowed writes. After dispatch, the assignment portion is lead-owned; the worker must not alter it.
+3. The dispatch message contains only the task identity, file path, and bootstrap fields required by the selected mechanism; it must not carry a competing copy of the brief.
+4. The worker reads the file before acting, appends the outcome, changed paths, validation output, blockers, and `ready-for-review` state, then replies with the path and status.
+5. The lead independently validates the result and appends `accepted` or `rejected` with evidence. The worker never self-accepts a task.
+
+For a simple task, the lead may send the brief and receive the report through messages, then record any material result in the plan. If new information breaks any simple-task condition, the worker stops and reports why; the lead creates the complex task file before work resumes.
+
 ## Plan Content
 
 Keep the durable plan sufficient for a cold implementation session:
@@ -65,13 +86,13 @@ Keep the durable plan sufficient for a cold implementation session:
 - **Evidence and design:** project evidence, current behavior and boundaries, blindspot findings, route options and tradeoffs, selected design, and evidence that should not be re-litigated without new data.
 - **Model boundary:** each proposed LLM call's semantic responsibility, minimum inputs, delta output schema, deterministic assembly, and mechanical validation; deterministic tooling tasks required to remove model-owned exact work.
 - **Decisions and uncertainty:** the ledger defined by the Decision Interview Protocol, including recorded answers and delegations, checkpoint evidence, and spike reports with remaining risk.
-- **Tasks and review:** executable tasks with owner, status, dependencies, write areas, steps, validation, done criteria, parallelization notes, and task-system ids; reviewer findings, resolutions, accepted residual risks, and caveats.
+- **Tasks and review:** executable tasks with owner, status, dependencies, write areas, steps, validation, done criteria, parallelization notes, task-system ids, delegation classification and mode, task-file path when required, and lead acceptance state and evidence; reviewer findings, resolutions, accepted residual risks, and caveats.
 - **Execution state:** task status and progress, last completed step, verification performed, validation state, blockers, dirty workspace or worktree state, remaining uncertainty, isolation identity and status without a machine-specific absolute path, and the next implementation action. Require implementation sessions to update this after each meaningful task.
 - **Completion and abandonment:** project-required finalization with recorded final validation, or the abandonment reason and isolation cleanup.
-- **Cold-start instruction:** the first action an implementation session can execute without chat history.
+- **Cold-start instruction:** the first action an implementation session can execute without chat history, including the task-file path when the next task is complex.
 
-If spike reports or task details outgrow the main plan, split them into separate files and keep an indexed summary with repository-relative paths for in-project artifacts and portable logical references for external artifacts.
+Index every required complex task file from the plan. If other spike reports or task details outgrow the main plan, split them into separate files and keep an indexed summary with repository-relative paths for in-project artifacts and portable logical references for external artifacts.
 
 ## Handoff Rule
 
-After that final approval, enter the isolated implementation environment and bring the plan and any task system up to date with the Plan Content. Resolve paths from the isolated workspace root and keep machine-specific absolute paths, home-directory paths, and usernames out of durable plans, task records, and handoff prompts. The cold-start instruction must name the repository-relative plan path, isolation identity and status, first repository-relative file or command to inspect, and next edit or validation step. Do not rely on unstated decisions.
+After that final approval, enter the isolated implementation environment and bring the plan and any task system up to date with the Plan Content. If the first implementation task is complex, create and index its task file before handoff. Resolve paths from the isolated workspace root and keep machine-specific absolute paths, home-directory paths, and usernames out of durable plans, task records, and handoff prompts. The cold-start instruction must name the repository-relative plan path, any required task-file path, isolation identity and status, first repository-relative file or command to inspect, and next edit or validation step. Do not rely on unstated decisions.
