@@ -81,10 +81,10 @@ Route each task independently by adapter family, then tier, concrete model, and 
 
 | Tier | Criteria | Reference target |
 |---|---|---|
-| T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | fable-5 xhigh |
-| T2 | Multi-file implementation, complex refactor, long-chain reasoning | gpt-5.6-sol xhigh |
-| T3 | Single-module implementation or refactor with clear boundaries | gpt-5.6-terra xhigh |
-| T4 | Mechanical edits, batch search, documentation, boilerplate tests | opus-4.8 xhigh |
+| T1 | Cross-module architecture, concurrency, security boundaries, or deep debugging that needs design judgment | gpt-6-astra xhigh |
+| T2 | Multi-file implementation, complex refactor, long-chain reasoning | fable xhigh |
+| T3 | Single-module implementation or refactor with clear boundaries | gpt-5.6-sol xhigh |
+| T4 | Mechanical edits, batch search, documentation, boilerplate tests | opus xhigh |
 
 Reference targets calibrate capability and effort; resolve cross-family targets to the closest same-family equivalent. If exact reasoning is required but unavailable, reject that mechanism; otherwise record it as uncontrolled or unknown. For an unavailable tier model, propose the nearest same-family tier, preferring one tier up over one tier down. Choose the higher tier when uncertain. Write every request, resolution, proposed substitution, and reason into the approval portion before approval.
 
