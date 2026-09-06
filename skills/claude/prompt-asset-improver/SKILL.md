@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex/Claude assets may drift. Confirms scope, lists proposed changes for user approval, backs up and edits only confirmed editable files, and validates resources."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex/Claude assets may drift. Confirms scope, lists proposed changes for user approval, edits only confirmed editable files, and validates resources."
 ---
 
 # Prompt Asset Improver
@@ -26,7 +26,7 @@ Inventory describes assets; it never expands scope by itself.
 
 1. Load project instructions and prompt-asset records.
    - Refresh inventory for each confirmed target root. Use the owning repository, workspace, or user config root as `<target-root>`.
-   - Store records under `<target-root>/.prompt-asset-improver/`; put private machine data, local exclusions, backups, user preferences, and the asset inventory under `local/`.
+   - Store records under `<target-root>/.prompt-asset-improver/`; put private machine data, local exclusions, user preferences, and the asset inventory under `local/`.
    - Put shared project criteria under `shared/` only when the user confirms they belong with the project.
    - In a git repo, ensure `.prompt-asset-improver/local/` is ignored before writing local records.
    - Write the inventory only to `<target-root>/.prompt-asset-improver/local/inventory.json`, never to `.prompt-asset-improver/` directly or `shared/`. Include `root`, `scanned_at`, `expires_at`, `scan_reason`, optional `git_head`, and assets containing `path`, `type`, `scope`, `reason`, optional `exists`, and optional current `hash`.
@@ -53,26 +53,18 @@ Inventory describes assets; it never expands scope by itself.
    - For high-risk or easily misunderstood edits, include representative wording or a short before/after sketch.
    - State scoped sections or files that will remain unchanged when the user could reasonably expect them to change.
    - State preserved mechanisms, data structures, and paired-asset differences.
-   - Stop before backup or editing until the user confirms the list or gives revisions.
+   - Stop before editing until the user confirms the list or gives revisions.
    - If the actual edit would differ materially from the confirmed list, stop and present the revised change before editing it.
 
-5. Back up confirmed editable assets that may change.
-   - Back up every confirmed editable prompt asset that may change before editing.
-   - Store backups under `<target-root>/.prompt-asset-improver/local/backups/<timestamp>/`.
-   - Include `manifest.json` with `created_at`, `root`, `reason`, and each file's `original_path`, `backup_path`, and original pre-edit `hash` when available.
-   - Back up only assets in confirmed editable scope; check-only counterparts are backed up only after scope expansion.
-   - Stop if the backup cannot be written.
-   - Prune only manifest-backed backup directories named `YYYYMMDDTHHMMSSZ`; keep the current backup, every backup from the last 7 days, and at least the newest 10.
+5. Edit with the Editing Standards below.
 
-6. Edit with the Editing Standards below.
-
-7. Validate and report before finishing.
+6. Validate and report before finishing.
 
 ## Edit Decisions
 
 Choose the smallest edit that satisfies the confirmed change list. Rewrite a section or asset directly when a local patch would leave duplicate rules, contradictions, or require changing most sentences in the section.
 
-Treat trigger selection, tool contracts, safety boundaries, permission rules, session behavior, backup rules, validation gates, failure handling, and this skill's workflow as high-risk content. For high-risk content, keep the change list explicit and the final validation strict. If the edit reveals another behavior change, return to the proposed change list before editing it.
+Treat trigger selection, tool contracts, safety boundaries, permission rules, session behavior, validation gates, failure handling, and this skill's workflow as high-risk content. For high-risk content, keep the change list explicit and the final validation strict. If the edit reveals another behavior change, return to the proposed change list before editing it.
 
 Leave already-lean confirmed editable assets unchanged unless the confirmed change list names a concrete behavior improvement.
 
@@ -130,13 +122,13 @@ Before finishing, validate every changed prompt asset.
 - Validate frontmatter, changed JSON/YAML, interface metadata, and catalog rows.
 - Run the skill validator for changed skills. If unavailable, run manual frontmatter, line-count, resource-path, and paired-behavior checks and report the missing validator.
 - For paired assets, confirm behavior is aligned and adapter differences are intentional.
-- Check backup `manifest.json` and original hashes; verify `.prompt-asset-improver/local/inventory.json` hashes were refreshed after edits.
+- Verify `.prompt-asset-improver/local/inventory.json` hashes were refreshed after edits.
 - Confirm no unrelated project policy moved into a reusable asset and no one-time task direction was recorded as a custom point.
 
 ## Final Report
 
 Start with `User Custom Points` listing active points or `none`. Write user-facing report text in plain language.
 
-Report the scope confirmation source, proposed-change confirmation source, inventory freshness, inventory hash refresh result, backup path, backup manifest status, original hash check, restore method, changed files, sections, metadata keys, catalog rows, validation results, and any skipped gate.
+Report the scope confirmation source, proposed-change confirmation source, inventory freshness, inventory hash refresh result, changed files, sections, metadata keys, catalog rows, validation results, and any skipped gate.
 
 For each changed asset, explain how the change improves task-time behavior and note preserved adapter differences. State the decision for confirmed editable assets left unchanged and check-only counterparts inspected, and report pitfall notes kept or removed when relevant.
