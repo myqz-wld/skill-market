@@ -5,7 +5,7 @@ description: "Use when creating or updating source-backed PlantUML `.puml` diagr
 
 # PlantUML Diagrams
 
-Create or update only PlantUML `.puml` files. Ask only for required missing drawing inputs; if any are missing, end the turn. Once inputs are available, inspect source evidence with `shell` and edit `.puml` files with `apply_patch`. For new diagrams, use `/tmp/plantuml-diagrams/` unless the user explicitly specifies an output path.
+Create or update only PlantUML `.puml` files. Ask only for required missing drawing inputs and wait for the answer before drawing. Once inputs are available, inspect source evidence with `shell` and edit `.puml` files with `apply_patch`. For new diagrams, use `/tmp/plantuml-diagrams/` unless the user explicitly specifies an output path.
 
 ## Drawing Inputs
 
@@ -15,7 +15,7 @@ Gather only the inputs needed to draw the diagram. Ask only for required inputs 
 2. **Topic:** The subject being diagrammed. Use the user's filename or path only when provided; otherwise generate the filename from the topic using the file rules below.
 3. **Source evidence:** The source files, description, or context needed to draw accurately.
 
-No blocking user-question tool is available in this environment. After asking for required inputs, end the turn and wait for the user's next message. Do not ask for an output directory for a new diagram; apply the output rules below.
+Use an available user-input tool when its current contract permits the required question; otherwise ask in chat and end the turn. Resume drawing only after the required answer arrives. Do not ask for an output directory for a new diagram; apply the output rules below.
 
 ## Evidence Requirements
 
@@ -25,7 +25,7 @@ Do not add unproved relationships just to make the diagram look complete. Includ
 
 ## Workflow
 
-1. Resolve only missing required drawing inputs; stop after asking when required input is missing.
+1. Resolve only missing required drawing inputs; wait for the required answer before continuing.
 2. Read source or context evidence with `shell`, then build an evidence map for major nodes, edges, call chains, and state transitions.
 3. Create or update `.puml` files with `apply_patch` using the evidence map and the file rules below.
 4. Check `@startuml` / `@enduml` pairing; when PlantUML is installed, run `plantuml -syntax <file>.puml` through `shell`.

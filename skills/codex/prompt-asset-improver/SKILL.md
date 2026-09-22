@@ -1,6 +1,6 @@
 ---
 name: prompt-asset-improver
-description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex/Claude assets may drift. Confirms scope, lists proposed changes for user approval, edits only confirmed editable files, and validates resources."
+description: "Use before editing durable AI-facing prompt assets such as system prompts, agent instructions, SKILL.md files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and prompt templates, especially when paired Codex, Claude, or Grok assets may drift. Confirms scope, lists proposed changes for user approval, edits only confirmed editable files, and validates resources."
 ---
 
 # Prompt Asset Improver
@@ -9,7 +9,7 @@ Use this skill before editing durable AI-facing prompt assets. Keep only rules t
 
 ## Scope
 
-Use this skill for system prompts, environment prompts, agent bodies, role instructions, `SKILL.md` files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and durable prompt templates. Use it for paired assets, such as Codex and Claude variants, when one side could drift from the other.
+Use this skill for system prompts, environment prompts, agent bodies, role instructions, `SKILL.md` files, skill interface metadata, catalog descriptions, MCP/tool descriptions, bundled prompt references, and durable prompt templates. Use it for paired assets, such as Codex, Claude, and Grok variants, when one side could drift from the others.
 
 Do not use it for source comments, project scaffolds, generated documentation snapshots, transient reviewer prompts, or one-off handoff messages unless the user asks to make them durable.
 
@@ -107,7 +107,7 @@ Preserve each asset's job:
 - Skill interface metadata and catalog descriptions: match trigger and scope at summary level; do not promise workflow details absent from the body.
 - MCP/tool descriptions: implement the complete Tool and Error Contracts above.
 
-For paired Claude/Codex assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit both sides in the same pass unless the user explicitly confirms one-sided scope.
+For paired Codex/Claude/Grok assets, keep behavior, triggers, validation, and failure handling aligned while preserving actionable adapter-specific mechanics. Edit every affected side in the same pass unless the user explicitly confirms narrower scope.
 
 ## Validation
 

@@ -202,7 +202,6 @@ test("Grok standalone packages mirror complete source topology with controlled p
   const changedSkills = new Set([
     "plantuml-diagrams/SKILL.md",
     "project-engineering-foundation/SKILL.md",
-    "prompt-asset-improver/SKILL.md",
   ]);
   for (const name of STANDALONE) {
     const codexRoot = path.resolve(`skills/codex/${name}`);

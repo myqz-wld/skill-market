@@ -90,15 +90,15 @@ Invoke the focused Skills through the adapter's normal Skill interface. The bund
 The repository copy can expose the exact machine-readable contract:
 
 ```bash
-npm run cli -- help --pretty
+mise exec -- npm run --silent cli -- help --pretty
 ```
 
 Useful local-development examples:
 
 ```bash
-npm run cli -- list --adapter codex --pretty
-npm run cli -- discover planning --adapter all --kind standalone --pretty
-npm run cli -- download codex:standalone:plantuml-diagrams --pretty
+mise exec -- npm run --silent cli -- list --adapter codex --pretty
+mise exec -- npm run --silent cli -- discover planning --adapter all --kind standalone --pretty
+mise exec -- npm run --silent cli -- download codex:standalone:plantuml-diagrams --pretty
 ```
 
 | Command | Purpose | Default external effect |
@@ -113,7 +113,7 @@ npm run cli -- download codex:standalone:plantuml-diagrams --pretty
 | `proposal ...` | Plan, prepare, submit, inspect, or abort a catalog PR | Local until confirmed submit |
 | `config ...` | Inspect or explicitly change configuration | `set` and `unset` write config |
 
-Every invocation writes exactly one JSON object to stdout. `--pretty` changes indentation only. Consumers must parse JSON even on a nonzero exit:
+The CLI writes exactly one JSON object to stdout. Repository examples use `npm run --silent` to suppress npm's script banner and `mise exec --` to select the pinned runtime. `--pretty` changes indentation only. Consumers must parse JSON even on a nonzero exit:
 
 | Exit | Status |
 |---:|---|
@@ -150,9 +150,9 @@ Defaults:
 Inspect or change explicit configuration through the CLI:
 
 ```bash
-npm run cli -- config show --pretty
-npm run cli -- config set cacheTtlSeconds 3600 --pretty
-npm run cli -- config unset cacheTtlSeconds --pretty
+mise exec -- npm run --silent cli -- config show --pretty
+mise exec -- npm run --silent cli -- config set cacheTtlSeconds 3600 --pretty
+mise exec -- npm run --silent cli -- config unset cacheTtlSeconds --pretty
 ```
 
 `cacheTtlSeconds: 0` disables automatic refresh and reports cached data as stale. Discovery may return an existing stale cache with a warning after a refresh failure. Mutations do not silently use stale data: offline mutation requires `--allow-stale-head <exact-commit>`, which pins the catalog provenance.
@@ -200,10 +200,10 @@ Standalone install, update, enable, disable, and uninstall share the same transa
 `skill-propose` supports `add`, `update`, `retire`, and `remove`. Every adapter/package tuple is an explicit target; the CLI never expands one target into other adapters. The resumable workflow is:
 
 ```bash
-npm run cli -- proposal plan --spec ./proposal.json --pretty
-npm run cli -- proposal prepare <proposal-id> --pretty
-npm run cli -- proposal status <proposal-id> --pretty
-npm run cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
+mise exec -- npm run --silent cli -- proposal plan --spec ./proposal.json --pretty
+mise exec -- npm run --silent cli -- proposal prepare <proposal-id> --pretty
+mise exec -- npm run --silent cli -- proposal status <proposal-id> --pretty
+mise exec -- npm run --silent cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
 ```
 
 - `plan` validates targets, source digests, catalog state, versions, and the base commit.
@@ -237,11 +237,11 @@ The three checked-in plugin `cli/` directories are generated from one canonical 
 
 ```bash
 mise install
-npm run catalog:generate
-npm run plugins:generate
-npm run validate
+mise exec -- npm run catalog:generate
+mise exec -- npm run plugins:generate
+mise exec -- npm run validate
 ```
 
-`npm run validate` checks generated catalog views, checks all three packaged CLI bundles, and runs unit and isolated integration tests. Tests use temporary homes, local fixture repositories, fake native CLIs, and fake GitHub operations; they must not mutate real adapter or Skill Market state.
+`mise exec -- npm run validate` checks generated catalog views, checks all three packaged CLI bundles, and runs unit and isolated integration tests. Tests use temporary homes, local fixture repositories, fake native CLIs, and fake GitHub operations; they must not mutate real adapter or Skill Market state.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for source-of-truth, versioning, proposal, and validation rules.

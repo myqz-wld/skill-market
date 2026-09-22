@@ -10,7 +10,7 @@ The CLI is zero-dependency ESM and requires Node.js 20 or newer. This repository
 
 ```bash
 mise install
-npm run validate
+mise exec -- npm run validate
 ```
 
 Tests must use temporary homes, fixture repositories, fake native binaries, and fake GitHub operations. Never point a repository test at real `~/.skill-market`, `~/.claude`, `~/.codex`, or `~/.grok` mutation state.
@@ -28,11 +28,11 @@ Edit the source column; regenerate or validate the derived column.
 Run:
 
 ```bash
-npm run catalog:generate
-npm run plugins:generate
+mise exec -- npm run catalog:generate
+mise exec -- npm run plugins:generate
 ```
 
-Do not hand-edit generated marketplace files, `skills/INDEX.md`, packaged CLI modules, or packaged CLI manifests. `npm run validate` fails when they drift.
+Do not hand-edit generated marketplace files, `skills/INDEX.md`, packaged CLI modules, or packaged CLI manifests. `mise exec -- npm run validate` fails when they drift.
 
 ## Package Identity and Status
 
@@ -80,15 +80,15 @@ Create a UTF-8 JSON spec:
 Then run:
 
 ```bash
-npm run cli -- proposal plan --spec ./proposal.json --pretty
-npm run cli -- proposal prepare <proposal-id> --pretty
-npm run cli -- proposal status <proposal-id> --pretty
+mise exec -- npm run --silent cli -- proposal plan --spec ./proposal.json --pretty
+mise exec -- npm run --silent cli -- proposal prepare <proposal-id> --pretty
+mise exec -- npm run --silent cli -- proposal status <proposal-id> --pretty
 ```
 
 Inspect the prepared targets, commit, diff hash, branch, validation results, and warnings. Only after authorizing fork/push/PR effects:
 
 ```bash
-npm run cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
+mise exec -- npm run --silent cli -- proposal submit <proposal-id> --confirm-external-effects --pretty
 ```
 
 Submission never force-pushes. Repeating submit verifies the exact remote commit and resumes PR discovery instead of creating duplicate work.
@@ -199,7 +199,7 @@ Do not reintroduce legacy aliases or manual cache, state, filesystem, native CLI
 Before opening a PR:
 
 ```bash
-npm run validate
+mise exec -- npm run validate
 ```
 
 When the native CLIs are available, also run their read-only validators:
@@ -209,7 +209,13 @@ claude plugin validate plugins/skill-market-claude
 grok plugin validate plugins/skill-market-grok
 ```
 
-Validate the Codex package with the current Codex plugin schema helper; the installed Codex CLI does not currently expose a native `plugin validate` command.
+Validate the Codex package with the installed plugin schema helper:
+
+```bash
+python3 "${CODEX_HOME:-$HOME/.codex}/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/skill-market-codex
+```
+
+Report any unavailable validator.
 
 The complete gate includes:
 
@@ -234,6 +240,6 @@ When a native CLI changes its JSON output or capability surface, update the pars
 - Intentional adapter deltas are documented; no adapter was expanded implicitly.
 - Generated catalogs and bundled CLI artifacts are current.
 - Documentation matches the actual CLI help contract.
-- `npm run validate` passes.
+- `mise exec -- npm run validate` passes.
 - No real user state, credentials, generated proposal state, or local cache is committed.
 - The PR contains no unapproved service, registry API, global installer, npm publication, force-push, or direct-`main` publication behavior.
