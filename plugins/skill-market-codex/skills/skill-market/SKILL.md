@@ -1,11 +1,38 @@
 ---
 name: skill-market
-description: "Route general Codex Skill Market requests to the focused local inventory, catalog discovery, download, install, update, enable, disable, uninstall, proposal, or configuration workflow."
+description: "Browse available Codex Skill Market packages, list local inventory, inspect configuration, and route explicit package changes or catalog proposals."
 ---
 # Skill Market for Codex
 
-Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics.
+Resolve `<plugin-root>` as the parent of the `skills/` directory containing this loaded Skill. Run only `node "<plugin-root>/cli/bin/skill-market.mjs"`.
+Default to `codex`; use other adapters only when explicitly requested.
+Never expand an operation to another adapter implicitly.
 
-Route to one sibling Skill: local inventory → `skill-list`; catalog browse/search/id lookup → `skill-discover`; export → `skill-download`; lifecycle → the same-named Skill; catalog add/update/retire/remove or PR → `skill-propose`. Load that sibling before acting.
+## Choose the task
 
-Default to Codex; use other adapters only when explicitly requested, with no implicit target expansion. For configuration only, run `node "<plugin-root>/cli/bin/skill-market.mjs" config show --json`, `node "<plugin-root>/cli/bin/skill-market.mjs" config set <key> <value> --json`, or `node "<plugin-root>/cli/bin/skill-market.mjs" config unset <key> --json`; `show` must not create config, and set/unset require the exact requested key/value.
+- Installed/active/disabled/broken packages, ownership, history or update state:
+  run `node "<plugin-root>/cli/bin/skill-market.mjs" list --adapter codex [filters] --json`.
+  This reads local native inventory, managed state and an existing cache only;
+  it never clones, fetches or writes. Use `--history` for absent records.
+- Available packages, browse/search or exact ID lookup:
+  run `node "<plugin-root>/cli/bin/skill-market.mjs" discover [quoted-query] --adapter codex [filters] --json`.
+  Discovery may refresh its cache and report stale results with a warning;
+  it never installs. Return the canonical ID and version, including prerelease labels.
+- Configuration inspection: run `node "<plugin-root>/cli/bin/skill-market.mjs" config show --json`;
+  missing configuration stays in memory.
+- Download/install/update/enable/disable/uninstall or configuration changes:
+  load sibling `../skill-manage/SKILL.md` after the user requests that change.
+- Catalog add/update/retire/remove or proposal/PR work:
+  load sibling `../skill-propose/SKILL.md` after the user requests that workflow.
+
+Use `node "<plugin-root>/cli/bin/skill-market.mjs" help --json` for exact filters and options.
+Keep local inventory and catalog discovery distinct even when both are requested.
+A search request does not authorize installation, trust or configuration changes.
+
+Parse stdout as JSON even on exit 1–4. Report the summary, data and warnings.
+For `needs_confirmation`, show the exact condition and reuse existing explicit
+authorization only if it covers that condition; otherwise ask before adding the
+named flag. Stop on `unsupported`. For `blocked/error`, report `nextAction`;
+perform recovery only within scope and retry only when `retryable` is true.
+Never hand-edit Skill Market config, cache, managed/proposal state or installed
+package paths, or reproduce its filesystem, Git or native-plugin mechanics.

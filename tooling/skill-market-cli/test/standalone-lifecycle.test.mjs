@@ -3,16 +3,16 @@ import { access, cp, mkdir, readFile, symlink, writeFile } from "node:fs/promise
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
-import { resolveStandalonePaths } from "../src/lifecycle-paths.mjs";
-import { loadManagedState } from "../src/state-store.mjs";
-import { readManagedPackages } from "../src/managed-state.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
+import { resolveStandalonePaths } from "../src/packages/paths.mjs";
+import { loadManagedState } from "../src/packages/state-store.mjs";
+import { readManagedPackages } from "../src/packages/managed-state.mjs";
 import {
   installStandalone,
   setStandaloneActivation,
   uninstallStandalone,
   updateStandalone,
-} from "../src/standalone-lifecycle.mjs";
+} from "../src/packages/standalone.mjs";
 import { createStandaloneFixture } from "./helpers/lifecycle-fixture.mjs";
 import {
   makeTempDirectory,

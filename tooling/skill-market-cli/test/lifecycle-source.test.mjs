@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import {
   loadMutationSnapshot,
   resolveCatalogEntry,
-} from "../src/lifecycle-source.mjs";
+} from "../src/packages/source.mjs";
 
 const HEAD = "a".repeat(40);
 const CLEAN_GIT = {

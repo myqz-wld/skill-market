@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { runCli } from "../src/cli.mjs";
+import { runCli } from "../src/cli/index.mjs";
 
 const result = await runCli(process.argv.slice(2));
 const pretty = process.argv.includes("--pretty");

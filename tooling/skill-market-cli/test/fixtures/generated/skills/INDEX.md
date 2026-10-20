@@ -4,7 +4,7 @@ Standalone skills published by Skill Market live under this directory. Bootstrap
 
 This file is generated from `catalog/entries.json`. It records catalog identity, versions, paths, status, and descriptions only. Local installation state is stored under `~/.skill-market/`.
 
-Skill versions use semver strings. Start new standalone skills at `0.0.1` and bump the version whenever the published package changes.
+Skill versions use semver strings. Start at `0.0.1` or a prerelease such as `0.0.1-draft.1`; keep all versions under the same adapter/skill path. Bump the version whenever the published package changes.
 
 Catalog status values:
 

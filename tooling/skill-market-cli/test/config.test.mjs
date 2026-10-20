@@ -9,12 +9,12 @@ import {
   DEFAULT_READ_REPO_URL,
   loadEffectiveConfig,
   writeConfig,
-} from "../src/config.mjs";
-import { SkillMarketError } from "../src/errors.mjs";
+} from "../src/shared/config.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import {
   canonicalRepositoryIdentity,
   localRepositoryIdentity,
-} from "../src/source-identity.mjs";
+} from "../src/shared/source-identity.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 
 test("in-memory defaults match the canonical catalog without creating config", async () => {

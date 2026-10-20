@@ -7,9 +7,9 @@ import {
   CACHE_MARKER_NAME,
   loadCatalogSnapshot,
   loadOptionalCatalogSnapshot,
-} from "../src/cache.mjs";
-import { SkillMarketError } from "../src/errors.mjs";
-import { canonicalRepositoryIdentity } from "../src/source-identity.mjs";
+} from "../src/catalog/cache.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
+import { canonicalRepositoryIdentity } from "../src/shared/source-identity.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 

@@ -7,8 +7,9 @@ import {
   CatalogValidationError,
   loadCatalog,
   validateCatalog,
-} from "../src/catalog.mjs";
+} from "../src/catalog/catalog.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
+import { ADAPTERS } from "../src/shared/contracts.mjs";
 
 test("the canonical fixture catalog validates", () => {
   assert.equal(validateCatalog(structuredClone(fixtureCatalog)).packages.length, 6);
@@ -16,12 +17,15 @@ test("the canonical fixture catalog validates", () => {
 
 test("the repository catalog covers every first-class adapter", async () => {
   const catalog = await loadCatalog(path.resolve("catalog/entries.json"));
-  assert.equal(catalog.packages.length, 18);
-  assert.deepEqual([...new Set(catalog.packages.map((entry) => entry.adapter))], [
-    "claude",
-    "codex",
-    "grok",
-  ]);
+  assert.deepEqual(
+    [...new Set(catalog.packages.map((entry) => entry.adapter))].sort(),
+    [...ADAPTERS].sort(),
+  );
+  for (const adapter of ADAPTERS) {
+    assert.ok(catalog.packages.some((entry) =>
+      entry.adapter === adapter && entry.kind === "plugin" && entry.bootstrap,
+    ), `${adapter} bootstrap target`);
+  }
 });
 
 test("catalog plugins may be bootstrap or ordinary packages", () => {

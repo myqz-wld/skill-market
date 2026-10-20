@@ -1,6 +1,9 @@
 # Contributing
 
-Skill Market accepts catalog and package changes through pull requests. Do not publish by editing or pushing directly to `main`.
+Skill Market separates repository maintenance from resumable package proposals.
+Maintainers may edit canonical sources in their working checkout and validate the
+complete change. Contributors and installed management Skills use the proposal
+workflow below. Neither route authorizes a push, pull request, or publication.
 
 Claude, Codex, and Grok are equal first-class adapters. Their package targets are explicit and independent: never infer, generate semantically, or publish one adapter variant merely because another exists.
 
@@ -22,17 +25,39 @@ Edit the source column; regenerate or validate the derived column.
 | Source | Derived artifacts |
 |---|---|
 | `catalog/entries.json` | `.agents/plugins/marketplace.json`, `.claude-plugin/marketplace.json`, `.grok-plugin/marketplace.json`, `skills/INDEX.md` |
-| `tooling/skill-market-cli/bin/` and `tooling/skill-market-cli/src/` | `plugins/skill-market-{codex,claude,grok}/cli/` |
+| `tooling/skill-market-cli/package.json`, `bin/`, and `src/` | `plugins/skill-market-{codex,claude,grok}/cli/` |
 | Explicit adapter package content | No semantic cross-adapter generation |
 
 Run:
 
 ```bash
-mise exec -- npm run catalog:generate
-mise exec -- npm run plugins:generate
+mise exec -- npm run generate
 ```
 
 Do not hand-edit generated marketplace files, `skills/INDEX.md`, packaged CLI modules, or packaged CLI manifests. `mise exec -- npm run validate` fails when they drift.
+
+## Maintainer Workflow
+
+For direct repository maintenance:
+
+1. Inspect the working diff and preserve unrelated changes.
+2. Edit the exact native package sources, canonical catalog rows, CLI sources or tests.
+3. Update affected versions according to the Version Policy.
+4. Run `mise exec -- npm run generate`, then `mise exec -- npm run validate` and
+   `git diff --check`.
+5. Inspect the complete diff and actual distribution inputs before an authorized
+   commit or publication. Direct publication to `main` still requires an explicit
+   user request; never force-push.
+
+This route does not require a clean checkout, proposal state, a temporary branch,
+or an automatic commit. Use a proposal when its exact-source capture, isolated
+commit and resumable submission are useful.
+
+Keep standalone skills under `skills/<adapter>/<skill-name>/` throughout their
+lifecycle. Record maturity in the catalog version: `0.0.1-draft.1`,
+`0.0.1-draft.2`, then `0.0.1`. Register each native adapter explicitly.
+Prerelease versions do not change availability: active entries can be installed;
+use catalog status `disabled` when a package must be unavailable.
 
 ## Package Identity and Status
 
@@ -52,10 +77,15 @@ Catalog status is one of:
 - `removed`: tombstone retained after exact content removal
 
 Catalog status is not local activation state. Do not use one as a substitute for the other.
+An explicitly requested maintainer purge may delete a catalog row entirely.
+The proposal `remove` action retains its documented tombstone behavior.
 
-## Preferred Package Proposal Workflow
+## Package Proposal Workflow
 
-Use the bundled proposal CLI for ordinary package additions, updates, retirement, and removal. It owns exact version checks, generated catalogs, isolated Git worktrees, changed-path allowlists, validation, commit creation, direct/fork selection, and resumable PR submission.
+Use the bundled proposal CLI for contribution workflows and installed Skill
+catalog changes. It owns exact version checks, generated catalogs, isolated Git
+worktrees, changed-path allowlists, validation, commit creation, direct/fork
+selection, and resumable PR submission.
 
 Create a UTF-8 JSON spec:
 
@@ -108,11 +138,19 @@ Every adapter variant must appear as a separate target. Proposal preparation rej
 
 ## Version Policy
 
-- A new standalone package starts at `0.0.1`.
+- The CLI runtime version lives in `tooling/skill-market-cli/package.json`.
+  Canonical and packaged executables read that metadata; do not add a version
+  constant or pin release values in tests.
+- A new standalone package starts at `0.0.1` or a prerelease of that version.
+- Increment the prerelease identifier while iterating; release `0.0.1` without
+  moving its directory. Version maturity and catalog availability are independent.
 - Updating a standalone package requires a version greater than its current catalog version.
 - A plugin manifest name and version must match its catalog target.
 - Any plugin package change, including bundled Skills or CLI artifacts, requires a plugin semver bump.
 - Bootstrap plugin versions currently live in their native manifests and canonical catalog entries; generated marketplace versions follow the catalog.
+- A shared CLI change bumps its runtime version and every affected bootstrap
+  manifest/catalog pair. Adapter-only package changes need not change the CLI
+  version. Tests compare these relationships rather than fixed version numbers.
 - Never edit local installed versions in `~/.skill-market/managed-state.json` as part of a repository contribution.
 
 ## Package Layout
@@ -151,6 +189,12 @@ Each package must be complete for its adapter. Shared files may be copied mechan
 
 The canonical CLI implementation lives only in `tooling/skill-market-cli/`. Keep it zero-dependency and emit one stable JSON result object for success and failure.
 
+The source groups are `cli/` (registry, help and dispatch), `catalog/`,
+`packages/` (content, local state and transactions), `adapters/`, `proposals/`,
+`shared/`, and `build/` (repository-only packaging). Add parser keys/types and
+help metadata to `src/cli/registry.mjs`; command parsing and help derive from it.
+Keep adapter-specific lifecycle eligibility in the domain validators.
+
 When adding or changing behavior:
 
 1. Update canonical CLI source and focused tests.
@@ -162,22 +206,20 @@ When adding or changing behavior:
 7. Bump affected bootstrap plugin versions and canonical catalog entries.
 8. Update README command and safety documentation.
 
-The canonical focused Skill names are:
+The public focused Skill names are:
 
 ```text
 skill-market
-skill-list
-skill-discover
-skill-download
-skill-install
-skill-update
-skill-enable
-skill-disable
-skill-uninstall
+skill-manage
 skill-propose
 ```
 
 Do not reintroduce legacy aliases or manual cache, state, filesystem, native CLI, Git, or GitHub workflows inside those Skills.
+
+`skill-market` owns query/routing and configuration inspection; `skill-manage`
+owns local package and configuration changes; `skill-propose` owns catalog
+contributions. Preserve existing explicit-invocation policy for mutation skills.
+Use CLI help for full option metadata instead of repeating it in every skill.
 
 ## Safety Requirements
 
@@ -201,6 +243,10 @@ Before opening a PR:
 ```bash
 mise exec -- npm run validate
 ```
+
+The validation workflow also runs this command on pull requests and pushes to
+`main`, using the runtime from `mise.toml`. CI does not publish or install the
+marketplace into a real user profile.
 
 When the native CLIs are available, also run their read-only validators:
 
@@ -227,6 +273,7 @@ The complete gate includes:
 - proposal add/update/retire/remove, direct/fork, resume, collision, and abort cases
 - plugin manifests and native validators
 - focused Skill names, invocation policy, CLI option coverage, and resource paths
+- bidirectional standalone-directory/catalog agreement, including prereleases
 - JSON parsing, ESM syntax, and clean diffs
 
 When a native CLI changes its JSON output or capability surface, update the parser fixture and capability contract together. Record the probed CLI version and keep the integration test isolated from real user state.
@@ -235,7 +282,7 @@ When a native CLI changes its JSON output or capability surface, update the pars
 
 - The proposal action and every adapter/package target are explicit.
 - Package names are kebab-case and ids are canonical.
-- New standalone versions start at `0.0.1`; updates increase semver.
+- New standalone versions use core `0.0.1`, optionally with a prerelease; updates increase semver.
 - Plugin manifests match catalog name/version.
 - Intentional adapter deltas are documented; no adapter was expanded implicitly.
 - Generated catalogs and bundled CLI artifacts are current.

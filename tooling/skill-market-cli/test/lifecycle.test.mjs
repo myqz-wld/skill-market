@@ -3,8 +3,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
-import { executeLifecycle } from "../src/lifecycle.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
+import { executeLifecycle } from "../src/packages/lifecycle.mjs";
 import { createStandaloneFixture } from "./helpers/lifecycle-fixture.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 

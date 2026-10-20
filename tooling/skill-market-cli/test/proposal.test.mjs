@@ -8,7 +8,7 @@ import {
   planProposal,
   prepareProposal,
   statusProposal,
-} from "../src/proposal.mjs";
+} from "../src/proposals/index.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import {
   createProposalRepository,

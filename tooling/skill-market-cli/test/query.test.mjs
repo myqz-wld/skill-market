@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { discoverCatalog, listInventory } from "../src/query.mjs";
+import { discoverCatalog, listInventory } from "../src/catalog/query.mjs";
 
 const catalog = {
   packages: [

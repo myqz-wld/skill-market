@@ -3,12 +3,12 @@ import { access, mkdir, readFile, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { loadCatalog } from "../src/catalog.mjs";
+import { loadCatalog } from "../src/catalog/catalog.mjs";
 import {
   applyProposalToWorktree,
   enrichProposalSources,
-} from "../src/proposal-apply.mjs";
-import { canonicalDigest, normalizeProposalSpec } from "../src/proposal-contracts.mjs";
+} from "../src/proposals/apply.mjs";
+import { canonicalDigest, normalizeProposalSpec } from "../src/proposals/contracts.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import { writeFixtureRepository } from "./helpers/proposal-fixture.mjs";
 import { makeTempDirectory, removeTempDirectory } from "./helpers/temp-env.mjs";

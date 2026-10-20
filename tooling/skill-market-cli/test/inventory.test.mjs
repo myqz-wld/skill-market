@@ -3,13 +3,13 @@ import { mkdir, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { collectLocalInventory, updateStateFor } from "../src/inventory.mjs";
-import { readManagedPackages } from "../src/managed-state.mjs";
+import { collectLocalInventory, updateStateFor } from "../src/packages/inventory.mjs";
+import { readManagedPackages } from "../src/packages/managed-state.mjs";
 import {
   parseNativePluginList,
   readNativePlugins,
-} from "../src/native-inventory.mjs";
-import { compareSemver } from "../src/versions.mjs";
+} from "../src/adapters/inventory.mjs";
+import { compareSemver } from "../src/shared/versions.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 

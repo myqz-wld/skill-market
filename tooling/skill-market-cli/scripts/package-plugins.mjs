@@ -3,7 +3,7 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { writePluginCliBundles } from "../src/packaging.mjs";
+import { writePluginCliBundles } from "../src/build/packaging.mjs";
 
 function usage() {
   return [

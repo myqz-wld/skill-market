@@ -7,7 +7,7 @@ import {
   GeneratedFileDriftError,
   renderCatalogViews,
   writeCatalogViews,
-} from "../src/generators.mjs";
+} from "../src/catalog/generators.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import { makeTempDirectory, removeTempDirectory } from "./helpers/temp-env.mjs";
 

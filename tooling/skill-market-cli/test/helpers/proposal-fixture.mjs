@@ -3,7 +3,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { promisify } from "node:util";
 
-import { writeCatalogViews } from "../../src/generators.mjs";
+import { writeCatalogViews } from "../../src/catalog/generators.mjs";
 import { fixtureCatalog } from "../fixtures/catalog.mjs";
 import { makeTempDirectory } from "./temp-env.mjs";
 

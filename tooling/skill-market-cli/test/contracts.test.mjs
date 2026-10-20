@@ -6,15 +6,15 @@ import {
   makePackageId,
   parsePackageId,
   successResult,
-} from "../src/contracts.mjs";
+} from "../src/shared/contracts.mjs";
 
 test("package ids round-trip through the canonical parser", () => {
-  const id = makePackageId("grok", "standalone", "prompt-asset-improver");
-  assert.equal(id, "grok:standalone:prompt-asset-improver");
+  const id = makePackageId("grok", "standalone", "example-skill");
+  assert.equal(id, "grok:standalone:example-skill");
   assert.deepEqual(parsePackageId(id), {
     adapter: "grok",
     kind: "standalone",
-    name: "prompt-asset-improver",
+    name: "example-skill",
     id,
   });
 });

@@ -1,12 +1,16 @@
 {
   "name": "skill-market-codex",
-  "version": "0.1.4",
-  "description": "Provides a bundled CLI and ten focused Codex skills for local inventory, catalog discovery, package lifecycle, and pull-request proposals.",
+  "version": "0.2.0",
+  "description": "Provides a bundled CLI and three Codex skills for market queries, local package management, and pull-request proposals.",
   "author": {
     "name": "Skill Market"
   },
   "license": "MIT",
-  "keywords": ["skills", "plugins", "marketplace"],
+  "keywords": [
+    "skills",
+    "plugins",
+    "marketplace"
+  ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Skill Market",
@@ -14,7 +18,11 @@
     "longDescription": "Manage local Skill Market inventory and catalog packages through one bundled, structured CLI with explicit adapter-specific safety gates and resumable pull-request proposals.",
     "developerName": "Skill Market",
     "category": "Productivity",
-    "capabilities": ["Workflow", "Local CLI", "Git"],
+    "capabilities": [
+      "Workflow",
+      "Local CLI",
+      "Git"
+    ],
     "defaultPrompt": [
       "List my local Skill Market inventory.",
       "Discover and install a Skill Market package.",

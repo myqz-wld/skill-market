@@ -7,7 +7,7 @@ import {
   normalizeProposalSpec,
   proposalIdFor,
   validateProposalAgainstCatalog,
-} from "../src/proposal-contracts.mjs";
+} from "../src/proposals/contracts.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 
 const CONTEXT = Object.freeze({
@@ -119,6 +119,44 @@ test("new standalone packages start at 0.0.1 and add requires catalog metadata",
     () => normalizeProposalSpec(base, CONTEXT),
     (error) => error.code === "invalid-proposal-spec",
   );
+});
+
+test("initial standalone prereleases can be proposed and promoted without changing identity", () => {
+  const add = {
+    schemaVersion: 1,
+    action: "add",
+    summary: "Add trial skill",
+    targets: [{
+      id: "grok:standalone:trial-skill",
+      sourcePath: "/tmp/trial-skill",
+      version: "0.0.1-draft.1",
+      description: "Trial skill",
+    }],
+  };
+  const catalog = structuredClone(fixtureCatalog);
+  const [added] = validateProposalAgainstCatalog(normalizeProposalSpec(add, CONTEXT), catalog);
+  assert.equal(added.next.path, "skills/grok/trial-skill");
+  assert.equal(added.next.version, "0.0.1-draft.1");
+  assert.equal(added.next.status, "active");
+  catalog.packages.push(added.next);
+
+  for (const version of ["0.0.1-draft.2", "0.0.1-draft.10", "0.0.1"]) {
+    const proposal = normalizeProposalSpec(updateSpec({
+      targets: [{ id: added.next.id, sourcePath: "/tmp/trial-skill", version }],
+    }), CONTEXT);
+    const [updated] = validateProposalAgainstCatalog(proposal, catalog);
+    assert.equal(updated.next.id, added.next.id);
+    assert.equal(updated.next.path, added.next.path);
+    catalog.packages[catalog.packages.length - 1] = updated.next;
+  }
+  assert.throws(() => validateProposalAgainstCatalog(
+    normalizeProposalSpec(updateSpec({
+      targets: [{ id: added.next.id, sourcePath: "/tmp/trial-skill", version: "0.0.1-draft.11" }],
+    }), CONTEXT), catalog,
+  ), (error) => error.code === "invalid-proposal-version");
+  add.targets[0].version = "0.0.2-draft.1";
+  assert.throws(() => normalizeProposalSpec(add, CONTEXT),
+    (error) => error.code === "invalid-proposal-version");
 });
 
 test("catalog action validation enforces existence, versions, retirement, and tombstones", () => {

@@ -1,0 +1,6 @@
+interface:
+  display_name: "Skill Market Manage"
+  short_description: "Manage local packages and explicit configuration"
+  default_prompt: "Use $skill-manage to carry out this exact package or configuration change."
+policy:
+  allow_implicit_invocation: false

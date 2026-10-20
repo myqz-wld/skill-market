@@ -7,7 +7,7 @@ import {
   createProposalGitClient,
   digestBytes,
   validatePushTarget,
-} from "../src/proposal-git.mjs";
+} from "../src/proposals/git.mjs";
 import {
   createBareRemote,
   createProposalRepository,

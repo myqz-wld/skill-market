@@ -3,8 +3,8 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { loadCatalog } from "../src/catalog.mjs";
-import { writeCatalogViews } from "../src/generators.mjs";
+import { loadCatalog } from "../src/catalog/catalog.mjs";
+import { writeCatalogViews } from "../src/catalog/generators.mjs";
 
 function usage() {
   return [

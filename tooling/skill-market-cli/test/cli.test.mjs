@@ -5,8 +5,8 @@ import path from "node:path";
 import test from "node:test";
 import { promisify } from "node:util";
 
-import { runCli } from "../src/cli.mjs";
-import { SkillMarketError } from "../src/errors.mjs";
+import { runCli } from "../src/cli/index.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import {
   createBareRemote,

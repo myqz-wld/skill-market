@@ -1,0 +1,457 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Project Bootstrap manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "name",
+    "type",
+    "layout",
+    "packs",
+    "slots",
+    "generated",
+    "commands",
+    "ai"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128,
+      "pattern": "\\S"
+    },
+    "type": {
+      "enum": [
+        "fullstack",
+        "backend",
+        "frontend",
+        "library",
+        "cli"
+      ]
+    },
+    "layout": {
+      "enum": [
+        "single",
+        "monorepo"
+      ]
+    },
+    "packs": {
+      "$ref": "#/$defs/packs"
+    },
+    "apps": {
+      "type": "object",
+      "minProperties": 1,
+      "propertyNames": {
+        "$ref": "#/$defs/id"
+      },
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "packs"
+        ],
+        "properties": {
+          "path": {
+            "$ref": "#/$defs/literalPath"
+          },
+          "packs": {
+            "$ref": "#/$defs/packs"
+          },
+          "deployable": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      }
+    },
+    "slots": {
+      "type": "object",
+      "required": [
+        "readme",
+        "glossary",
+        "scope",
+        "architecture",
+        "module_map",
+        "conventions",
+        "testing",
+        "modules"
+      ],
+      "propertyNames": {
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/pathSet"
+      }
+    },
+    "generated": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "output",
+          "command",
+          "commit"
+        ],
+        "properties": {
+          "source": {
+            "$ref": "#/$defs/pathSet"
+          },
+          "output": {
+            "$ref": "#/$defs/literalPath"
+          },
+          "command": {
+            "$ref": "#/$defs/id"
+          },
+          "commit": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "commands": {
+      "type": "object",
+      "required": [
+        "check"
+      ],
+      "propertyNames": {
+        "$ref": "#/$defs/id"
+      },
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 1,
+        "pattern": "\\S"
+      }
+    },
+    "ai": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "enabled"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean"
+        },
+        "path": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/literalPath"
+            },
+            {
+              "not": {
+                "const": "."
+              }
+            }
+          ]
+        },
+        "adapters": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "agents-md",
+              "claude",
+              "grok"
+            ]
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "enabled": {
+                "const": true
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "path",
+              "adapters"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "layout": {
+            "const": "single"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "apps": {
+            "maxProperties": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "ui"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "tokens",
+              "ui_design",
+              "copy_policy"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "api"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "api_contract",
+              "errors",
+              "api_conventions",
+              "api_consumers"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "async"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "jobs"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "data"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "migrations"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "ops"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "config_schema",
+              "config_base",
+              "config_environments",
+              "env_example",
+              "deployment",
+              "environments",
+              "release",
+              "observability"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "security"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "threat_model",
+              "data_policy"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "library"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "public_api",
+              "compatibility",
+              "changelog",
+              "examples",
+              "package_config"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "packs": {
+            "contains": {
+              "const": "multi-service"
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "apps"
+        ],
+        "properties": {
+          "layout": {
+            "const": "monorepo"
+          },
+          "apps": {
+            "minProperties": 2
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "cli"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "slots": {
+            "required": [
+              "copy_policy"
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*$"
+    },
+    "packs": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "ui",
+          "api",
+          "async",
+          "data",
+          "ops",
+          "security",
+          "library",
+          "multi-service"
+        ]
+      }
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.(?:/|$))(?!\\s)(?!.*\\s$)[^\\\\:~\\u0000-\\u001f]+$"
+    },
+    "literalPath": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/path"
+        },
+        {
+          "not": {
+            "pattern": "[*?\\[\\]{}]"
+          }
+        }
+      ]
+    },
+    "pathSet": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/path"
+        },
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/path"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -9,7 +9,7 @@ import {
   readProposalState,
   resolveProposalPaths,
   writeProposalState,
-} from "../src/proposal-store.mjs";
+} from "../src/proposals/store.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 
 const ID = "proposal-0123456789abcdef";
@@ -113,7 +113,7 @@ test("proposal storage rejects symlinked managed roots", async (context) => {
     await mkdir(path.join(home, ".skill-market"));
     await symlink(external, path.join(home, ".skill-market", "proposals"));
     const paths = resolveProposalPaths({ HOME: home }, ID);
-    const { assertProposalTopology } = await import("../src/proposal-store.mjs");
+    const { assertProposalTopology } = await import("../src/proposals/store.mjs");
     await assert.rejects(
       assertProposalTopology(paths),
       (error) => error.code === "unsafe-proposal-path",
@@ -123,7 +123,7 @@ test("proposal storage rejects symlinked managed roots", async (context) => {
 
 test("proposal storage rejects filesystem-root HOME before creating locks", async () => {
   const paths = resolveProposalPaths({ HOME: path.parse(process.cwd()).root }, ID);
-  const { assertProposalTopology } = await import("../src/proposal-store.mjs");
+  const { assertProposalTopology } = await import("../src/proposals/store.mjs");
   await assert.rejects(
     assertProposalTopology(paths),
     (error) => error.code === "unsafe-proposal-path",
@@ -136,7 +136,7 @@ test("proposal storage accepts an explicit safe Skill Market home outside HOME",
     await mkdir(marketHome);
     try {
       const paths = resolveProposalPaths({ HOME: home, SKILL_MARKET_HOME: marketHome }, ID);
-      const { assertProposalTopology } = await import("../src/proposal-store.mjs");
+      const { assertProposalTopology } = await import("../src/proposals/store.mjs");
       await assert.doesNotReject(assertProposalTopology(paths));
     } finally {
       await rm(marketHome, { recursive: true, force: true });

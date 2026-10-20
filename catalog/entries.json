@@ -19,7 +19,7 @@
       "adapter": "claude",
       "kind": "plugin",
       "name": "skill-market-claude",
-      "version": "0.1.4",
+      "version": "0.2.0",
       "status": "active",
       "path": "plugins/skill-market-claude",
       "manifestPath": ".claude-plugin/plugin.json",
@@ -33,78 +33,37 @@
       "bootstrap": true
     },
     {
-      "id": "claude:standalone:complex-work-planning",
+      "id": "claude:standalone:implementation-planning",
       "adapter": "claude",
       "kind": "standalone",
-      "name": "complex-work-planning",
-      "version": "0.0.11",
+      "name": "implementation-planning",
+      "version": "0.0.1-draft.1",
       "status": "active",
-      "path": "skills/claude/complex-work-planning",
-      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "path": "skills/claude/implementation-planning",
+      "description": "Use Claude to plan substantial code changes within existing architecture, split independently verifiable tasks, identify safe parallel batches, and prepare handoff, archive and later audit records.",
       "keywords": [
         "planning",
-        "architecture",
-        "handoff"
-      ]
-    },
-    {
-      "id": "claude:standalone:parallel-tasks",
-      "adapter": "claude",
-      "kind": "standalone",
-      "name": "parallel-tasks",
-      "version": "0.0.14",
-      "status": "active",
-      "path": "skills/claude/parallel-tasks",
-      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
-      "keywords": [
+        "tasks",
         "parallel",
-        "delegation",
-        "coordination"
+        "handoff",
+        "archive"
       ]
     },
     {
-      "id": "claude:standalone:plantuml-diagrams",
+      "id": "claude:standalone:project-bootstrap",
       "adapter": "claude",
       "kind": "standalone",
-      "name": "plantuml-diagrams",
-      "version": "0.0.10",
+      "name": "project-bootstrap",
+      "version": "0.0.1-draft.3",
       "status": "active",
-      "path": "skills/claude/plantuml-diagrams",
-      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "path": "skills/claude/project-bootstrap",
+      "description": "Use Claude for new-project scaffolding or existing-project architecture adjustment by asking consequential questions and choosing reversible engineering defaults. Adds task/history navigation and structural verification; does not implement new product features.",
+      "category": "Development",
       "keywords": [
-        "plantuml",
-        "diagram",
-        "architecture"
-      ]
-    },
-    {
-      "id": "claude:standalone:project-engineering-foundation",
-      "adapter": "claude",
-      "kind": "standalone",
-      "name": "project-engineering-foundation",
-      "version": "0.0.13",
-      "status": "active",
-      "path": "skills/claude/project-engineering-foundation",
-      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, .ref draft handling, and repository-relative path privacy for AI-facing records.",
-      "keywords": [
-        "repository",
-        "engineering",
-        "foundation"
-      ]
-    },
-    {
-      "id": "claude:standalone:prompt-asset-improver",
-      "adapter": "claude",
-      "kind": "standalone",
-      "name": "prompt-asset-improver",
-      "version": "0.0.13",
-      "status": "active",
-      "path": "skills/claude/prompt-asset-improver",
-      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, keeps paired assets and related metadata aligned, and validates resources.",
-      "keywords": [
-        "prompt",
-        "skill",
-        "validation"
+        "project",
+        "bootstrap",
+        "architecture",
+        "scaffold"
       ]
     },
     {
@@ -112,7 +71,7 @@
       "adapter": "codex",
       "kind": "plugin",
       "name": "skill-market-codex",
-      "version": "0.1.4",
+      "version": "0.2.0",
       "status": "active",
       "path": "plugins/skill-market-codex",
       "manifestPath": ".codex-plugin/plugin.json",
@@ -126,78 +85,37 @@
       "bootstrap": true
     },
     {
-      "id": "codex:standalone:complex-work-planning",
+      "id": "codex:standalone:implementation-planning",
       "adapter": "codex",
       "kind": "standalone",
-      "name": "complex-work-planning",
-      "version": "0.0.11",
+      "name": "implementation-planning",
+      "version": "0.0.1-draft.1",
       "status": "active",
-      "path": "skills/codex/complex-work-planning",
-      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "path": "skills/codex/implementation-planning",
+      "description": "Use Codex to plan substantial code changes within existing architecture, split independently verifiable tasks, identify safe parallel batches, and prepare handoff, archive and later audit records.",
       "keywords": [
         "planning",
-        "architecture",
-        "handoff"
-      ]
-    },
-    {
-      "id": "codex:standalone:parallel-tasks",
-      "adapter": "codex",
-      "kind": "standalone",
-      "name": "parallel-tasks",
-      "version": "0.0.14",
-      "status": "active",
-      "path": "skills/codex/parallel-tasks",
-      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
-      "keywords": [
+        "tasks",
         "parallel",
-        "delegation",
-        "coordination"
+        "handoff",
+        "archive"
       ]
     },
     {
-      "id": "codex:standalone:plantuml-diagrams",
+      "id": "codex:standalone:project-bootstrap",
       "adapter": "codex",
       "kind": "standalone",
-      "name": "plantuml-diagrams",
-      "version": "0.0.11",
+      "name": "project-bootstrap",
+      "version": "0.0.1-draft.3",
       "status": "active",
-      "path": "skills/codex/plantuml-diagrams",
-      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "path": "skills/codex/project-bootstrap",
+      "description": "Use Codex for new-project scaffolding or existing-project architecture adjustment by asking consequential questions and choosing reversible engineering defaults. Adds task/history navigation and structural verification; does not implement new product features.",
+      "category": "Development",
       "keywords": [
-        "plantuml",
-        "diagram",
-        "architecture"
-      ]
-    },
-    {
-      "id": "codex:standalone:project-engineering-foundation",
-      "adapter": "codex",
-      "kind": "standalone",
-      "name": "project-engineering-foundation",
-      "version": "0.0.13",
-      "status": "active",
-      "path": "skills/codex/project-engineering-foundation",
-      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, .ref draft handling, and repository-relative path privacy for AI-facing records.",
-      "keywords": [
-        "repository",
-        "engineering",
-        "foundation"
-      ]
-    },
-    {
-      "id": "codex:standalone:prompt-asset-improver",
-      "adapter": "codex",
-      "kind": "standalone",
-      "name": "prompt-asset-improver",
-      "version": "0.0.13",
-      "status": "active",
-      "path": "skills/codex/prompt-asset-improver",
-      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, keeps paired assets and related metadata aligned, and validates resources.",
-      "keywords": [
-        "prompt",
-        "skill",
-        "validation"
+        "project",
+        "bootstrap",
+        "architecture",
+        "scaffold"
       ]
     },
     {
@@ -205,7 +123,7 @@
       "adapter": "grok",
       "kind": "plugin",
       "name": "skill-market-grok",
-      "version": "0.1.4",
+      "version": "0.2.0",
       "status": "active",
       "path": "plugins/skill-market-grok",
       "manifestPath": ".grok-plugin/plugin.json",
@@ -219,78 +137,37 @@
       "bootstrap": true
     },
     {
-      "id": "grok:standalone:complex-work-planning",
+      "id": "grok:standalone:implementation-planning",
       "adapter": "grok",
       "kind": "standalone",
-      "name": "complex-work-planning",
-      "version": "0.0.11",
+      "name": "implementation-planning",
+      "version": "0.0.1-draft.1",
       "status": "active",
-      "path": "skills/grok/complex-work-planning",
-      "description": "Use when explicitly requested; when complex implementation or architecture work is detected before coding, ask whether to start, then resolve user-owned decisions in stages, build a durable plan, and hand off only after review.",
+      "path": "skills/grok/implementation-planning",
+      "description": "Use Grok to plan substantial code changes within existing architecture, split independently verifiable tasks, identify safe parallel batches, and prepare handoff, archive and later audit records.",
       "keywords": [
         "planning",
-        "architecture",
-        "handoff"
-      ]
-    },
-    {
-      "id": "grok:standalone:parallel-tasks",
-      "adapter": "grok",
-      "kind": "standalone",
-      "name": "parallel-tasks",
-      "version": "0.0.14",
-      "status": "active",
-      "path": "skills/grok/parallel-tasks",
-      "description": "Use when the lead already has 2+ independent tasks or work tracks with disjoint write sets. Inventories dispatch capabilities, selects mechanisms that enforce resolved routing controls, obtains batch approval, then integrates and validates results.",
-      "keywords": [
+        "tasks",
         "parallel",
-        "delegation",
-        "coordination"
+        "handoff",
+        "archive"
       ]
     },
     {
-      "id": "grok:standalone:plantuml-diagrams",
+      "id": "grok:standalone:project-bootstrap",
       "adapter": "grok",
       "kind": "standalone",
-      "name": "plantuml-diagrams",
-      "version": "0.0.11",
+      "name": "project-bootstrap",
+      "version": "0.0.1-draft.3",
       "status": "active",
-      "path": "skills/grok/plantuml-diagrams",
-      "description": "Use when creating or updating source-backed PlantUML sequence, activity, component, flow, or architecture diagrams.",
+      "path": "skills/grok/project-bootstrap",
+      "description": "Use Grok for new-project scaffolding or existing-project architecture adjustment by asking consequential questions and choosing reversible engineering defaults. Adds task/history navigation and structural verification; does not implement new product features.",
+      "category": "Development",
       "keywords": [
-        "plantuml",
-        "diagram",
-        "architecture"
-      ]
-    },
-    {
-      "id": "grok:standalone:project-engineering-foundation",
-      "adapter": "grok",
-      "kind": "standalone",
-      "name": "project-engineering-foundation",
-      "version": "0.0.13",
-      "status": "active",
-      "path": "skills/grok/project-engineering-foundation",
-      "description": "Use when creating a new AI-coding repository or conservatively inspecting and repairing an existing repo's durable engineering structure, including installable artifact build metadata, time-bucketed ref archives, .ref draft handling, and repository-relative path privacy for AI-facing records.",
-      "keywords": [
-        "repository",
-        "engineering",
-        "foundation"
-      ]
-    },
-    {
-      "id": "grok:standalone:prompt-asset-improver",
-      "adapter": "grok",
-      "kind": "standalone",
-      "name": "prompt-asset-improver",
-      "version": "0.0.12",
-      "status": "active",
-      "path": "skills/grok/prompt-asset-improver",
-      "description": "Use before editing durable AI-facing prompt assets; confirms scope and proposed changes, refreshes inventory, keeps paired assets and related metadata aligned, and validates resources.",
-      "keywords": [
-        "prompt",
-        "skill",
-        "validation"
+        "project",
+        "bootstrap",
+        "architecture",
+        "scaffold"
       ]
     }
   ]

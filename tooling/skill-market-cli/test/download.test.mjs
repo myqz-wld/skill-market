@@ -3,8 +3,8 @@ import { access, mkdir, readFile, readdir, symlink, writeFile } from "node:fs/pr
 import path from "node:path";
 import test from "node:test";
 
-import { downloadPackage } from "../src/download.mjs";
-import { SkillMarketError } from "../src/errors.mjs";
+import { downloadPackage } from "../src/packages/download.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import { createStandaloneFixture } from "./helpers/lifecycle-fixture.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 

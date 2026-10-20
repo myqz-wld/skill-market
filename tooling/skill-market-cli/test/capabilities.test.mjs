@@ -6,7 +6,7 @@ import {
   CapabilityValidationError,
   getAdapterCapabilities,
   validateAdapterCapabilities,
-} from "../src/capabilities.mjs";
+} from "../src/adapters/capabilities.mjs";
 
 test("baseline capability contracts cover Claude, Codex, and Grok", () => {
   assert.deepEqual(Object.keys(BASELINE_ADAPTER_CAPABILITIES), ["claude", "codex", "grok"]);

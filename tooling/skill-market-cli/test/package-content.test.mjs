@@ -3,8 +3,8 @@ import { chmod, mkdir, symlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
-import { contentDigest, validatePackageContent } from "../src/package-content.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
+import { contentDigest, validatePackageContent } from "../src/packages/content.mjs";
 import { createStandaloneFixture } from "./helpers/lifecycle-fixture.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 

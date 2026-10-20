@@ -3,11 +3,11 @@ import { mkdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import {
   runNativePluginLifecycle,
   verifyNativeMarketplace,
-} from "../src/native-adapters.mjs";
+} from "../src/adapters/index.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 
 function pluginEntry(adapter, version = "1.1.0") {

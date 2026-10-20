@@ -1,6 +1,6 @@
 interface:
   display_name: "Skill Market"
-  short_description: "Route Skill Market management requests"
-  default_prompt: "Use $skill-market to handle this Skill Market request."
+  short_description: "Browse packages and inspect local inventory"
+  default_prompt: "Use $skill-market to browse packages or inspect my local Skill Market inventory."
 policy:
   allow_implicit_invocation: true

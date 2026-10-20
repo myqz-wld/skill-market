@@ -1,6 +1,0 @@
-interface:
-  display_name: "Skill Market Discover"
-  short_description: "Browse and search Skill Market packages"
-  default_prompt: "Use $skill-discover to find a package in the Skill Market catalog."
-policy:
-  allow_implicit_invocation: true

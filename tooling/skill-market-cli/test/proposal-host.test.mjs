@@ -7,7 +7,7 @@ import {
   createGitHubClient,
   githubRepositoryFromIdentity,
   resolveSubmissionStrategy,
-} from "../src/proposal-host.mjs";
+} from "../src/proposals/github.mjs";
 import {
   makeTempDirectory,
   removeTempDirectory,

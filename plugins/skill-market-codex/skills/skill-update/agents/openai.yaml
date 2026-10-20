@@ -1,6 +1,0 @@
-interface:
-  display_name: "Skill Market Update"
-  short_description: "Update an installed package safely"
-  default_prompt: "Use $skill-update to update this installed Skill Market package."
-policy:
-  allow_implicit_invocation: false

@@ -7,7 +7,7 @@ disable-model-invocation: true
 
 Use the installed plugin root in `CLAUDE_PLUGIN_ROOT`. Run only `node "${CLAUDE_PLUGIN_ROOT}/cli/bin/skill-market.mjs"`; do not reproduce its cache, filesystem, state, native-plugin, Git, or GitHub mechanics. Use this for catalog proposals, not local lifecycle changes; bootstrap Skill Market plugins are forbidden targets.
 
-Create one UTF-8 JSON spec with exactly `schemaVersion: 1`, `action: add|update|retire|remove`, a 1–160 character `summary`, and 1–50 explicit `targets`. Every target requires canonical `id`; add/update require `sourcePath` and semver `version`; add requires `description`; add/update may include `category` and `keywords`. Reject unknown fields, resolve relative sources from the spec, start new standalone packages at `0.0.1`, require increasing update versions, and never expand adapters implicitly.
+Create one UTF-8 JSON spec with exactly `schemaVersion: 1`, `action: add|update|retire|remove`, a 1–160 character `summary`, and 1–50 explicit `targets`. Every target requires canonical `id`; add/update require `sourcePath` and semver `version`; add requires `description`; add/update may include `category` and `keywords`. Reject unknown fields, resolve relative sources from the spec, start new standalone packages at `0.0.1` or its prerelease (for example `0.0.1-draft.1`), require increasing update versions, and never expand adapters implicitly.
 
 Run these local phases with the exact returned proposal ID:
 

@@ -1,0 +1,64 @@
+# Example only: adapt to the confirmed project; do not create every listed pack.
+schemaVersion: 1
+name: example-shop
+type: fullstack
+layout: monorepo
+packs: [ui, api, data, ops]
+
+apps:
+  web:
+    path: apps/web
+    packs: [ui]
+  api:
+    path: apps/api
+    packs: [api, data]
+
+slots:
+  readme: README.md
+  glossary: docs/glossary.md
+  scope: docs/product/scope.md
+  architecture: docs/architecture/overview.md
+  module_map: docs/architecture/modules.md
+  conventions: docs/development/conventions.md
+  testing: docs/development/testing.md
+  modules: ["apps/api/src/modules/*", "apps/web/src/features/*"]
+  tokens: apps/web/src/design/tokens/
+  ui_design: docs/ui/design.md
+  ui_flows: docs/ui/flows/
+  copy_policy: docs/product/copy.md
+  e2e_tests: tests/e2e/
+  api_contract: contracts/api/openapi.yaml
+  errors: contracts/errors.yaml
+  api_conventions: docs/api/conventions.md
+  api_consumers: docs/api/consumers.md
+  contract_tests: tests/contract/
+  migrations: apps/api/db/migrations/
+  config_schema: config/schema.json
+  config_base: config/base.yaml
+  config_environments: config/environments/
+  env_example: .env.example
+  deployment: deploy/
+  environments: docs/operations/environments.md
+  release: docs/operations/release.md
+  observability: docs/operations/observability.md
+
+generated:
+  - source: contracts/api/openapi.yaml
+    output: apps/web/src/shared/api-client/
+    command: gen
+    commit: true
+  - source: apps/api/db/migrations/
+    output: docs/generated/schema.md
+    command: gen
+    commit: true
+
+# Replace these with implemented native tasks, not placeholder success commands.
+commands:
+  dev: make dev
+  test: make test
+  gen: make gen
+  check: make check
+
+# Enable only after selecting tools and verifying native adapter behavior.
+ai:
+  enabled: false

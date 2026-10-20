@@ -3,37 +3,11 @@ import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { helpContract } from "../src/cli.mjs";
+import { helpContract } from "../src/cli/index.mjs";
 
 const ADAPTERS = Object.freeze(["codex", "claude", "grok"]);
-const SKILLS = Object.freeze([
-  "skill-market",
-  "skill-list",
-  "skill-discover",
-  "skill-download",
-  "skill-install",
-  "skill-update",
-  "skill-enable",
-  "skill-disable",
-  "skill-uninstall",
-  "skill-propose",
-]);
-const MUTATING = new Set([
-  "skill-download",
-  "skill-install",
-  "skill-update",
-  "skill-enable",
-  "skill-disable",
-  "skill-uninstall",
-  "skill-propose",
-]);
-const STANDALONE = Object.freeze([
-  "complex-work-planning",
-  "parallel-tasks",
-  "plantuml-diagrams",
-  "project-engineering-foundation",
-  "prompt-asset-improver",
-]);
+const SKILLS = Object.freeze(["skill-market", "skill-manage", "skill-propose"]);
+const MUTATING = new Set(["skill-manage", "skill-propose"]);
 
 function frontmatter(text) {
   const closing = text.indexOf("\n---\n", 4);
@@ -55,13 +29,14 @@ async function relativeFiles(root, relative = "") {
   const files = [];
   for (const entry of entries.sort((left, right) => left.name.localeCompare(right.name))) {
     const child = path.join(relative, entry.name);
+    assert.ok(!entry.isSymbolicLink(), `${root}/${child} must not redirect outside its package`);
     if (entry.isDirectory()) files.push(...await relativeFiles(root, child));
     else if (entry.isFile()) files.push(child.split(path.sep).join(path.posix.sep));
   }
   return files;
 }
 
-test("all adapters expose only the ten canonical focused Skills", async () => {
+test("all adapters expose only the three canonical management Skills", async () => {
   for (const adapter of ADAPTERS) {
     const root = path.resolve(`plugins/skill-market-${adapter}/skills`);
     const discovered = [];
@@ -114,122 +89,95 @@ test("focused Skills are thin CLI entry points with intentional invocation polic
   }
 });
 
-test("focused Skills name every command-specific option from the CLI contract", async () => {
+test("management routes resolve and CLI operations remain reachable", async () => {
   const contract = helpContract();
-  const sameForEveryAdapter = {
-    "skill-list": Object.keys(contract.commands.list.options),
-    "skill-discover": Object.keys(contract.commands.discover.options),
-    "skill-propose": [
-      "--spec",
-      "--read-repo-url",
-      "--base-ref",
-      "--cache-path",
-      "--cache-ttl-seconds",
-      "--repo-path",
-      ...Object.keys(contract.commands.proposal.actions.submit.options),
-      "--confirm-discard",
-    ],
-  };
   for (const adapter of ADAPTERS) {
-    for (const [name, options] of Object.entries(sameForEveryAdapter)) {
-      const text = await readFile(
-        path.resolve(`plugins/skill-market-${adapter}/skills/${name}/SKILL.md`),
-        "utf8",
-      );
-      for (const option of new Set(options)) {
-        assert.ok(text.includes(option), `${adapter}:${name} documents ${option}`);
+    const root = path.resolve(`plugins/skill-market-${adapter}/skills`);
+    const texts = {};
+    for (const name of SKILLS) {
+      const text = await readFile(path.join(root, name, "SKILL.md"), "utf8");
+      texts[name] = text;
+      for (const match of text.matchAll(/`(\.\.\/skill-[a-z-]+\/SKILL\.md)`/gu)) {
+        await access(path.resolve(root, name, match[1]));
       }
     }
-  }
-
-  for (const name of [
-    "skill-download",
-    "skill-install",
-    "skill-update",
-    "skill-enable",
-    "skill-disable",
-    "skill-uninstall",
-  ]) {
-    const operation = name.slice("skill-".length);
-    const allowed = new Set(contract.commands[operation].options);
-    const documented = new Set();
-    for (const adapter of ADAPTERS) {
-      const text = await readFile(
-        path.resolve(`plugins/skill-market-${adapter}/skills/${name}/SKILL.md`),
-        "utf8",
-      );
-      const mentioned = new Set(text.match(/--[a-z][a-z-]*/gu) ?? []);
-      mentioned.delete("--json");
-      for (const option of mentioned) {
-        assert.ok(allowed.has(option), `${adapter}:${name} rejects undocumented ${option}`);
-        documented.add(option);
-      }
+    const market = texts["skill-market"];
+    const manage = texts["skill-manage"];
+    assert.ok(market.includes("list --adapter " + adapter), adapter);
+    assert.ok(market.includes("discover [quoted-query] --adapter " + adapter), adapter);
+    assert.ok(market.includes("config show --json"), adapter);
+    assert.ok(!market.includes("config set <"), adapter + " query entry does not write config");
+    assert.ok(manage.includes("config set <key> <value> --json"), adapter);
+    assert.ok(manage.includes("config unset <key> --json"), adapter);
+    const operations = [...manage.matchAll(/^\| `([a-z]+)` \|/gmu)].map((match) => match[1]);
+    const expected = Object.keys(contract.commands).filter((name) =>
+      ["download", "install", "update", "enable", "disable", "uninstall"].includes(name));
+    assert.deepEqual(operations, expected, adapter);
+    for (const name of ["skill-market", "skill-manage"]) {
+      assert.ok(texts[name].includes("help --json"), `${adapter}:${name} uses live CLI options`);
     }
-    assert.deepEqual([...documented].sort(), [...allowed].sort(), `${name} adapter union`);
+    for (const action of Object.keys(contract.commands.proposal.actions)) {
+      assert.ok(texts["skill-propose"].includes("proposal " + action), `${adapter}:${action}`);
+    }
   }
 });
 
-test("plugin manifests expose v0.1.4 without legacy search or upload promises", async () => {
-  const manifests = {
-    codex: ".codex-plugin/plugin.json",
-    claude: ".claude-plugin/plugin.json",
-    grok: ".grok-plugin/plugin.json",
-  };
-  for (const adapter of ADAPTERS) {
-    const file = path.resolve(`plugins/skill-market-${adapter}`, manifests[adapter]);
-    const manifest = JSON.parse(await readFile(file, "utf8"));
-    assert.equal(manifest.name, `skill-market-${adapter}`);
-    assert.equal(manifest.version, "0.1.4");
-    assert.match(manifest.description, /bundled CLI/u);
-    assert.doesNotMatch(JSON.stringify(manifest), /searching|uploading|skill-search|skill-upload/u);
-  }
-});
-
-test("every non-removed catalog package has its declared content and manifest", async () => {
+async function catalogEntries() {
   const catalog = JSON.parse(await readFile(path.resolve("catalog/entries.json"), "utf8"));
-  for (const entry of catalog.packages.filter((item) => item.status !== "removed")) {
-    const packageRoot = path.resolve(entry.path);
-    await access(packageRoot);
-    if (entry.kind === "plugin") {
-      await access(path.join(packageRoot, entry.manifestPath));
-    } else {
-      await access(path.join(packageRoot, "SKILL.md"));
+  return catalog.packages.filter((entry) => entry.status !== "removed");
+}
+
+async function skillDirectories(prefix) {
+  const adapters = await readdir(prefix, { withFileTypes: true });
+  const result = [];
+  for (const adapter of adapters) {
+    assert.ok(!adapter.isSymbolicLink(), `${prefix}/${adapter.name} must not be a symlink`);
+    if (!adapter.isDirectory()) continue;
+    assert.ok(ADAPTERS.includes(adapter.name), `${prefix}/${adapter.name} adapter`);
+    for (const skill of await readdir(path.join(prefix, adapter.name), { withFileTypes: true })) {
+      if (skill.isFile() && skill.name === ".gitkeep") continue;
+      assert.ok(skill.isDirectory(), `${prefix}/${adapter.name}/${skill.name} package directory`);
+      result.push({ adapter: adapter.name, name: skill.name, path: `${prefix}/${adapter.name}/${skill.name}` });
+    }
+  }
+  return result;
+}
+
+async function validateSkill(entry) {
+  const root = path.resolve(entry.path);
+  const files = await relativeFiles(root);
+  assert.ok(files.includes("SKILL.md"), entry.path);
+  const text = await readFile(path.join(root, "SKILL.md"), "utf8");
+  assert.ok(text.startsWith("---\n"), `${entry.path} frontmatter`);
+  const metadata = frontmatter(text);
+  assert.equal(metadata.name, entry.name, entry.path);
+  assert.ok(metadata.description?.length >= 20, `${entry.path} description`);
+  const resources = new Set(
+    [...text.matchAll(/`((?:assets|references|scripts|agents)\/[a-zA-Z0-9._/-]+)`/gu)]
+      .map((match) => match[1]),
+  );
+  for (const resource of resources) await access(path.join(root, resource));
+  if (entry.adapter === "codex") {
+    const ui = await readFile(path.join(root, "agents/openai.yaml"), "utf8");
+    assert.ok(ui.includes(`$${entry.name}`), `${entry.path} invocation metadata`);
+  }
+}
+
+test("plugin manifests match their canonical catalog targets", async () => {
+  for (const entry of (await catalogEntries()).filter((item) => item.kind === "plugin")) {
+    const manifest = JSON.parse(await readFile(path.join(entry.path, entry.manifestPath), "utf8"));
+    assert.equal(manifest.name, entry.name, entry.id);
+    assert.equal(manifest.version, entry.version, entry.id);
+    if (entry.bootstrap) {
+      assert.match(manifest.description, /bundled CLI/u);
+      assert.doesNotMatch(JSON.stringify(manifest), /searching|uploading|skill-search|skill-upload/u);
     }
   }
 });
 
-test("Grok standalone packages mirror complete source topology with controlled prompt deltas", async () => {
-  const changedSkills = new Set([
-    "plantuml-diagrams/SKILL.md",
-    "project-engineering-foundation/SKILL.md",
-  ]);
-  for (const name of STANDALONE) {
-    const codexRoot = path.resolve(`skills/codex/${name}`);
-    const grokRoot = path.resolve(`skills/grok/${name}`);
-    const codexFiles = await relativeFiles(codexRoot);
-    const grokFiles = await relativeFiles(grokRoot);
-    assert.deepEqual(grokFiles, codexFiles, name);
-    for (const relativePath of codexFiles) {
-      const [codex, grok] = await Promise.all([
-        readFile(path.join(codexRoot, relativePath)),
-        readFile(path.join(grokRoot, relativePath)),
-      ]);
-      const key = `${name}/${relativePath}`;
-      if (changedSkills.has(key)) assert.notDeepEqual(grok, codex, key);
-      else assert.deepEqual(grok, codex, key);
-    }
-    const skillText = await readFile(path.join(grokRoot, "SKILL.md"), "utf8");
-    const resources = new Set(
-      [...skillText.matchAll(/`((?:assets|references|scripts)\/[a-zA-Z0-9._/-]+)`/gu)]
-        .map((match) => match[1]),
-    );
-    for (const resource of resources) {
-      await access(path.join(grokRoot, resource));
-    }
-  }
-  const promptImprover = await readFile(
-    path.resolve("skills/grok/prompt-asset-improver/SKILL.md"),
-    "utf8",
-  );
-  assert.match(promptImprover, /Codex\/Claude\/Grok/u);
+test("published standalone directories and catalog targets agree in both directions", async () => {
+  const declared = (await catalogEntries()).filter((entry) => entry.kind === "standalone");
+  const actual = await skillDirectories("skills");
+  assert.deepEqual(actual.map((entry) => entry.path).sort(), declared.map((entry) => entry.path).sort());
+  for (const entry of declared) await validateSkill(entry);
 });

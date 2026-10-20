@@ -1,6 +1,0 @@
-interface:
-  display_name: "Skill Market List"
-  short_description: "List local Skill Market package state"
-  default_prompt: "Use $skill-list to show my local Skill Market inventory."
-policy:
-  allow_implicit_invocation: true

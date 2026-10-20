@@ -3,8 +3,8 @@ import { access, mkdir, utimes, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
-import { withFileLock } from "../src/lock.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
+import { withFileLock } from "../src/shared/lock.mjs";
 import { withTemporaryHome } from "./helpers/temp-env.mjs";
 
 test("owned locks are released even when the protected operation fails", async () => {

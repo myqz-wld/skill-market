@@ -1,6 +1,0 @@
-interface:
-  display_name: "Skill Market Download"
-  short_description: "Download a package without installing it"
-  default_prompt: "Use $skill-download to download this package without installing it."
-policy:
-  allow_implicit_invocation: false

@@ -3,15 +3,15 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import test from "node:test";
 
-import { SkillMarketError } from "../src/errors.mjs";
+import { SkillMarketError } from "../src/shared/errors.mjs";
 import {
   abortProposal,
   planProposal,
   prepareProposal,
   statusProposal,
   submitProposal,
-} from "../src/proposal.mjs";
-import { createProposalGitClient } from "../src/proposal-git.mjs";
+} from "../src/proposals/index.mjs";
+import { createProposalGitClient } from "../src/proposals/git.mjs";
 import { fixtureCatalog } from "./fixtures/catalog.mjs";
 import {
   createBareRemote,
