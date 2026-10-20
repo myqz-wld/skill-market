@@ -44,8 +44,9 @@ mise exec -- npm run validate
 git diff --check
 ```
 
-For bootstrap changes, also run the native read-only validators documented in
-`CONTRIBUTING.md`; report unavailable validators. Inspect actual distribution
+Required checks are repository-owned and run through `npm run validate`.
+Native read-only validators are optional supplements; distinguish a skipped
+check from a failure as described in `CONTRIBUTING.md`. Inspect actual distribution
 inputs before an authorized commit or publication.
 
 ## Scaffolding Exclusion

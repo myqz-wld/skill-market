@@ -12,7 +12,8 @@
     "catalog:check": "node tooling/skill-market-cli/scripts/generate-catalogs.mjs --check",
     "plugins:generate": "node tooling/skill-market-cli/scripts/package-plugins.mjs",
     "plugins:check": "node tooling/skill-market-cli/scripts/package-plugins.mjs --check",
+    "plugins:validate": "node tooling/skill-market-cli/scripts/validate-plugins.mjs",
     "test": "node --test tooling/skill-market-cli/test/*.test.mjs",
-    "validate": "npm run catalog:check && npm run plugins:check && npm test"
+    "validate": "npm run catalog:check && npm run plugins:check && npm run plugins:validate && npm test"
   }
 }

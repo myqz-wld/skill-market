@@ -163,7 +163,9 @@ plugins/<plugin-name>/.codex-plugin/plugin.json
 plugins/<plugin-name>/.grok-plugin/plugin.json
 ```
 
-A plugin uses the one native manifest appropriate to its adapter. Validate with that adapter's native validator where available.
+A plugin uses the one native manifest appropriate to its adapter. The required
+repository check is `mise exec -- npm run plugins:validate`; available native
+validators may provide additional compatibility evidence.
 
 The bootstrap plugins are special developer-owned packages:
 
@@ -248,20 +250,40 @@ The validation workflow also runs this command on pull requests and pushes to
 `main`, using the runtime from `mise.toml`. CI does not publish or install the
 marketplace into a real user profile.
 
-When the native CLIs are available, also run their read-only validators:
+Required checks run with the repository's Node runtime, without installed
+adapter CLIs, user-level skills or Python helpers. The plugin manifest check can
+also run independently:
+
+```bash
+mise exec -- npm run plugins:validate
+```
+
+The repository-owned profiles in
+`tooling/skill-market-cli/src/build/plugin-validation.mjs` cover the skill-only
+plugins currently supported here. They check JSON objects, known fields and
+types, catalog identity, optional author/license/keywords, Codex interface
+metadata, and real skill directories containing regular `SKILL.md` files.
+Claude and Grok use their default `skills/` directory; Codex uses its declared
+`skills` path. Absolute paths, traversal and symlink redirection are rejected.
+
+These profiles are a bounded repository contract, not full copies of every
+adapter's native schema. New manifest fields or component types require an
+explicit profile/test update. Build-only validation is excluded from distributed
+CLI bundles.
+
+Native validation is an optional compatibility supplement. When available and
+relevant, the following read-only commands may be run separately:
 
 ```bash
 claude plugin validate plugins/skill-market-claude
 grok plugin validate plugins/skill-market-grok
 ```
 
-Validate the Codex package with the installed plugin schema helper:
-
-```bash
-python3 "${CODEX_HOME:-$HOME/.codex}/skills/.system/plugin-creator/scripts/validate_plugin.py" plugins/skill-market-codex
-```
-
-Report any unavailable validator.
+Record which optional checks actually ran. An unavailable tool is a skipped
+supplement, not a failed repository gate; do not claim a native pass when skipped.
+If an executed native check fails, investigate the finding rather than treating
+it as a successful validation. Do not require installing additional skills or
+reference helper scripts inside personal configuration directories.
 
 The complete gate includes:
 
@@ -271,7 +293,7 @@ The complete gate includes:
 - unit tests and isolated executable/integration tests
 - native inventory and lifecycle fixtures for Claude, Codex, and Grok
 - proposal add/update/retire/remove, direct/fork, resume, collision, and abort cases
-- plugin manifests and native validators
+- repository-owned plugin manifest profiles and skill entry paths
 - focused Skill names, invocation policy, CLI option coverage, and resource paths
 - bidirectional standalone-directory/catalog agreement, including prereleases
 - JSON parsing, ESM syntax, and clean diffs
