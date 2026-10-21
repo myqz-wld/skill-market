@@ -13,7 +13,7 @@
         "type": "local",
         "path": "./plugins/skill-market-grok"
       },
-      "version": "0.2.0",
+      "version": "0.2.4",
       "author": {
         "name": "Skill Market"
       },

@@ -1,90 +1,126 @@
-# Structural acceptance
+# Verify runnable architecture
 
-Choose checks in the blueprint, implement applicable checks with the selected
-stack, and execute them. Severity comes from the user's policy. Distinguish a
-structure-only deliverable from a scaffold whose boot/import path was exercised.
-Do not introduce business features to manufacture a smoke scenario.
+Use native tools after inspecting command effects. Verification is part of delivery,
+not an optional report after generating directories and documentation.
 
-## Scope and core
+## Required execution evidence
 
-1. Compare the changed-path set and behavior against the agreed scaffold or
-   architecture adjustment. A new login/CRUD/reporting flow is out of scope.
-2. If project.yaml was selected, parse it with a real YAML parser, validate the
-   bundled schema and apply references/manifest.md semantics. Otherwise validate
-   the existing agreed role map, not a second manifest.
-3. Resolve selected roles, module ownership and document links. Reject missing
-   required targets and escaping paths; omit optional absent capabilities.
-4. Validate selected metadata formats and fields by document class. Evaluate the
-   actual date/milestone/manual plan policy. An archived record's old expiry does
-   not make it a current failing plan.
-5. Check sizes and actual eagerly loaded entry context only when a budget was
-   selected, honoring advisory/blocking/off mode and explicit exclusions.
-6. Check accepted ADR immutability only with a selected rule and known baseline.
-   Validate superseded targets and replacement cycles; missing authority/baseline
-   is unknown, not an invented pass.
-7. Run the agreed generic startup/import/configuration smoke and, for an existing
-   project, relevant baseline/regression checks. Report pre-existing failures.
-8. Scan changed shareable content for private paths/secrets without persisting raw
-   matches. Review package members when distribution is within scope.
+| Delivery | Check | Evidence |
+|---|---|---|
+| Both | Declared runtime/dependencies/configuration and native tasks agree | Actual versions/setup used, required local configuration and working commands |
+| Both | Native build/type checks where applicable | Executed command and result; an inapplicable build has a concrete reason |
+| New app | Actual startup and a representative readiness/request path | Observed response/behavior, relevant process result and cleanup |
+| New CLI | Actual executable invocation | Exit status and meaningful output |
+| New library | Consumer import/API call | Public entry resolves and performs the minimal intended operation |
+| Refactor | Affected runtime path still works | Same observable behavior or explicitly agreed compatibility change |
+| Refactor | Relevant regressions and changed boundaries | Baseline comparison, caller/import/configuration checks and test results |
 
-Do not execute arbitrary manifest commands as a side effect of reading metadata.
-Checks must not deploy, mutate live databases, grant trust or fetch unapproved
-remote baselines. Local setup requirements remain explicit.
+Use the rows appropriate to the actual delivery type. A content repository validates
+its real generation/tooling workflow; do not create an artificial server. A scaffold
+needs a focused smoke check that can detect broken wiring, not a business feature suite.
+Add meaningful regression coverage for an important refactored boundary when missing.
 
-## Capability setup, not product behavior
+Use isolated test data and task-owned temporary processes. Preserve existing user
+services and live applications; clean up only the resources created for verification.
+Do not deploy, publish or mutate production data as part of ordinary local acceptance.
 
-| Selected capability | Structural evidence |
-|---|---|
-| ui | Framework empty page/entry loads; selected token/story/test tooling resolves |
-| api | Selected contract/tooling parses; generic health example only if agreed; existing interfaces remain compatible |
-| async | Worker/task entry imports or starts; selected local wiring validates, without a new business job |
-| data | Migration configuration and ownership resolve; existing migrations may run against a disposable database if in scope; no invented domain tables |
-| ops | Chosen environment/config/deploy syntax validates; no deployment performed by a check |
-| security | Architecture's relevant trust/data boundaries are recorded; no claim that product controls were implemented |
-| library | Package builds/imports and archive members match the scaffold; no new functional API |
-| multi-service | Declared applications and dependency boundaries resolve; local startup where selected and available |
+## Architecture checks
 
-Future capabilities can be documented without pretending their runtime exists.
-Enabling a pack needs meaningful structural artifacts, not success-only commands
-or arbitrary placeholder schemas. Report runtime checks that are not applicable.
-A compatibility comparison without a previous release establishes a baseline;
-it does not prove backward compatibility with an invented version.
+- Actual module responsibilities, public APIs and dependency direction match the
+  selected reference and documented deviations.
+- Cross-module consumers use public boundaries; imports/composition do not create
+  forbidden core-to-infrastructure dependencies or cycles.
+- Configuration, native discovery, callers, build/start tasks and generated-source
+  ownership remain correct after moves.
+- Conditional evolution guidance names real owners, extension points, observable
+  triggers, compatibility constraints and verification.
+- For affected boundaries, two likely changes and one failure can be traced through
+  concrete owners without unjustified change propagation.
 
-## Retrieval acceptance
+A diagram or directory tree alone proves none of these properties. Inspect actual
+code and use existing dependency checks when applicable; do not introduce a custom
+architecture checker merely to produce a passing command.
 
-Use three applicable lookup tasks: locate an owning module/contract, locate a
-structural check or configuration, and distinguish current policy from historical
-rationale. If there is no history yet, test a current/superseded pair in a disposable
-fixture using the chosen metadata convention. Do not add fake history to the repo.
+## AI engineering and environments
 
-Observe the actual sources found, files read and search-scope expansions. Confirm
-task-map roles resolve, applicable hidden paths are reachable, optional roles are
-omitted, and history/generation exclusions can be lifted for a relevant task.
-Verify an old valid ADR remains discoverable; a newer superseded draft or review
-must not become current authority merely because of its date. Missing metadata
-must not silently mean active.
+- Check selected source formats, document language, UI/CLI locale and comment/identifier
+  conventions against their actual project owner. Exercise visible text where relevant.
+- Check authored-file/context budgets with the configured exclusions and severity.
+  Native rule enforcement, manual inspection and advisory exceptions remain distinct.
+- Preserve requirement-derived acceptance, golden data, released migrations and other
+  owned paths. Review any expectation changes against the authorized requirement;
+  do not accept weakened checks as a fix for a regression.
+- Run actual focused/fast/full tasks as selected. For a native architecture/privacy/
+  protected-path rule, demonstrate a relevant violation is detected and a valid case
+  passes, where safely testable. Configuration alone is not enforcement evidence.
+- Verify fresh-session/resume inputs are discoverable: native instructions, module
+  facts, current task state, decisions, preserved contracts and the next check.
+- Check AGENTS.md exposes common project rules from the selected canonical owner. For targets using Claude, verify its
+  CLAUDE.md has a real, correctly resolved import outside code spans/fences and only
+  Claude-specific additions. Preserve authored rules/module scope, check for conflicting
+  duplicates or circular imports, and inspect effective loading per selected tool.
+- Verify project-only continuity: without the installed skill/resources, locate the
+  architecture, record roots, lookup and real check commands from native instructions.
+  For private generated entries, exercise initialization, drift detection and
+  preservation of authored edits; verify Git/public inputs exclude those local outputs.
+- For each selected environment, verify selection/precedence, required configuration,
+  isolated data/resources and safe diagnostics with synthetic values. Unknown profiles
+  must not silently select production or another environment.
+- Inspect actual artifact inputs/members and applicable generated metadata for private
+  data when packaging/build output is in scope. Check public build variables separately
+  from runtime settings and secrets; a Git ignore pattern is not sufficient evidence.
+- Distinguish native instruction loading, local/hook/CI checks, configuration readiness
+  and actual deployed-environment verification. Required unverified controls leave
+  their delivery claim incomplete; do not label an unavailable check as passed.
 
-Exercise a bad path and, when selected, an oversized file or expired checkpoint in
-a fixture. The checker must warn/fail exactly as the chosen policy says. For an off
-policy it must not enforce a template's numeric recommendation. A prose rule is
-not an implemented check; report navigation trials separately from automated gates.
+For a selected public/private boundary, reject public-to-internal document links and
+code/script/configuration dependencies, including derived navigation and relevant
+artifacts. Run the actual isolated export and its build/check/representative entry
+without internal files. Inspect actual distribution contents and distinguish clean
+snapshot evidence from existing-history or remote-publication claims.
 
-## Generated consistency and optional AI integration
+## Documentation retrieval
 
-Inspect generators first. Prefer check mode or temporary output comparison,
-including added, removed and untracked outputs. Respect declared committed versus
-build-only outputs and reproducibility policy. Do not regenerate over dirty user
-files merely to test consistency. Repeat the selected check/generation to detect
-unexplained changes.
+- From the native entry, find applicable sources for representative project questions
+  using task routes and working scoped search. Include aliases or code symbols and
+  code-adjacent docs where present; record actual queries, sections read and limits.
+- Distinguish current guidance, proposals, active/completed tasks and applicable
+  decisions. Verify superseded sources lead to the correct replacement; unresolved
+  conflicts or broken/cyclic replacement chains must remain visible.
+- After affected moves, heading changes or archival, verify task routes, local links
+  and source pointers still resolve. For selected automation, show a stale index or
+  broken route is detected and passes after regeneration/repair.
+- Check no-match, search failure and partial/truncated results are distinguished.
+  An incomplete index or excluded root cannot justify a whole-repository absence claim.
+- Verify selected search/index boundaries with synthetic inputs: authorized internal
+  records are locally retrievable, public indexes contain only public sources and
+  secrets/unapproved data stay excluded. Filtering does not enforce secret-read isolation.
 
-When AI integration is enabled, verify owned entries, native imports, task routes
-and selected context budgets. When testing its removal, use a disposable fixture,
-disable integration and remove only managed outputs/sources; human core checks
-must still work. Preserve unrelated native settings. Report whether this ran.
+## Materials and preservation
 
-## Handoff
+Every delivered document must answer an actual project question with code/configuration
+or observed results. Check the runnable commands, module paths, links and source authority.
+Remove unfilled placeholders, duplicate facts and generic filler. Keep conditional
+future guidance distinct from the current implementation.
 
-List passed checks, not-applicable checks with reasons, and blocked/skipped checks
-with the next action. Include selected policies and delegated decisions, changed
-paths, structural startup/check commands and residual setup. Do not equate a file
-or directory's existence with working enforcement or finished product behavior.
+Verify that later AI sessions can find the architecture/evolution authority from
+the project's native instructions. Inspect loading separately from link resolution.
+Honor document/product language and existing formatting/privacy rules; retain user
+edits and avoid private machine paths, credentials or raw diagnostic dumps.
+
+If task/history records exist, verify their state, next action and links after moves.
+Do not invent records or claim a model-quality measurement from a manual walkthrough.
+
+## Completion and blocked work
+
+Repair in-scope failures and rerun affected checks. Separate pre-existing failures
+from regressions and executed failures from unavailable checks.
+Required runtime and agreed regression checks must pass before claiming completion.
+
+If dependencies, permissions or required external systems block a check, report the
+exact missing prerequisite and incomplete outcome. Do not substitute static validation
+or a documentation-only result for runnable delivery.
+
+Handoff identifies the implemented architectural delta, runnable commands, actual
+results, preserved behavior, justified deviations and remaining work. Archive only
+truthfully completed scope; do not begin new business features automatically.

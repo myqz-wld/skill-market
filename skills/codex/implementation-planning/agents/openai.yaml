@@ -1,4 +1,4 @@
 interface:
   display_name: "Implementation Planning"
   short_description: "Plan tasks, parallel work, acceptance and archives"
-  default_prompt: "Use $implementation-planning to plan this change within the existing architecture, split independently verifiable tasks, identify safe parallel batches, and prepare handoff and archive records."
+  default_prompt: "Use $implementation-planning to plan this change within the existing architecture, split independently verifiable tasks, identify safe parallel batches, and prepare handoff and archive records without starting implementation."

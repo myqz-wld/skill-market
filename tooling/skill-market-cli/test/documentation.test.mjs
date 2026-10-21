@@ -16,9 +16,9 @@ test("README skill interface matches each installed native package", async () =>
   }
 });
 
-test("entry and usage documentation links resolve within the repository", async () => {
+test("README and contributor documentation links resolve within the repository", async () => {
   const root = path.resolve(".");
-  for (const file of ["README.md", "docs/usage.md", "CONTRIBUTING.md"]) {
+  for (const file of ["README.md", "CONTRIBUTING.md"]) {
     const text = await readFile(file, "utf8");
     for (const match of text.matchAll(/\[[^\]]+\]\(([^)]+)\)/gu)) {
       const target = match[1].split("#")[0];
@@ -30,15 +30,12 @@ test("entry and usage documentation links resolve within the repository", async 
   }
 });
 
-test("usage distinguishes local queries, catalog refresh and explicit configuration", async () => {
-  const usage = await readFile("docs/usage.md", "utf8");
-  assert.match(usage, /It never clones or refreshes the catalog/u);
-  assert.match(usage, /never installs anything/u);
-  assert.match(usage, /Configuration is optional/u);
-  assert.match(usage, /~\/\.skill-market\/managed-state\.json/u);
-  assert.match(usage, /help --pretty/u);
+test("README exposes the live command surface and configuration entry points", async () => {
+  const readme = await readFile("README.md", "utf8");
+  assert.match(readme, /~\/\.skill-market\/managed-state\.json/u);
+  assert.match(readme, /help --pretty/u);
   for (const command of Object.keys(helpContract().commands)) {
-    assert.ok(usage.includes("`" + command), command);
+    assert.ok(readme.includes("`" + command), command);
   }
 });
 

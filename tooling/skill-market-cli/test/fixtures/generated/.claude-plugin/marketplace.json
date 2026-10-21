@@ -9,7 +9,6 @@
       "name": "fixture-claude",
       "source": "./plugins/fixture-claude",
       "description": "Claude fixture plugin.",
-      "version": "0.1.0",
       "author": {
         "name": "Skill Market"
       }

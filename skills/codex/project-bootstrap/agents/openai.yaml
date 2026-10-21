@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Bootstrap"
-  short_description: "Scaffold projects or adjust existing architecture"
-  default_prompt: "Use $project-bootstrap to ask only consequential architecture questions, choose sensible reversible defaults, then scaffold or restructure my project without implementing new product features."
+  short_description: "Scaffold and refactor for AI-led development"
+  default_prompt: "Use $project-bootstrap to inspect the code, confirm requirements, then scaffold or refactor a runnable project for AI-led development with selected architecture, searchable project knowledge, native verification, language and privacy rules, environment isolation and concrete evolution guidance."
 policy:
   allow_implicit_invocation: true

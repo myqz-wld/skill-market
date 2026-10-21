@@ -1,3 +1,9 @@
+import {
+  DEFAULT_READ_REPO_URL,
+  DEFAULT_BASE_REF,
+  DEFAULT_CACHE_TTL_SECONDS,
+} from "../shared/defaults.generated.mjs";
+
 // Parser definitions and help metadata share this registry.
 const define = (key, type, help) => Object.freeze({ key, type, help });
 
@@ -5,10 +11,10 @@ export const OPTIONS = Object.freeze({
   "pretty": define("pretty", "boolean", {"type": "boolean", "default": false, "effect": "indent JSON by two spaces"}),
   "json": define("json", "boolean", {"type": "boolean", "default": true, "effect": "accepted for explicitness; output is always JSON"}),
   "help": define("help", "boolean", {"type": "boolean", "default": false, "effect": "return this contract"}),
-  "read-repo-url": define("readRepoUrl", "value", {"type": "HTTPS URL without embedded credentials", "default": "https://github.com/myqz-wld/skill-market.git"}),
-  "base-ref": define("baseRef", "value", {"type": "safe Git ref", "default": "main"}),
+  "read-repo-url": define("readRepoUrl", "value", {"type": "HTTPS URL without embedded credentials", "default": DEFAULT_READ_REPO_URL}),
+  "base-ref": define("baseRef", "value", {"type": "safe Git ref", "default": DEFAULT_BASE_REF}),
   "cache-path": define("cachePath", "value", {"type": "absolute path or ~/ path", "default": "~/.skill-market/cache/skill-market"}),
-  "cache-ttl-seconds": define("cacheTtlSeconds", "value", {"type": "non-negative integer", "default": 86400, "zero": "disable automatic refresh and report cached data as stale"}),
+  "cache-ttl-seconds": define("cacheTtlSeconds", "value", {"type": "non-negative integer", "default": DEFAULT_CACHE_TTL_SECONDS, "zero": "disable automatic refresh and report cached data as stale"}),
   "repo-path": define("repoPath", "value", {"type": "absolute path or ~/ path | null", "default": null, "effect": "read this checkout directly and skip cache/network behavior"}),
   "adapter": define("adapters", "list", {"type": "comma-separated enum", "values": ["claude", "codex", "grok", "all"], "default": "all"}),
   "kind": define("kinds", "list", {"type": "comma-separated enum", "values": ["plugin", "standalone", "all"], "default": "all"}),

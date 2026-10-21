@@ -13,7 +13,9 @@ constant coordination or an unstable producer/consumer contract. Do not make a t
 per file, per function or per arbitrary line count. One small bounded change can
 use an inline task block with the same acceptance information.
 
-Use the project's task locations and formats. Without an established convention,
+Use the project's task locations, visibility and formats. Keep the complete plan,
+task, design and evidence bundle within its selected boundary; a public README or
+index must not link to internal tasks. Without an established convention,
 propose one bundle under a suitable project-owned plan root:
 
 ```text
@@ -78,8 +80,9 @@ pause/replan affected dependents, without throwing away unrelated completed work
 Use authorized tools/agents to run actual independent planning work concurrently
 now. Implementation batches execute only within implementation authorization.
 If only a plan was requested, deliver runnable batch definitions rather than launch
-implementation sessions. If execution is authorized and mechanisms are available,
-do not serialize a ready independent batch merely because the task list is ordered.
+implementation sessions. In a separately authorized implementation phase, do not serialize a ready
+independent batch merely because the task list is ordered. This planning skill
+ends with the plan/handoff and does not launch that phase automatically.
 
 ## Acceptance and handoff granularity
 

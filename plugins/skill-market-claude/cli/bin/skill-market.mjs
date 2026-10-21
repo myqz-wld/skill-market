@@ -2,8 +2,10 @@
 
 import { runCli } from "../src/cli/index.mjs";
 
-const result = await runCli(process.argv.slice(2));
-const pretty = process.argv.includes("--pretty");
+const argv = process.argv.slice(2);
+const result = await runCli(argv);
+const terminator = argv.indexOf("--");
+const pretty = argv.slice(0, terminator < 0 ? undefined : terminator).includes("--pretty");
 process.stdout.write(`${JSON.stringify(result, null, pretty ? 2 : 0)}\n`);
 const exitCodes = {
   needs_confirmation: 2,

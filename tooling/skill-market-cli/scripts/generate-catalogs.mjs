@@ -5,12 +5,13 @@ import { fileURLToPath } from "node:url";
 
 import { loadCatalog } from "../src/catalog/catalog.mjs";
 import { writeCatalogViews } from "../src/catalog/generators.mjs";
+import { writeCliDefaults } from "../src/build/defaults.mjs";
 
 function usage() {
   return [
     "Usage: generate-catalogs.mjs [--check] [--root <repo-root>] [--catalog <catalog-file>]",
     "",
-    "Generate native marketplace catalogs and skills/INDEX.md from catalog/entries.json.",
+    "Generate native marketplace catalogs, skills/INDEX.md, and CLI defaults from catalog/entries.json.",
   ].join("\n");
 }
 
@@ -43,4 +44,5 @@ const root = path.resolve(args.root ?? defaultRoot);
 const catalogPath = path.resolve(args.catalog ?? path.join(root, "catalog/entries.json"));
 const catalog = await loadCatalog(catalogPath);
 const paths = await writeCatalogViews({ root, catalog, check: args.check });
-process.stdout.write(`${args.check ? "checked" : "generated"} ${paths.length} catalog views\n`);
+await writeCliDefaults({ root, catalog, check: args.check });
+process.stdout.write(`${args.check ? "checked" : "generated"} ${paths.length} catalog views and CLI defaults\n`);

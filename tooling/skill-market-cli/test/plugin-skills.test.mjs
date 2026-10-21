@@ -153,13 +153,20 @@ async function validateSkill(entry) {
   assert.equal(metadata.name, entry.name, entry.path);
   assert.ok(metadata.description?.length >= 20, `${entry.path} description`);
   const resources = new Set(
-    [...text.matchAll(/`((?:assets|references|scripts|agents)\/[a-zA-Z0-9._/-]+)`/gu)]
+    [...text.matchAll(/`((?:assets|references|scripts|agents)\/[a-zA-Z0-9._/-]+)`/gu),
+      ...text.matchAll(/\]\(((?:assets|references|scripts|agents)\/[a-zA-Z0-9._/-]+)(?:#[^)]*)?\)/gu)]
       .map((match) => match[1]),
   );
-  for (const resource of resources) await access(path.join(root, resource));
-  if (entry.adapter === "codex") {
+  for (const resource of resources) {
+    const resolved = path.resolve(root, resource);
+    assert.ok(resolved.startsWith(root + path.sep), `${entry.path}: ${resource} stays in its package`);
+    await access(resolved);
+  }
+  if (entry.adapter === "codex" && files.includes("agents/openai.yaml")) {
     const ui = await readFile(path.join(root, "agents/openai.yaml"), "utf8");
-    assert.ok(ui.includes(`$${entry.name}`), `${entry.path} invocation metadata`);
+    if (/^\s*default_prompt:/mu.test(ui)) {
+      assert.ok(ui.includes(`$${entry.name}`), `${entry.path} invocation metadata`);
+    }
   }
 }
 

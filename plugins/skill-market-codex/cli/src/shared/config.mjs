@@ -4,10 +4,13 @@ import { SkillMarketError } from "./errors.mjs";
 import { atomicWriteJson, readJsonIfExists } from "./fs.mjs";
 import { expandHomePath, resolveStatePaths } from "./paths.mjs";
 import { validateGitRef, validateReadRepoUrl } from "./source-identity.mjs";
+import {
+  DEFAULT_READ_REPO_URL,
+  DEFAULT_BASE_REF,
+  DEFAULT_CACHE_TTL_SECONDS,
+} from "./defaults.generated.mjs";
 
-export const DEFAULT_READ_REPO_URL = "https://github.com/myqz-wld/skill-market.git";
-export const DEFAULT_BASE_REF = "main";
-export const DEFAULT_CACHE_TTL_SECONDS = 86400;
+export { DEFAULT_READ_REPO_URL, DEFAULT_BASE_REF, DEFAULT_CACHE_TTL_SECONDS };
 
 export const CONFIG_KEYS = Object.freeze([
   "readRepoUrl",

@@ -11,7 +11,7 @@ async function contents(root, relative = "") {
   for (const entry of await readdir(path.join(root, relative), { withFileTypes: true })) {
     const child = path.join(relative, entry.name);
     if (entry.isDirectory()) Object.assign(files, await contents(root, child));
-    else files[child] = await readFile(path.join(root, child), "utf8");
+    else files[child] = await readFile(path.join(root, child));
   }
   return files;
 }
@@ -31,9 +31,6 @@ test("catalog standalone packages install with all resources in an isolated home
       const installed = await contents(path.join(home, `.${adapter}`, "skills", name));
       assert.deepEqual(installed, source, id);
       assert.ok(source["SKILL.md"], id + " entry");
-      if (adapter === "codex") {
-        assert.ok(source[path.join("agents", "openai.yaml")], id + " native metadata");
-      }
       const repeated = await runCli(["install", id, "--repo-path", repo], { env });
       assert.equal(repeated.status, "noop", id);
     }

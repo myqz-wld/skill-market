@@ -20,9 +20,39 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          fetch-depth: 0
           persist-credentials: false
       - uses: jdx/mise-action@v5
         with:
           cache: false
       - run: mise exec -- npm run validate
-      - run: git diff --check
+      - name: Check committed whitespace
+        shell: bash
+        env:
+          CHECK_EVENT: ${{ github.event_name }}
+          PUSH_BEFORE: ${{ github.event.before }}
+        run: |
+          case "$CHECK_EVENT" in
+            pull_request)
+              # The checked-out merge commit's first parent is the PR base.
+              base=HEAD^1
+              ;;
+            push)
+              base="$PUSH_BEFORE"
+              if [[ "$base" =~ ^0+$ ]]; then
+                base=$(git hash-object -t tree /dev/null)
+              fi
+              ;;
+            workflow_dispatch)
+              if git rev-parse --verify HEAD^1 >/dev/null 2>&1; then
+                base=HEAD^1
+              else
+                base=$(git hash-object -t tree /dev/null)
+              fi
+              ;;
+            *)
+              echo "Unsupported workflow event: $CHECK_EVENT" >&2
+              exit 1
+              ;;
+          esac
+          git diff --check "$base" HEAD --

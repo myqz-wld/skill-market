@@ -35,6 +35,7 @@ function codexMarketplace(catalog) {
 }
 
 function claudeMarketplace(catalog) {
+  // Claude reads plugin versions from plugin.json; avoid a duplicate declaration.
   return {
     name: catalog.marketplace.name,
     owner: catalog.marketplace.owner,
@@ -43,7 +44,6 @@ function claudeMarketplace(catalog) {
       name: entry.name,
       source: `./${entry.path}`,
       description: entry.description,
-      version: entry.version,
       author: catalog.marketplace.owner,
     })),
   };

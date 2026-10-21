@@ -8,6 +8,12 @@ plan root within the authorized scope; do not apply a new repository architectur
 Shared records use relative paths and portable ids. Absolute runtime paths belong
 only in private tool arguments when required, not durable plan content.
 
+Preserve the project's selected record visibility through creation, handoff, closure
+and audit. Archiving does not make internal records public. New indexes, replacement
+links, summaries and contribution text must respect the same boundary; public files
+cannot reference internal files. Use project-owned commands/rules without assuming
+how they were established or requiring another skill to maintain them.
+
 Keep the current truth in one place: shared decisions/graph in the plan, task
 state/evidence in each task or the selected task system, and final outcome in
 closure. Live task systems need stable links and a terminal export/snapshot where

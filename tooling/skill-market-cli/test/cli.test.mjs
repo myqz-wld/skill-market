@@ -21,6 +21,23 @@ import {
 
 const execFileAsync = promisify(execFile);
 
+test("the executable formats JSON only for --pretty before the terminator", async () => {
+  const executable = path.resolve("tooling/skill-market-cli/bin/skill-market.mjs");
+  await withTemporaryHome(async (home) => {
+    for (const [argv, indentation] of [
+      [["help", "--pretty"], 2],
+      [["help", "--", "--pretty"], 0],
+      [["help", "--pretty", "--", "--pretty"], 2],
+    ]) {
+      const { stdout, stderr } = await execFileAsync(process.execPath, [executable, ...argv], {
+        env: { HOME: home, PATH: path.dirname(process.execPath) },
+      });
+      assert.equal(stderr, "");
+      assert.equal(stdout, `${JSON.stringify(JSON.parse(stdout), null, indentation)}\n`);
+    }
+  });
+});
+
 test("help exposes canonical commands and obsolete names are not aliases", async () => {
   const help = await runCli(["help"]);
   assert.equal(help.ok, true);

@@ -1,106 +1,154 @@
 ---
 name: project-bootstrap
-description: "Create new-project scaffolds or adjust existing architecture. Ask consequential questions, choose reversible defaults, and verify structure and document navigation. Does not implement new product features."
+description: "Create runnable new-project scaffolds or refactor existing architecture for AI-led development. Use for project structure and engineering setup; keep new business features outside scope."
 ---
 
-# Project Bootstrap for Codex
+# Project Bootstrap
 
-Scope is limited to new-project scaffolding and existing-project architecture
-adjustment. Understand product intent only to choose structure and capabilities.
-Do not implement new business features, user journeys or domain behavior.
+Deliver a runnable new scaffold or an existing project with the agreed architecture
+changes implemented. Code, dependencies, runtime configuration, build/start tasks
+and meaningful checks are in scope; new business features and domain-rule redesign
+remain separate work.
 
-A new scaffold may include framework startup, an empty page, health response,
-package import or CLI help plus structural smoke checks. Existing adjustments may
-move modules, repair imports/configuration and enforce agreed boundaries while
-preserving observable behavior. Login, checkout, reporting, CRUD and other product
-work stay outside this skill, even when described as a "first useful example".
-For a mixed request, identify that boundary and agree on the structural portion;
-do not silently implement the feature or claim the entire product request is done.
+Determine whether the target is new or existing, and whether the request is
+assessment-only. An assessment stays read-only and ends after stage 2.
+Follow **read the code → confirm requirements → scaffold/refactor and verify**.
+Work on the actual target using the current adapter's native tools; preserve user edits.
 
-## 1. Establish the target and scope
+Optimize for AI-led engineering: focused context, explicit contracts, durable
+project knowledge and trustworthy checks. Cover the constraints, knowledge,
+implementation, verification and tooling layers according to actual project needs.
 
-Choose **scaffold** for a new project or **adjust** for existing architecture.
-Discussion and read-only inspection are stages within those modes. A feature-only
-request should leave this workflow; briefly explain its scope without starting an
-architecture interview or changing project structure.
+This skill runs during setup or architectural change, not routine development.
+Materialize lasting rules, record locations, retrieval, evolution guidance and selected
+checks/tools in the target project. Later sessions must work from that project alone,
+without this installed skill, its resource paths or another skill as a prerequisite.
 
-The skill directory is a resource location, not the target project. Before any
-project write, identify the target and read its instructions, working changes,
-native runtime/dependency files and relevant structure. A discussion can start
-without a directory. For existing projects read `references/existing-repositories.md`.
-Reuse prior answers and authorization; preserve established project conventions.
+This file is the sole navigator for bundled resources. Read the relevant complete
+sections directly at the indicated step, before dependent work. Other resources
+remain self-contained; target-project documents may link their own authorities.
+A missing resource blocks only the work that requires it.
 
-## 2. Interview in dependency order
+Stage outputs may live in the conversation or existing project records. Create
+documents only when they serve implementation, resumption or ongoing maintenance.
 
-Read `references/interview.md`. Resolve scope and hard constraints, then delivery
-units and needed capabilities. Inspect evidence before asking. Ask only unanswered
-questions whose answers materially change architecture, compatibility, cost,
-scope or workflow; normally batch two or three related questions when needed.
-There is no minimum question count. Use an available native question interface
-under its live contract, or concise chat.
+## 1. Read the code and establish the baseline
 
-Reuse established conventions. Select reversible routine details yourself and
-briefly disclose useful defaults in the blueprint; no separate delegation is
-needed. Omit advanced controls without a concrete need. File-size advisories,
-metadata syntax and similar configurable settings are not a mandatory question
-list. Ask about conflicts, consequential unknowns and new blocking policy gates.
-A user's delegation covers its stated scope; silence does not authorize unresolved
-consequential choices or external effects. Label agent-chosen defaults honestly.
+Start with [inspection guidance](references/inspection.md), using the existing-project
+or empty-target section. Before handling project data, read the constraints and privacy
+sections of [AI-led engineering rules](references/ai-development.md); read its knowledge,
+file/language, tooling or parallel-work sections when those concerns apply.
 
-## 3. Present an actionable blueprint
+- **Existing project:** trace relevant entrypoints, configuration, module responsibilities,
+  public contracts, dependencies and tests. Record user edits, protected behavior,
+  actual build/start/check commands and baseline failures.
+- **New target:** inspect project instructions, constraints and any supplied starter.
+  Explicitly distinguish available starter code from an empty target with no baseline.
 
-Read `references/architecture.md`, `references/manifest.md` and
-`references/retrieval.md`. Use `assets/templates/blueprint.md` as an outline:
+Inspect the project's actual coding tools, shared/native instructions and project policy.
+The current adapter does not determine which tools the target project supports.
+Use sanitized schemas/examples instead of private configuration payloads. Run applicable
+baseline checks only when their effects fit the requested scope; distinguish failed
+checks from unavailable ones.
+When locating or designing project knowledge, read
+[documentation retrieval](references/documentation.md) before dependent searches or edits.
 
-- Structural outcome, target, excluded feature work and existing invariants.
-- Stack, repository/layout boundaries, selected capabilities and concrete paths.
-- A brief note on noteworthy defaults and policy exceptions, with honest origins.
-- Files to create, move, merge or generate; sources of truth and task navigation.
-- Structural smoke/regression checks, deferred choices and external prerequisites.
+With the inspected facts, read the capability-selection section and matching layout
+in [reference architectures](references/architecture.md). Use the relevant responsibilities,
+dependency rules and evolution sections for affected boundaries. Read other mappings
+only if the requirements call for them; keep the final layout open until stage 2.
 
-Show only the selected tree. Resolve consequential unknowns and the concrete write
-scope together; proceed when already authorized instead of repeating approval.
-Optional advanced policies may stay deferred; routine defaults need not delay work.
-Do not silently turn an advisory into a new blocking enforcement rule.
-Save a durable plan only when the work warrants it, in the project's chosen format.
+**Stage output:** an evidence-backed current-state map, preserved invariants,
+baseline results and architectural choices that remain unresolved.
 
-## 4. Build or adjust architecture
+## 2. Confirm architectural requirements
 
-Read `references/engineering-practices.md` and `references/validation.md`.
-Use Codex's available patch/file and execution tools under their live
-contracts; resolve bundled resources separately from the target project.
+Use [requirements guidance](references/requirements.md) to cover applicable concerns
+and separate:
 
-Instantiate applicable templates with established, confirmed or agent-chosen
-routine settings, adapting metadata syntax and paths to the project policy. Consolidate small documentation
-roles when useful; create no imaginary modules, empty reports or policy directories.
-Use native scaffold tooling after inspecting its effects. Respect project-local
-runtime compatibility and package tooling; user-level versions are only fallbacks.
+- Observed facts and existing decisions: reuse their evidence and authorization.
+- Reversible implementation defaults: disclose the choice within the permitted scope.
+- Unresolved consequential choices: ask when they affect architecture, compatibility,
+  privacy, external effects or acceptance; batch related questions.
 
-Create only infrastructure needed for the selected scaffold or restructuring.
-Use generic boot/import/configuration checks rather than domain implementations.
-For existing architecture, keep behavior and public contracts stable; separately
-surface any requested breaking change before editing dependent code.
+Keep source/document/comment language and user-facing locale distinct. Apply the
+existing file/context, privacy, retrieval and acceptance policies; resolve actual gaps
+without turning every policy value into a question.
+When source or artifacts may be public while development records stay private, read
+[publication boundaries](references/publication.md) before choosing record destinations,
+instruction ownership or export behavior. Reuse the chosen visibility profile for all
+outputs; public files must not reference or depend on internal files.
+For multiple runtime/deployment environments, read
+[environment design](references/environments.md) before settling profiles, configuration
+precedence, isolated resources, deployment units and verification scope.
 
-Use project.yaml and its bundled schema only if that manifest was selected;
-otherwise preserve the agreed equivalent role/path map. Register actual commands,
-not placeholder success tasks. A structure-only result need not invent dev/test
-commands or install a framework. Disclose missing tooling and incomplete checks.
+Present the concrete tree, justified deviations and capability choices: needed now,
+conditional future, omitted or unresolved. Cover dependencies of selected capabilities.
+Identify current extension points and observable triggers for later module/layer/package
+changes; keep conditional evolution separate from today's implementation.
 
-For selected AI integration, read `references/adapters.md`; for distribution
-setup, `references/distribution.md`; for opted-in review tracking,
-`references/review-coverage.md`. Do not load these for unrelated projects.
+Settle remaining choices, permitted writes, preserved contracts, explicitly allowed
+compatibility changes and executable acceptance together. Proceed on existing
+authorization without a repeated approval gate. While answers are pending, continue
+independent inspection; unresolved prerequisites block dependent writes, and silence
+is not acceptance.
 
-## 5. Verify and hand off
+**Stage output:** settled requirements, selected architecture, write scope,
+compatibility contract and runnable acceptance. For an assessment, deliver the
+proposed delta and evidence here, then stop.
 
-Execute the agreed structural checks and relevant existing regression checks.
-Test task navigation and historical-document handling as described in
-`references/validation.md`. Repeated generation or adoption must preserve owned
-sources and unrelated user work. Use disposable fixtures for validation.
+## 3. Scaffold or refactor, then verify
 
-Report changed structure, decisions, actual commands/results and remaining setup.
-Separate passed, not applicable and unverified checks. Confirm feature work was
-left outside this deliverable; do not claim a working business workflow or begin
-implementing the product's next feature as part of this skill.
+Before changing files, read the matching scaffold/refactor section and applicable
+execution/material rules in [implementation guidance](references/implementation.md),
+plus the applicable checks in [validation requirements](references/validation.md).
+Read each selected template below before producing its output.
 
-Resources and templates resolve from this skill directory. Their example docs/,
-.agents/ and code paths refer to the future target project.
+1. **Prepare bounded steps when needed.** For multi-step work, retain scope, baseline,
+   migration order, checkpoints, recovery and the next action in the existing task format.
+2. **Implement the architecture.** Create a real entrypoint and runtime wiring, or migrate
+   code with its callers, imports, configuration, build/start tasks and tests. Preserve
+   the agreed behavior; validate explicitly authorized compatibility changes against
+   their agreed contracts. Reopen only decisions affected by newly consequential findings.
+3. **Verify each meaningful boundary.** Implement or reuse appropriate native focused/fast/full
+   checks, repair in-scope regressions and rerun affected checks. Preserve protected acceptance;
+   changed expectations require an authorized requirement change.
+4. **Update project materials.** Ground them in actual code, paths, interfaces and working
+   commands. Keep one owner per fact, remove unused sections/placeholders and merge small
+   subjects into existing documentation. AGENTS.md is the shared native instruction entry;
+   Claude's CLAUDE.md imports it and adds only Claude-specific rules. If those files must
+   stay private, materialize them locally from the selected internal source owner.
+   Preserve authored instructions and their scope. Provide working scoped knowledge
+   lookup. Maintain task routes, links and any derived index when sources move or
+   change status. Route later AI work to real extension
+   points, architectural triggers, source lookup and validation requirements. Put the
+   actual record destinations and any setup/sync/check/export commands in project-owned
+   instructions. Keep public materials independently usable without internal content.
+5. **Complete runnable acceptance.** Execute applicable build/type and regression checks,
+   the actual startup/request, CLI or library-import path, and selected environment,
+   protection, artifact-exclusion and diagnostic checks. Use isolated data and task-owned
+   processes, preserving existing user services. Verify retrieval against actual sources.
+   For a selected private/public boundary, exercise the real isolated export, forbidden
+   reference checks and public run path; preparing output does not authorize publication.
+
+| Output needed | Read directly and adapt to the project |
+|---|---|
+| Multi-step implementation or migration record | [Plan template](assets/templates/plan.md) |
+| Setup and verified run/check commands | [Quickstart template](assets/templates/quickstart.md) |
+| Current architecture and concrete evolution guidance | [Architecture template](assets/templates/architecture.md) |
+| Task-oriented knowledge discovery | [Documentation map template](assets/templates/documentation-map.md) |
+| A substantial module's contract and local context | [Module template](assets/templates/module.md) |
+| Shared project instructions in AGENTS.md | [Shared AI instruction template](assets/templates/agent-rules.md) |
+| Target project uses Claude: importing CLAUDE.md and Claude-only additions | [Claude instruction template](assets/templates/claude-rules.md) |
+| New or adjusted native-compatible EditorConfig | [EditorConfig template](assets/templates/editorconfig) |
+
+Select templates by actual need; they do not require separate output files.
+Keep local execution, configured hooks/CI, native instruction loading and actual
+deployment evidence distinct. Static files or working links alone cannot prove
+runtime behavior or enforcement. Required checks blocked by prerequisites leave
+delivery incomplete; identify the missing check and prerequisite.
+
+**Stage output:** implemented architecture, verified runnable commands and useful
+project materials. Report preserved behavior, agreed compatibility changes, actual
+results and remaining work; distinguish baseline failures from regressions.
+Archive only completed scope and stop before unrequested business feature work.

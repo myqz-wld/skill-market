@@ -1,42 +1,54 @@
 # AGENTS.md
 
-Skill Market supplies native plugins and standalone skills for Claude, Codex,
-and Grok. Treat all three adapters as equal, explicit targets.
+Skill Market manages native plugins and standalone skills for Claude, Codex and
+Grok. Treat all three adapters as equal, explicit targets.
 
-Read `CONTRIBUTING.md` before implementation. It owns engineering, versioning,
-validation and proposal policy; `README.md` owns public behavior.
+Read `CONTRIBUTING.md` before implementation; it owns engineering, versioning,
+proposal and validation policy. `README.md` owns public installation and usage.
 
-## Sources of Truth
+## Documentation Scope
 
-- Edit `catalog/entries.json`; generate `.agents/plugins/marketplace.json`, `.claude-plugin/marketplace.json`, `.grok-plugin/marketplace.json`, and `skills/INDEX.md`.
-- Edit CLI code under `tooling/skill-market-cli/bin/` and `src/`, with runtime metadata in its `package.json`; generate the three plugin `cli/` bundles.
-- Keep native package content explicit. Mechanical copying requires adapter-specific checks; never infer or semantically generate another adapter.
-- Keep all standalone skills under `skills/<adapter>/<skill-name>/`. Record draft maturity with prerelease versions in the catalog, not a separate directory.
-- Do not hand-edit generated artifacts.
+Root `AGENTS.md`, `CLAUDE.md`, `CONTRIBUTING.md` and `README.md` cover marketplace
+installation, management, contribution and validation only. Keep individual
+skills' designs, workflows, evaluation/iteration records and publication/privacy
+export mechanisms in their own package resources. Link the generated catalog for
+package discovery instead of duplicating package details or current versions.
+Package-specific workflow rules belong to their package, not these root documents.
 
-Keep deterministic catalog, cache, filesystem, native-CLI, Git, and GitHub mechanics in the CLI. Focused Skills should remain thin intent, routing, and confirmation layers. Preserve the CLI's single-JSON-result and stable exit/result contracts.
+## Canonical Sources
 
-## Change Workflow
+- Edit `catalog/entries.json`; generate the three native marketplace views,
+  `skills/INDEX.md` and the CLI defaults module.
+- Edit CLI runtime code in `tooling/skill-market-cli/`; generate plugin `cli/`
+  bundles. Keep the CLI zero-dependency and its single-JSON-result/exit contracts
+  stable. Parser options and help share `src/cli/registry.mjs`.
+- Edit each native package explicitly. Mechanical copying requires adapter checks;
+  never infer another adapter target. Standalone packages live under
+  `skills/<adapter>/<name>/`, including prereleases.
+- Version affected packages and catalog entries together. Shared CLI changes also
+  bump its runtime and all affected bootstrap plugins. Never hand-edit generated files.
 
-- Use the repository runtime declared in `mise.toml`; run Node commands through `mise`.
-- Preserve existing working changes. Maintainers may edit canonical sources directly; use `proposal` for installed contribution workflows or resumable submissions.
-- Keep the CLI zero-dependency. Define parser options and help together in `src/cli/registry.mjs` under the canonical CLI.
-- Keep `list` local-only and non-mutating. Keep `discover` catalog-only and non-installing.
-- Keep catalog status separate from local activation state. Updates must preserve activation and native scope.
-- Preserve Claude's detected `user`, `project`, `local`, or managed-policy scope; block when scope is unknown.
-- Do not emulate unsupported Codex plugin enable/disable with uninstall. Keep Codex plugin update as the bounded confirmed native sequence documented by the project.
-- Require explicit Grok source inspection and trust confirmation. Do not add a compatibility shim in place of a native Grok package.
-- When shared bootstrap behavior changes, update and version every affected adapter package and canonical catalog entry together. Do not expand an adapter-specific change implicitly.
+## Workflow and Safety
 
-Bootstrap plugins require coordinated repository changes and cannot propose themselves.
+Preserve existing working changes. Use the runtime in `mise.toml`; run Node
+commands through `mise`. Maintainers can edit canonical sources directly;
+installed contribution workflows use proposals. Bootstrap plugins cannot propose
+themselves.
 
-## Safety and Validation
+Keep `list` local-only and non-mutating, and `discover` catalog-only and
+non-installing. Keep catalog status separate from local activation; preserve
+activation and native scope during updates. Follow the adapter capability and
+confirmation contracts in `CONTRIBUTING.md`.
 
-Tests must use temporary homes, fixture repositories, fake native binaries, and fake GitHub operations. Never point tests or development mutations at real `~/.skill-market`, `~/.claude`, `~/.codex`, or `~/.grok` state.
+Tests use temporary homes, fixture repositories, fake native binaries and fake
+GitHub operations. Never direct tests or development mutations at real
+`~/.skill-market`, `~/.claude`, `~/.codex` or `~/.grok` state.
+Do not push, create a PR, publish, grant trust or perform other external mutations
+without explicit authorization. Direct publication to `main` requires an explicit
+request; never force-push. Inspect actual distribution inputs before an authorized
+commit or publication.
 
-Do not push, create a pull request, publish, grant trust, or perform another external mutation unless the user explicitly authorizes that effect. Never force-push. Direct publication to `main` also requires an explicit user request.
-
-After changing sources, regenerate and validate:
+After source changes:
 
 ```bash
 mise exec -- npm run generate
@@ -44,14 +56,6 @@ mise exec -- npm run validate
 git diff --check
 ```
 
-Required checks are repository-owned and run through `npm run validate`.
-Native read-only validators are optional supplements; distinguish a skipped
-check from a failure as described in `CONTRIBUTING.md`. Inspect actual distribution
-inputs before an authorized commit or publication.
-
-## Scaffolding Exclusion
-
-Do not apply application scaffolding to this marketplace repository or add
-`UI_COPY_LANGUAGE.md`, repository-level generated `ref/` indexes, `.refs/`, or
-copied foundation helpers without an explicit user request. Bundled resources
-under `skills/` are package content and are exempt.
+Do not apply application scaffolding, generated knowledge indexes or copied
+foundation helpers to this marketplace without an explicit request. Bundled
+resources under `skills/` are package content and are exempt.

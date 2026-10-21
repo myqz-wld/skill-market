@@ -1,27 +1,47 @@
-{{Selected plan metadata: status and actual update information; owner if used.
-Include expires only for a selected date policy, or the selected milestone/manual
-checkpoint. Do not invent a universal expiry. Adapt to the project's format.}}
+# {{Project}} architectural change
 
-# {{Architecture plan}}
+{{Use for a multi-step scaffold/refactor or resumable migration. Reuse the project's
+native plan/task format; a small coherent change may need only a compact record.}}
 
-## Goal and boundaries
+{{Use the project's selected record visibility and destination. If internal, keep
+this plan and its tasks/evidence/archives under the private record root; do not add
+links to it from public documentation. No other skill or installed resource is needed.}}
 
-{{Scaffold/restructuring outcome, existing behavior/contracts, authorized paths
-and excluded feature work.}}
+## Scope and baseline
 
-## Decisions and progress
+- Mode and outcome: {{runnable scaffold or architectural refactor}}
+- State: {{ready/running/blocked/complete, using project-native meanings}}
+- Current evidence: {{actual code/configuration baseline and working-change limits}}
+- Knowledge sources: {{exact applicable document sections, contracts and active records; preserve locations and status rather than copying full contents}}
+- Permitted changes: {{concrete code/configuration/test/material paths}}
+- Preserved behavior and exclusions: {{contracts, user edits and business work outside scope}}
+- Settled requirements: {{answers, origins and remaining blockers}}
+- Engineering policy: {{language/file/context/privacy owners, defaults and exceptions}}
+- Record/publication boundary: {{actual internal/public destinations and applicable project commands, when selected}}
+- Environment scope: {{actual profiles/resources, authorized effects and deferred deployment}}
+- Acceptance ownership: {{protected expectations and applicable risk/review policy}}
 
-{{Confirmed/delegated choices, unresolved policies, bounded structural tasks,
-completed changes and the next action. Link applicable shared decisions.}}
+## Target and migration
 
-## Validation
+{{Selected reference, justified deviations, actual ownership/dependency map and
+the extension points needed now. Keep conditional future evolution separate.}}
 
-{{Actual baseline, structural/regression checks, navigation trials, outcomes and
-limitations. Formal evidence stays in shared docs; plans are not evidence of
-implementation merely because they describe it.}}
+| Step | Inputs/prerequisites | Concrete change | Acceptance and rollback | Actual progress |
+|---|---|---|---|---|
+| {{Coherent migration step}} | {{Required artifacts/decisions}} | {{Move/extract/rewire/setup plus callers/configuration}} | {{Observable checks and recovery}} | {{Observed result or pending}} |
 
-## Review checkpoint and completion
+{{Keep coupled changes together. Record stable dependencies and write ownership
+if work is delegated; permission to plan does not authorize delegation.}}
 
-{{Selected date/milestone/manual review rule or none. At completion record the
-actual outcome/residual work, update status and archive if the chosen lifecycle
-calls for it. Preserve links and do not silently extend or delete records.}}
+## Verification
+
+{{Actual native build/start/import and relevant regression commands, baseline
+comparison, outcomes and limitations. A static path check does not prove runnability.}}
+
+## Handoff or closure
+
+{{Current step, baseline and relevant input versions, exact next action, allowed writes,
+blockers and remaining checks. Record what a new AI session must inspect to resume.
+On true completion,
+record delivered architecture and evidence; preserve meaningful history and repair
+links when archiving. Required code or runtime checks left undone mean incomplete.}}

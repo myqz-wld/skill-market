@@ -11,6 +11,7 @@ import {
   writeConfig,
 } from "../src/shared/config.mjs";
 import { SkillMarketError } from "../src/shared/errors.mjs";
+import { helpContract } from "../src/cli/help.mjs";
 import {
   canonicalRepositoryIdentity,
   localRepositoryIdentity,
@@ -31,6 +32,10 @@ test("in-memory defaults match the canonical catalog without creating config", a
     assert.equal(effective.values.readRepoUrl, catalog.defaults.readRepoUrl);
     assert.equal(effective.values.baseRef, catalog.defaults.baseRef);
     assert.equal(effective.values.cacheTtlSeconds, catalog.defaults.cacheTtlSeconds);
+    const sourceOptions = helpContract().sourceOptions;
+    assert.equal(sourceOptions["--read-repo-url"].default, catalog.defaults.readRepoUrl);
+    assert.equal(sourceOptions["--base-ref"].default, catalog.defaults.baseRef);
+    assert.equal(sourceOptions["--cache-ttl-seconds"].default, catalog.defaults.cacheTtlSeconds);
     await assert.rejects(access(effective.paths.configPath), { code: "ENOENT" });
   });
 });
@@ -54,6 +59,12 @@ test("explicit config writes persist only requested fields and environment wins"
     assert.equal(effective.values.cacheTtlSeconds, 120);
     assert.equal(effective.sources.cacheTtlSeconds, "env:SKILL_MARKET_CACHE_TTL_SECONDS");
     assert.equal(effective.values.repoPath, localRepo);
+    const overridden = await loadEffectiveConfig({
+      env: { ...env, SKILL_MARKET_CACHE_TTL_SECONDS: "120" },
+      overrides: { cacheTtlSeconds: 180 },
+    });
+    assert.equal(overridden.values.cacheTtlSeconds, 180);
+    assert.equal(overridden.sources.cacheTtlSeconds, "cli");
   });
 });
 

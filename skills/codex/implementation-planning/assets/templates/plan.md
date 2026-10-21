@@ -1,6 +1,8 @@
 {{Use the project's record format. Include stable plan id, title, lifecycle state,
 created/updated information and baseline commit or identified snapshot. Do not
-invent values. Use repository-relative paths in this bundle.}}
+invent values. Use repository-relative paths in this bundle. Follow the project's
+record visibility and selected destinations throughout handoff and archive; public
+documents must not reference an internal bundle.}}
 
 # {{Change title}}
 
@@ -11,7 +13,10 @@ invariants to preserve and any explicitly resolved architectural delta.}}
 
 ## Evidence and consequential decisions
 
-{{Current behavior and relevant source/symbols; meaningful risks/probe results.
+{{Resources actually read and constraints learned; requirements coverage with
+settled/pending/not-applicable statuses and reasons. Include applicable file
+language and engineering-limit sources. Current behavior and relevant
+source/symbols; meaningful risks/probe results.
 Record important decision ids, answer/origin, evidence and affected tasks.
 Routine reversible defaults need only a brief note. Link shared design if needed.}}
 

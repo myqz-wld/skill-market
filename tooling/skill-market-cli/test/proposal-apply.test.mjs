@@ -139,7 +139,7 @@ test("proposal apply updates versions while preserving each adapter catalog stat
   }
 });
 
-test("plugin updates synchronize exact manifests and generated native catalog versions", async () => {
+test("plugin updates preserve versions without duplicating them in the Claude marketplace", async () => {
   const root = await makeTempDirectory("skill-market-proposal-plugin-update-");
   const worktree = path.join(root, "worktree");
   try {
@@ -188,7 +188,7 @@ test("plugin updates synchronize exact manifests and generated native catalog ve
     const grokMarket = JSON.parse(
       await readFile(path.join(worktree, ".grok-plugin", "marketplace.json"), "utf8"),
     );
-    assert.equal(claudeMarket.plugins[0].version, "0.2.0");
+    assert.equal(Object.hasOwn(claudeMarket.plugins[0], "version"), false);
     assert.equal(grokMarket.plugins[0].version, "0.2.0");
   } finally {
     await removeTempDirectory(root);

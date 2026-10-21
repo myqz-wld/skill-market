@@ -6,7 +6,7 @@ export function parseOptions(tokens, definitions) {
   let positionalOnly = false;
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
-    if (token === "--") {
+    if (!positionalOnly && token === "--") {
       positionalOnly = true;
       continue;
     }
@@ -16,10 +16,10 @@ export function parseOptions(tokens, definitions) {
     }
     const separator = token.indexOf("=");
     const name = token.slice(2, separator < 0 ? undefined : separator);
-    const definition = definitions[name];
-    if (!definition) {
+    if (!Object.hasOwn(definitions, name)) {
       throw argumentError(`unknown option --${name}`, { option: name });
     }
+    const definition = definitions[name];
     if (definition.type === "boolean") {
       if (separator >= 0) {
         throw argumentError(`--${name} does not accept a value`, { option: name });
@@ -28,7 +28,7 @@ export function parseOptions(tokens, definitions) {
       continue;
     }
     const value = separator >= 0 ? token.slice(separator + 1) : tokens[++index];
-    if (value === undefined || value === "") {
+    if (value === undefined || value === "" || (separator < 0 && value.startsWith("--"))) {
       throw argumentError(`--${name} requires a value`, { option: name });
     }
     if (definition.type === "list") {

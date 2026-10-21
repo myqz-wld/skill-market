@@ -12,20 +12,35 @@ archiving and historical/current audits.
 
 This skill owns planning and record lifecycle, not automatic product implementation.
 Reuse the user's actual authorization: planning alone does not authorize code
-changes, delegation, worktree creation or external effects. If execution is already
-authorized, hand the ready tasks to the existing execution workflow without asking
-for the same permission again.
+changes, delegation, worktree creation or external effects. Deliver the plan and
+handoff first, then stop this skill. Never automatically execute ready tasks.
+Separate any already-authorized implementation into its own phase; reuse that
+authorization there without treating this planning skill as an execution trigger.
 
 Use Claude Code's available Read/Edit/Write, execution and agent tools under
 their live contracts. Preserve native permissions and the host's delegation rules.
 
 ## 1. Establish the change and project contract
 
-Read `references/planning.md`. Reuse the user's goal, scope and existing decisions.
+Before a new plan or its first substantive question batch, read references/planning.md,
+references/tasks.md, references/lifecycle.md and assets/templates/plan.md in full.
+Read assets/templates/task.md before decomposing substantial execution units.
+For resume/closure/audit, read lifecycle.md and the relevant template plus the
+existing plan, affected task records and baseline evidence first; do not restart
+a new-project interview. Read model-boundaries.md before dependent decisions if
+LLM calls are in scope. A listing/search excerpt/truncated read is insufficient:
+read missing ranges and record paths plus the constraints learned. Missing
+required resources block dependent conclusions, not independent inspection.
+
+Reuse the user's goal, scope and existing decisions.
 Locate applicable instructions, module boundaries, contracts, runtime/task tooling,
 tests, architecture decisions and plan/archive conventions. Start from known paths;
 expand inspection only as needed. No particular manifest, directory layout,
 document format, helper script or other skill is a prerequisite.
+Read the project's own record visibility, source/output ownership and publication
+rules before writing. Keep plans, task evidence, handoffs and archives in the selected
+locations; do not expose internal records through public files or links. Follow the
+project's actual commands without introducing a dependency on another skill.
 
 Preserve established architecture. If the requested change conflicts with it,
 identify the conflict and resolve the architectural delta explicitly; do not
@@ -43,10 +58,12 @@ authorized reads/tool calls concurrently when supported; use bounded agents for
 independent judgment when their scope and runtime authorization allow it.
 Do not describe an investigation as parallel when it was performed sequentially.
 
-Ask only unresolved decisions that materially affect scope, behavior, compatibility,
-data, permissions, cost or operating process. Choose routine reversible details
-and briefly state them. Avoid extra activation questions or repeated approval
-checkpoints. A new finding reopens only decisions it actually changes.
+Use the requirements coverage in references/planning.md before choosing questions.
+Resolve all applicable topics, not just the first few that come to mind. Ask related
+unanswered questions in batches; continue until dependencies are settled. Reuse
+explicit project language and engineering constraints; when relevant policies are
+missing, ask rather than silently inventing them. Routine filenames remain local
+choices. A new finding reopens only decisions it actually changes.
 
 Use a minimal spike only for an uncertainty that could change the route. Record
 what was inspected/run, what happened and what remains unknown. Ordinary exact
@@ -73,7 +90,8 @@ Keep coupled producers/consumers together or order them around a verified bounda
 
 ## 4. Check readiness and hand off
 
-Verify architecture fit, resolved consequential choices, task dependencies, inputs,
+Verify complete applicable requirements coverage, evidence reads, architecture
+fit, resolved choices, task dependencies, inputs,
 write sets, acceptance checks, rollback needs and the first executable action.
 Task readiness is not task completion. Inspect risk with a separate reviewer only
 when useful and available under the actual environment's review contract.
@@ -83,10 +101,11 @@ do not manufacture another confirmation when the relevant scope is already appro
 Prepare isolation only when the project/user requires it and the runtime supports
 it. A finished plan can be handed off in the existing workspace.
 
-Dispatch the task file plus its exact shared references, baseline and runtime
-bootstrap fields. Do not copy the entire plan into every worker prompt. Workers
-record outcomes/evidence; the lead checks acceptance before releasing dependents.
-Follow `references/lifecycle.md` for resume, state changes and handoff mechanics.
+Prepare the task-file handoff with exact shared references, baseline and runtime
+bootstrap fields. Do not dispatch implementation workers from a planning-only
+request. In a separately authorized execution phase, workers record evidence and
+the lead checks acceptance before releasing dependents. Follow
+references/lifecycle.md for record state changes and handoff mechanics.
 
 ## 5. Close, archive and support later verification
 
