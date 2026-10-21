@@ -6,12 +6,16 @@ their scope; consolidate shared instructions without losing tool-specific additi
 If the native file must stay private, populate its canonical internal source and
 materialize the root entry through the actual project sync mechanism. This template's
 filename is not an output filename. Never link to installed skill resources.
-Remove notes/placeholders before delivery.}}
+Sections may be merged or shortened while preserving their applicable responsibilities.
+Use existing authorities or concise inline facts; never invent a document just to fill
+an entry or link to a proposed file as if it already exists. Remove notes/placeholders
+before delivery.}}
 
 ## Architecture authority
 
-- Current owners, public boundaries and dependencies: {{actual project path/section}}
-- Extension points and evolution triggers: {{actual project path/section}}
+- Coding tools and native entries: {{selected tools, shared owner and actual native entrypoints}}
+- Current owners, public boundaries and dependencies: {{actual authority or concise inline contract}}
+- Extension points and evolution triggers: {{actual authority or concise inline guidance}}
 - Setup and runnable verification: {{actual README/task configuration path}}
 - Knowledge lookup: {{actual task map, approved source roots and working search procedure}}
 - Language, file/context and privacy policy: {{existing project authority/section}}

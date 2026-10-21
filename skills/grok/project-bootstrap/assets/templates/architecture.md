@@ -4,13 +4,15 @@
 format. Select this document's visibility before filling it: public architecture
 cannot reference internal records, AI instructions, workflow tools or private paths.
 Keep internal rationale/routes in their private authority. Remove unused sections
-and placeholders; this is not a documentation quota.}}
+and placeholders; this is not a documentation quota. Sections may be combined, but
+keep the connection from supported need to selected role, actual owner and verification
+visible. Explain meaningful simplifications instead of replacing the design with a tree.}}
 
 ## Reference and constraints
 
 - Selected reference: {{modular application, frontend, CLI/library or native mapping}}
-- Why it fits: {{confirmed delivery, native constraints and ownership needs}}
-- Deviations: {{concrete path/layer changes and reasons, or none}}
+- Why it fits: {{supported workflows/change pressures, constraints and ownership needs}}
+- Deviations: {{combined or omitted roles, concrete path/layer changes and reasons}}
 - Preserved behavior: {{public contracts and data constraints}}
 
 ## Selected capabilities and engineering layers

@@ -27,8 +27,11 @@ illustrated layer into a mandatory directory or every template into a document.
    configuration or concise policy, and implement the native verification needed
    to support the actual acceptance claims.
 
-A minimal neutral startup route, page or CLI help can establish a working entrypoint.
-It does not justify implementing login, checkout, CRUD or another business feature.
+Use the real entry and smoke check as an early execution checkpoint, rather than
+leaving all wiring and runtime evidence until the end. A minimal neutral startup
+route, page or CLI help can establish this path; it does not justify new business
+features. For a broader authorized request, complete the foundation's runnable
+acceptance and selected engineering materials before handing off to feature work.
 
 ## Existing project
 
@@ -97,6 +100,14 @@ or recurring project task. Name concrete source paths and working commands.
 Merge small subjects into the existing owner; do not create duplicate indexes,
 custom project manifests, empty reports or a document per hypothetical capability.
 
+Use the selected templates as content obligations, not mandatory filenames or headings.
+For each applicable responsibility, populate its actual owner or point to the existing
+one. Keep material omissions and their scope reasons visible in the existing record;
+no separate compliance document is needed. A shorter file must still carry the facts
+later development needs. Inline a small fact when no separate authority is warranted.
+Verify references before presenting them as current navigation: proposed paths and
+commands stay labeled as pending in the task record, not as usable project instructions.
+
 Record selected architecture, justified deviations and conditional evolution rules.
 For a future module/layer/package change, identify the current extension point,
 observable trigger, preserved contracts, staged migration and checks. Conditional
@@ -106,8 +117,9 @@ Populate or merge shared project instructions through AGENTS.md, preserving auth
 rules and their scope. When the target uses Claude, its CLAUDE.md imports that shared
 file and retains only actual Claude-specific additions. Resolve relative imports
 from their containing file; preserve existing supported locations and native settings.
-Keep shared rules in one owner, repair duplicate/conflicting instructions and verify
-the loading mechanism for each selected tool. Point to actual architecture/evolution
+Check native outputs against the target's selected coding tools, not the executing
+adapter. Keep shared rules in one owner, repair duplicate/conflicting instructions and
+verify the loading mechanism for each selected tool. Point to actual architecture/evolution
 and runnable commands; a valid path does not prove native loading.
 
 If native entries are private local outputs, edit their selected internal source and

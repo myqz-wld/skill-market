@@ -17,14 +17,17 @@ links to it from public documentation. No other skill or installed resource is n
 - Preserved behavior and exclusions: {{contracts, user edits and business work outside scope}}
 - Settled requirements: {{answers, origins and remaining blockers}}
 - Engineering policy: {{language/file/context/privacy owners, defaults and exceptions}}
+- Target coding tools and materials: {{selected native entries, output owners and applicable template content}}
 - Record/publication boundary: {{actual internal/public destinations and applicable project commands, when selected}}
 - Environment scope: {{actual profiles/resources, authorized effects and deferred deployment}}
 - Acceptance ownership: {{protected expectations and applicable risk/review policy}}
 
 ## Target and migration
 
-{{Selected reference, justified deviations, actual ownership/dependency map and
-the extension points needed now. Keep conditional future evolution separate.}}
+{{Connect supported needs to selected reference roles, concrete ownership/public
+boundaries, dependency flow and checks. Explain combinations/omissions and the extension
+points needed now. Keep conditional future evolution separate. Record where selected
+project materials will live; a compact project may merge them into existing files.}}
 
 | Step | Inputs/prerequisites | Concrete change | Acceptance and rollback | Actual progress |
 |---|---|---|---|---|

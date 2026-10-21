@@ -38,6 +38,14 @@ Adding a capability does not authorize new business workflows, remote effects,
 global agent configuration or a new service. Confirm those effects when they exceed
 existing scope. A small project may satisfy several roles in one file/module.
 
+Adapt responsibilities before choosing directories. For each selected capability,
+identify its owner, public boundary, allowed dependencies and acceptance. Roles may
+share a file or module when their responsibilities and change patterns remain clear;
+explain how the dependency contract survives that combination. Omitting a role needs
+a scope reason, not just a preference for fewer folders. A smaller feature scope still
+needs working runtime, knowledge, verification and tooling for the selected behavior.
+The resulting map should explain a representative flow and where a likely change lands.
+
 ## 1. Modular application baseline
 
 Use this for a new application with project-owned organization. A single application
@@ -230,9 +238,11 @@ A line count alone is not a module boundary. Preserve extension seams that today
 design actually needs; describe future extraction steps without building empty
 directories for them.
 
-For an affected boundary, consider two likely changes and one failure. Trace owners,
-dependencies, failure propagation and check points. Use the result to simplify or
-adjust the reference; do not implement the future business features as examples.
+For affected boundaries, use representative change scenarios and relevant failures
+to trace owners, dependencies, propagation and check points. Choose scenarios from
+actual requirements or existing extension mechanisms, without a scenario quota.
+Use the result to simplify or adjust the reference; do not implement future business
+features merely to illustrate the architecture.
 
 ## 6. Guidance later AI sessions must be able to use
 

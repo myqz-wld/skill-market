@@ -26,16 +26,18 @@ Do not deploy, publish or mutate production data as part of ordinary local accep
 
 ## Architecture checks
 
-- Actual module responsibilities, public APIs and dependency direction match the
-  selected reference and documented deviations.
+- Selected capabilities and reference roles map to actual owners, public APIs and
+  dependency directions. Combined roles retain their constraints; omissions have
+  scope reasons. Check the requirements behind the design as well as the file tree.
 - Cross-module consumers use public boundaries; imports/composition do not create
   forbidden core-to-infrastructure dependencies or cycles.
 - Configuration, native discovery, callers, build/start tasks and generated-source
   ownership remain correct after moves.
 - Conditional evolution guidance names real owners, extension points, observable
   triggers, compatibility constraints and verification.
-- For affected boundaries, two likely changes and one failure can be traced through
-  concrete owners without unjustified change propagation.
+- Representative use, plausible change and relevant failure can be traced through
+  concrete owners and checks without unresolved architectural decisions or
+  unjustified change propagation.
 
 A diagram or directory tree alone proves none of these properties. Inspect actual
 code and use existing dependency checks when applicable; do not introduce a custom
@@ -55,8 +57,10 @@ architecture checker merely to produce a passing command.
   passes, where safely testable. Configuration alone is not enforcement evidence.
 - Verify fresh-session/resume inputs are discoverable: native instructions, module
   facts, current task state, decisions, preserved contracts and the next check.
-- Check AGENTS.md exposes common project rules from the selected canonical owner. For targets using Claude, verify its
-  CLAUDE.md has a real, correctly resolved import outside code spans/fences and only
+- Compare delivered native entries with the target's selected coding tools; an
+  unsupported or unknown selection is not a reason to claim integration complete.
+  Check AGENTS.md exposes common project rules from the selected canonical owner.
+  For targets using Claude, verify CLAUDE.md has a real, correctly resolved import outside code spans/fences and only
   Claude-specific additions. Preserve authored rules/module scope, check for conflicting
   duplicates or circular imports, and inspect effective loading per selected tool.
 - Verify project-only continuity: without the installed skill/resources, locate the
@@ -99,12 +103,17 @@ snapshot evidence from existing-history or remote-publication claims.
 ## Materials and preservation
 
 Every delivered document must answer an actual project question with code/configuration
-or observed results. Check the runnable commands, module paths, links and source authority.
-Remove unfilled placeholders, duplicate facts and generic filler. Keep conditional
-future guidance distinct from the current implementation.
+or observed results. Compare the applicable content of selected templates with actual
+project owners: combined sections/files are valid, missing responsibilities are not.
+Check runnable commands, module paths, links and source authority. A title or filename
+does not prove template completion. Explain material omissions from the selected scope.
+Remove unfilled placeholders, duplicate facts and generic filler. Keep proposed paths
+and conditional future guidance distinct from usable current instructions.
 
-Verify that later AI sessions can find the architecture/evolution authority from
-the project's native instructions. Inspect loading separately from link resolution.
+Starting only from the project's native instructions, locate the owner and checks for
+a representative maintenance or extension task using the delivered guidance. Verify
+architecture/evolution authority and working source lookup without installed skill
+resources. Inspect native loading separately from link resolution.
 Honor document/product language and existing formatting/privacy rules; retain user
 edits and avoid private machine paths, credentials or raw diagnostic dumps.
 

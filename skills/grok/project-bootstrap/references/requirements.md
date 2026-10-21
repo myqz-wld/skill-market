@@ -30,30 +30,58 @@ Apply the coverage to the inspected project; ask where a missing decision change
 the proposed work or a lasting contract. Reuse code, policy and previous answers.
 Missing documentation does not make a known code fact unknown.
 
-## Conversation sequence
+## Discover, propose and revisit
 
-1. Summarize the inspected state and the architectural problem.
-2. Ask the few answers that change the reference choice, module boundaries or
-   compatibility. Recommend a concrete option with its material tradeoff.
-3. Ask about plausible upcoming iterations that could justify extension seams.
-   Do not invent a roadmap, microservices or future consumers for the user.
-4. Resolve missing conventions that materially affect implementation or future
-   maintenance. Establish their scope and owner; distinguish proposed defaults
-   from user decisions.
-5. For selected environments, resolve deployment/configuration/data boundaries and
-   which acceptance requires actual remote effects versus local evidence. Do not
-   silently add production access, an environment or a new review gate.
-6. When development material stays private, settle its storage, local native entries,
-   independent public build/run and any selected export checks before writing records.
-   Local preparation and remote publication are separate effects; reuse existing answers.
-7. Present the proposed tree, capability choices, deviations, write scope and runnable
-   acceptance. Distinguish supported decisions from recommendations still awaiting an
-   answer. Confirm the unresolved requirements before applying the design; reuse prior
-   answers and delegated decisions without a duplicate approval step.
+Start with the outcome in use: the actors or consumers, a representative workflow,
+what enters and leaves the system, what state must survive, and observable success.
+For a refactor, trace the existing workflow and the change pressure. Inspect known
+facts first; ask for concrete examples when the request leaves architectural choices
+open. Keep exploration at the depth needed for ownership and acceptance, without
+turning setup into an exhaustive feature specification.
 
-Normally batch two or three related questions. Use the available native question
-mechanism; continue independent investigation while waiting. Silence does not
-settle a choice. Reopen only decisions changed by new evidence.
+Use those facts to select the reference and compare meaningful alternatives. Explain
+how each unanswered choice affects a boundary, contract, operating condition or check.
+Do not ask the user to approve a complete technical package before establishing its
+premises. Keep independently changeable decisions independently answerable; a reply
+to one choice does not settle the others. Use manageable batches through the available
+native question mechanism, with no fixed number of questions or rounds.
+
+After each answer, revisit applicable coverage and its dependencies. Separate settled
+choices from remaining assumptions, unsupported proposals and conditional future work.
+Ask the next questions that could still change the design. Reuse existing decisions
+and delegated choices; do not reopen them merely to complete a checklist. Silence
+settles nothing, and a completed question batch is not a completeness test.
+
+Resolve consequential engineering and material choices alongside the design: their
+scope and owner, the target's actual coding tools, selected environments, record
+visibility and required native entries. An unknown condition is not evidence that a
+conditional output is unnecessary. Reuse project evidence; ask only when the remaining
+uncertainty changes the output or its acceptance. Keep local preparation separate from
+remote deployment/publication authorization.
+
+## Architecture proposal and discovery completion
+
+Use a concise conversation or existing record to connect:
+
+- Supported needs and constraints to selected capabilities and reference roles.
+- Those roles to concrete owners, public boundaries, dependency direction and runtime
+  composition; explain useful combinations and deliberate omissions.
+- Representative use and relevant failure to observable acceptance; identify required
+  prerequisites and the contracts that must remain stable.
+- Actual extension pressures to current seams or conditional evolution triggers.
+- Selected engineering materials to their project owners, native entries and checks.
+
+A simple project can express this in a few paragraphs. A substantial one may need a
+map or table. Neither a technology list nor a directory tree alone explains the design.
+Trace the proposed owners against use and change scenarios; if the trace needs another
+consequential assumption, return to that question before applying the design.
+
+Exploration is sufficient when the selected scope can be implemented and accepted
+without silently deciding another architecture-driving requirement. Needed-now
+capabilities must have their dependencies covered; deferred items must not be current
+prerequisites. Unknown future needs may stay conditional, with an extension trigger
+rather than speculative modules. No roadmap, document count or interview length is
+required. Continue only independent inspection while necessary answers are pending.
 
 ## Decision record and entry condition
 
@@ -66,10 +94,6 @@ choice changes what will be built, its architectural/data/operating boundaries o
 acceptance, identify the supporting user decision, project contract or scoped
 delegation. Being reversible, small or easy to implement does not supply that basis.
 An agent-authored plan and a reference architecture remain proposals until supported.
-
-Deferred items must not be prerequisites of the current implementation. A required
-runtime dependency or unresolved compatibility change cannot be deferred while
-claiming the resulting project will be runnable.
 
 Implementation starts when the consequential choices, preserved behavior, write
 scope and executable acceptance have that basis. Otherwise ask focused questions

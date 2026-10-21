@@ -53,7 +53,8 @@ file/language, tooling or parallel-work sections when those concerns apply.
   Explicitly distinguish available starter code from an empty target with no baseline.
 
 Inspect the project's actual coding tools, shared/native instructions and project policy.
-The current adapter does not determine which tools the target project supports.
+The current adapter does not determine which tools the target project supports; retain
+unresolved output conditions for the requirements step instead of treating them as absent.
 Use sanitized schemas/examples instead of private configuration payloads. Run applicable
 baseline checks only when their effects fit the requested scope; distinguish failed
 checks from unavailable ones.
@@ -70,8 +71,8 @@ baseline results and architectural choices that remain unresolved.
 
 ## 2. Confirm architectural requirements
 
-Use [requirements guidance](references/requirements.md) to cover applicable concerns
-and separate:
+Use [requirements guidance](references/requirements.md) to discover the needs that
+shape the architecture, revisit coverage after answers, and separate:
 
 - Settled choices: reuse applicable project contracts and previous user decisions.
 - Delegated choices and local details: choose within the user's delegated scope or
@@ -91,10 +92,17 @@ For multiple runtime/deployment environments, read
 [environment design](references/environments.md) before settling profiles, configuration
 precedence, isolated resources, deployment units and verification scope.
 
-Present the concrete tree, justified deviations and capability choices: needed now,
-conditional future, omitted or unresolved. Cover dependencies of selected capabilities.
-Identify current extension points and observable triggers for later module/layer/package
-changes; keep conditional evolution separate from today's implementation.
+Derive the proposal from those needs and the selected reference: map capabilities to
+responsibilities, public boundaries, dependency direction, runtime composition and checks.
+Show the concrete tree and explain combined or omitted roles. Trace representative use,
+relevant failure and plausible change through the proposed owners; unresolved design
+choices exposed by that trace return to the requirements conversation.
+
+Select project materials using the template table below and read the chosen templates
+while designing their outputs. Resolve conditions that affect selection, including target
+coding tools. Identify where their applicable content will live, with one owner per fact.
+Keep conditional evolution separate from today's implementation; a small scope still needs
+a coherent runnable foundation and usable development guidance.
 
 Before the first project mutation, show the proposed approach and identify what
 supports its consequential choices: user answers, applicable project contracts or
@@ -108,9 +116,10 @@ Reuse settled scope, permitted writes, preserved contracts and executable accept
 When prior answers or delegation already cover the approach, proceed without asking
 for the same confirmation again.
 
-**Stage output:** settled requirements, selected architecture, write scope,
-compatibility contract and runnable acceptance. For an assessment, deliver the
-proposed delta and evidence here, then stop.
+**Stage output:** supported requirements, a reference-derived architecture with owned
+boundaries and extension points, selected project materials, write scope and runnable
+acceptance. A concise proposal may suffice; no separate design document is required.
+For an assessment, deliver the proposed delta and evidence here, then stop.
 
 ## 3. Scaffold or refactor, then verify
 
@@ -128,15 +137,16 @@ Read each selected template below before producing its output.
 3. **Verify each meaningful boundary.** Implement or reuse appropriate native focused/fast/full
    checks, repair in-scope regressions and rerun affected checks. Preserve protected acceptance;
    changed expectations require an authorized requirement change.
-4. **Update project materials.** Ground them in actual code, paths, interfaces and working
-   commands. Keep one owner per fact, remove unused sections/placeholders and merge small
-   subjects into existing documentation. AGENTS.md is the shared native instruction entry;
+4. **Complete selected project materials.** Carry the applicable template content into
+   actual project owners; headings and files may be combined without losing responsibilities.
+   Ground current instructions in existing code, paths and working commands; keep proposed
+   outputs in the task record. AGENTS.md is the shared native instruction entry;
    Claude's CLAUDE.md imports it and adds only Claude-specific rules. If those files must
    stay private, materialize them locally from the selected internal source owner.
    Preserve authored instructions and their scope. Provide working scoped knowledge
    lookup. Maintain task routes, links and any derived index when sources move or
-   change status. Route later AI work to real extension
-   points, architectural triggers, source lookup and validation requirements. Put the
+   change status. Route later AI work to real extension points, architectural triggers,
+   source lookup and validation requirements. Put the
    actual record destinations and any setup/sync/check/export commands in project-owned
    instructions. Keep public materials independently usable without internal content.
 5. **Complete runnable acceptance.** Execute applicable build/type and regression checks,
@@ -157,8 +167,10 @@ Read each selected template below before producing its output.
 | Target project uses Claude: importing CLAUDE.md and Claude-only additions | [Claude instruction template](assets/templates/claude-rules.md) |
 | New or adjusted native-compatible EditorConfig | [EditorConfig template](assets/templates/editorconfig) |
 
-Select templates by actual need; they do not require separate output files.
-Keep local execution, configured hooks/CI, native instruction loading and actual
+Select templates by actual need; they do not require separate output files. Before
+handoff, check each selected output's content and references, not just its existence.
+Explain material omissions against scope; shortening a document does not waive its
+applicable responsibilities. Keep local execution, configured hooks/CI, native instruction loading and actual
 deployment evidence distinct. Static files or working links alone cannot prove
 runtime behavior or enforcement. Required checks blocked by prerequisites leave
 delivery incomplete; identify the missing check and prerequisite.
