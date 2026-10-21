@@ -58,18 +58,16 @@ complete requirements. Reuse explicit answers and policies without re-asking.
 | Current behavior and architecture | Relevant implementation/contracts, ownership/dependency direction, baseline and preserved invariants |
 | Changed behavior and interfaces | Inputs/outputs, failure cases, compatibility and caller impacts applicable to this change |
 | Data and operations | Persistence/migration, permissions, environments and external effects when affected |
-| Engineering constraints | Runtime/toolchain, dependency rules, document/file language and applicable code/document size policies, with source or explicit answer |
+| Existing engineering constraints | Existing policies and toolchain requirements relevant to this change; cite their owners and apply them to tasks |
 | Record visibility | Existing private/public destinations, permitted evidence and publication/link boundaries; consequential gaps resolved before writes |
 | Acceptance | Observable task checks, overall integration checks, existing failures and unavailable validation |
 | Execution and handoff | Inputs, dependencies, allowed writes, shared resources, rollback where relevant, readiness and stopping conditions |
 
-If creating plan documents without an established language policy or prior answer,
-ask their language; do not infer it from chat. If planned source changes depend on
-missing file-size policy, ask whether limits apply (including no limit), their
-scope and severity. Do not impose a default number or reopen settled project
-policies. A narrow read-only archive audit need not invent new engineering policy.
-Record unresolved choices as blockers on affected tasks; an optional draft plan
-may retain them, but those tasks cannot be marked ready.
+Questions here settle choices within the requested change. Apply existing project
+constraints; a plan is not the authority for creating repository-wide conventions.
+If a needed foundation decision is unresolved, identify it as a prerequisite and
+keep its scope separate. Block only tasks that truly depend on that decision.
+A draft may retain unresolved prerequisites without marking dependent tasks ready.
 
 ## Resolve questions in dependency order
 

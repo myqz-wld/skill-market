@@ -123,4 +123,4 @@ or a documentation-only result for runnable delivery.
 
 Handoff identifies the implemented architectural delta, runnable commands, actual
 results, preserved behavior, justified deviations and remaining work. Archive only
-truthfully completed scope; do not begin new business features automatically.
+truthfully completed scope and distinguish it from the full requested outcome.

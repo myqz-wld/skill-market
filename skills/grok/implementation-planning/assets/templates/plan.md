@@ -14,9 +14,9 @@ invariants to preserve and any explicitly resolved architectural delta.}}
 ## Evidence and consequential decisions
 
 {{Resources actually read and constraints learned; requirements coverage with
-settled/pending/not-applicable statuses and reasons. Include applicable file
-language and engineering-limit sources. Current behavior and relevant
-source/symbols; meaningful risks/probe results.
+settled/pending/not-applicable statuses and reasons. Cite applicable project-owned
+constraints and their effect on tasks. Current behavior and relevant source/symbols;
+meaningful risks/probe results.
 Record important decision ids, answer/origin, evidence and affected tasks.
 Routine reversible defaults need only a brief note. Link shared design if needed.}}
 

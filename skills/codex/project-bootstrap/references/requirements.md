@@ -1,8 +1,10 @@
 # Confirm architecture requirements
 
-Use inspection evidence to ask only consequential unanswered questions. The goal
-is a settled architectural change and runnable acceptance, not a broad product
-specification or a questionnaire about every possible capability.
+Use inspection evidence to settle the architecture and engineering conventions
+needed for a runnable project. A project convention governs later changes; a
+task-local choice governs only the current work. Preserve settled decisions and
+scoped delegation. Use the following topics to find consequential gaps, not as a
+mandatory questionnaire or a requirement to add policies.
 
 ## Coverage
 
@@ -13,7 +15,7 @@ specification or a questionnaire about every possible capability.
 | Ownership | Responsibilities and data boundaries needed now | Current versus proposed owners and dependency direction |
 | Capabilities | Reference parts needed now, omitted, conditional future or unresolved | Actual capability/dependency gaps and justified additions/removals |
 | Evolution | Likely next iterations and justified extension seams | Concrete change patterns or new consumers driving a split |
-| Behavior | Minimal startup/import behavior; business features excluded | Public behavior, domain rules and data to preserve |
+| Behavior | Runnable foundation and its acceptance within the requested outcome | Public behavior, domain rules and data to preserve |
 | AI engineering | Actual coding tools, shared AGENTS.md, conditional Claude import/additions, protected acceptance and native check/record owners | Preserve authored rules and scope while consolidating shared instructions; identify missing native integration or enforcement |
 | Documentation retrieval | Task-oriented entry, approved search corpus and native lookup/maintenance tools | Preserve useful docs navigation; resolve demonstrated discovery gaps, stale routes and source-authority conflicts |
 | File/context policy | Source language/formats, document/comment language, size budgets and exceptions | Preserve native warn/block/off settings and applicable policy owners |
@@ -24,9 +26,9 @@ specification or a questionnaire about every possible capability.
 | Acceptance | Setup, build where applicable, representative run and smoke checks | Baseline comparison, affected regressions and runnable entry |
 | Scope | Code/configuration/material outputs and relevant external constraints | Exact migration boundaries, protected edits and rollback needs |
 
-Consider applicable rows, but do not ask for facts already present in code,
-project policy or the conversation. Mark irrelevant topics as not applicable
-with a reason. Missing documentation does not make a known code fact unknown.
+Apply the coverage to the inspected project; ask where a missing decision changes
+the proposed work or a lasting contract. Reuse code, policy and previous answers.
+Missing documentation does not make a known code fact unknown.
 
 ## Conversation sequence
 
@@ -35,9 +37,9 @@ with a reason. Missing documentation does not make a known code fact unknown.
    compatibility. Recommend a concrete option with its material tradeoff.
 3. Ask about plausible upcoming iterations that could justify extension seams.
    Do not invent a roadmap, microservices or future consumers for the user.
-4. Resolve document language and user-facing locale separately when unset; source
-   formats and comments follow the selected engineering contract. Prior explicit
-   policy or scoped delegation can settle these; defaults remain labeled as defaults.
+4. Resolve missing conventions that materially affect implementation or future
+   maintenance. Establish their scope and owner; distinguish proposed defaults
+   from user decisions.
 5. For selected environments, resolve deployment/configuration/data boundaries and
    which acceptance requires actual remote effects versus local evidence. Do not
    silently add production access, an environment or a new review gate.

@@ -1,6 +1,6 @@
 interface:
   display_name: "Project Bootstrap"
-  short_description: "Scaffold and refactor for AI-led development"
-  default_prompt: "Use $project-bootstrap to inspect the code, confirm requirements, then scaffold or refactor a runnable project for AI-led development with selected architecture, searchable project knowledge, native verification, language and privacy rules, environment isolation and concrete evolution guidance."
+  short_description: "Set up new projects and refactor architecture"
+  default_prompt: "Use $project-bootstrap to inspect this project, confirm the requirements, and establish or refactor its runnable foundation and lasting engineering conventions."
 policy:
   allow_implicit_invocation: true

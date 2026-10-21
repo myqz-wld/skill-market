@@ -1,6 +1,6 @@
 ---
 name: implementation-planning
-description: "Turn substantial code changes into architecture-aware implementation plans with independently verifiable tasks, safe parallel batches and clear handoffs. Use for planning features, fixes, refactors or migrations, and for resuming, checking or archiving those plans. Reuse existing project conventions."
+description: "Create verifiable implementation plans for specific changes using applicable project constraints. Support task decomposition, handoff, resumption, review and archival; project setup is outside this workflow."
 ---
 
 # Implementation Planning for Codex
@@ -9,6 +9,9 @@ Produce a plan another implementation session can execute and verify without
 reconstructing the conversation. Support features, fixes, refactors and migrations
 within the project's actual architecture. Also support plan resumption, closure,
 archiving and historical/current audits.
+
+Project-wide engineering conventions are inputs to this workflow. Its decisions
+govern the requested change; establishing the project's foundation is separate work.
 
 This skill owns planning and record lifecycle, not automatic product implementation.
 Reuse the user's actual authorization: planning alone does not authorize code
@@ -59,11 +62,9 @@ independent judgment when their scope and runtime authorization allow it.
 Do not describe an investigation as parallel when it was performed sequentially.
 
 Use the requirements coverage in references/planning.md before choosing questions.
-Resolve all applicable topics, not just the first few that come to mind. Ask related
-unanswered questions in batches; continue until dependencies are settled. Reuse
-explicit project language and engineering constraints; when relevant policies are
-missing, ask rather than silently inventing them. Routine filenames remain local
-choices. A new finding reopens only decisions it actually changes.
+Resolve applicable topics using existing evidence and project constraints. Ask related
+unanswered questions about this change in batches until its dependencies are settled.
+Routine filenames remain local choices. A new finding reopens only affected decisions.
 
 Use a minimal spike only for an uncertainty that could change the route. Record
 what was inspected/run, what happened and what remains unknown. Ordinary exact

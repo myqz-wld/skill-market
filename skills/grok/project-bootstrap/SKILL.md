@@ -1,6 +1,6 @@
 ---
 name: project-bootstrap
-description: "Create runnable new-project scaffolds or refactor existing architecture for AI-led development. Use for project structure and engineering setup; keep new business features outside scope."
+description: "Create runnable new projects or refactor existing project architecture for AI-led development, establishing engineering conventions that later development can reuse."
 ---
 
 # Project Bootstrap
@@ -9,6 +9,10 @@ Deliver a runnable new scaffold or an existing project with the agreed architect
 changes implemented. Code, dependencies, runtime configuration, build/start tasks
 and meaningful checks are in scope; new business features and domain-rule redesign
 remain separate work.
+
+Own the project foundation: architecture and engineering conventions reused across
+changes. Determine the necessary setup or refactor from the requested outcome and
+the inspected project baseline.
 
 Determine whether the target is new or existing, and whether the request is
 assessment-only. An assessment stays read-only and ends after stage 2.
@@ -71,9 +75,8 @@ and separate:
 - Unresolved consequential choices: ask when they affect architecture, compatibility,
   privacy, external effects or acceptance; batch related questions.
 
-Keep source/document/comment language and user-facing locale distinct. Apply the
-existing file/context, privacy, retrieval and acceptance policies; resolve actual gaps
-without turning every policy value into a question.
+Settle the engineering conventions the selected foundation needs, then give each
+one a project-owned home in instructions, configuration or executable checks.
 When source or artifacts may be public while development records stay private, read
 [publication boundaries](references/publication.md) before choosing record destinations,
 instruction ownership or export behavior. Reuse the chosen visibility profile for all
@@ -151,4 +154,5 @@ delivery incomplete; identify the missing check and prerequisite.
 **Stage output:** implemented architecture, verified runnable commands and useful
 project materials. Report preserved behavior, agreed compatibility changes, actual
 results and remaining work; distinguish baseline failures from regressions.
-Archive only completed scope and stop before unrequested business feature work.
+Archive only completed scope. If the requested outcome extends beyond the foundation,
+continue already-authorized implementation as a separate phase.
