@@ -1,9 +1,13 @@
 # Implement the architectural delta
 
-Work inside the confirmed target and scope. The reference architecture supplies
-roles and dependency rules; native tooling and actual requirements determine the
-files that implement them. Do not turn every illustrated layer into a mandatory
-directory or every template into a document.
+Work inside the confirmed target and scope. Before the first write or dependency
+setup, check that consequential choices have support from user decisions, applicable
+project contracts or scoped delegation. Stop for missing answers instead of encoding
+an unconfirmed approach in setup files or project instructions.
+
+The reference architecture supplies roles and dependency rules; native tooling and
+actual requirements determine the files that implement them. Do not turn every
+illustrated layer into a mandatory directory or every template into a document.
 
 ## New scaffold
 

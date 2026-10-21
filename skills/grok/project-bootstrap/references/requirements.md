@@ -46,9 +46,10 @@ Missing documentation does not make a known code fact unknown.
 6. When development material stays private, settle its storage, local native entries,
    independent public build/run and any selected export checks before writing records.
    Local preparation and remote publication are separate effects; reuse existing answers.
-7. Show the selected reference tree, capability choices, necessary deviations, write scope and runnable
-   acceptance. Resolve remaining consequential choices together and proceed on
-   existing authorization; routine filenames/defaults need no additional approval.
+7. Present the proposed tree, capability choices, deviations, write scope and runnable
+   acceptance. Distinguish supported decisions from recommendations still awaiting an
+   answer. Confirm the unresolved requirements before applying the design; reuse prior
+   answers and delegated decisions without a duplicate approval step.
 
 Normally batch two or three related questions. Use the available native question
 mechanism; continue independent investigation while waiting. Silence does not
@@ -60,11 +61,22 @@ A compact record contains topic, value/scope, origin/evidence, status and affect
 work. Distinguish observed facts, explicit answers, delegated choices and disclosed
 defaults. Status can be settled, pending, deferred or not applicable.
 
+A default settles only an implementation detail within the agreed direction. If a
+choice changes what will be built, its architectural/data/operating boundaries or
+acceptance, identify the supporting user decision, project contract or scoped
+delegation. Being reversible, small or easy to implement does not supply that basis.
+An agent-authored plan and a reference architecture remain proposals until supported.
+
 Deferred items must not be prerequisites of the current implementation. A required
 runtime dependency or unresolved compatibility change cannot be deferred while
 claiming the resulting project will be runnable.
 
-Implementation starts when the actual architectural scope, preserved behavior
-and executable acceptance are settled. This may already be satisfied by the user's
-request and existing project contracts; do not ask for the same authorization again.
-A read-only assessment ends with its proposed delta and evidence.
+Implementation starts when the consequential choices, preserved behavior, write
+scope and executable acceptance have that basis. Otherwise ask focused questions
+and wait before changing the target, including setup files and development records,
+or installing dependencies. Permission to implement does not answer an unresolved
+requirement; announcing an assumption does not turn it into a user decision.
+
+The request, existing contracts or explicit delegation may already settle the
+approach. In that case proceed without a redundant approval. A read-only assessment
+ends with its proposed delta and evidence.

@@ -17,6 +17,9 @@ the inspected project baseline.
 Determine whether the target is new or existing, and whether the request is
 assessment-only. An assessment stays read-only and ends after stage 2.
 Follow **read the code → confirm requirements → scaffold/refactor and verify**.
+Requirement confirmation is an entry condition for implementation, including project
+configuration and instructions. A request to build authorizes work toward the outcome;
+it does not settle unspecified requirements or delegate every design choice.
 Work on the actual target using the current adapter's native tools; preserve user edits.
 
 Optimize for AI-led engineering: focused context, explicit contracts, durable
@@ -70,10 +73,13 @@ baseline results and architectural choices that remain unresolved.
 Use [requirements guidance](references/requirements.md) to cover applicable concerns
 and separate:
 
-- Observed facts and existing decisions: reuse their evidence and authorization.
-- Reversible implementation defaults: disclose the choice within the permitted scope.
-- Unresolved consequential choices: ask when they affect architecture, compatibility,
-  privacy, external effects or acceptance; batch related questions.
+- Settled choices: reuse applicable project contracts and previous user decisions.
+- Delegated choices and local details: choose within the user's delegated scope or
+  the implementation latitude left by a settled direction. Reversibility alone does
+  not make a decision routine.
+- Open consequential choices: ask when alternatives materially change the result,
+  architecture, data or operating boundaries, compatibility, privacy or acceptance.
+  Recommend an option with its tradeoff; batch related questions.
 
 Settle the engineering conventions the selected foundation needs, then give each
 one a project-owned home in instructions, configuration or executable checks.
@@ -90,11 +96,17 @@ conditional future, omitted or unresolved. Cover dependencies of selected capabi
 Identify current extension points and observable triggers for later module/layer/package
 changes; keep conditional evolution separate from today's implementation.
 
-Settle remaining choices, permitted writes, preserved contracts, explicitly allowed
-compatibility changes and executable acceptance together. Proceed on existing
-authorization without a repeated approval gate. While answers are pending, continue
-independent inspection; unresolved prerequisites block dependent writes, and silence
-is not acceptance.
+Before the first project mutation, show the proposed approach and identify what
+supports its consequential choices: user answers, applicable project contracts or
+explicit delegation covering those choices. An assistant recommendation or authored
+plan is not confirmation. If a needed choice lacks that basis, ask and wait; continue
+only independent inspection while it remains unresolved. Creating configuration,
+project instructions or implementation records, and installing dependencies, already
+applies a design and must satisfy the same entry condition.
+
+Reuse settled scope, permitted writes, preserved contracts and executable acceptance.
+When prior answers or delegation already cover the approach, proceed without asking
+for the same confirmation again.
 
 **Stage output:** settled requirements, selected architecture, write scope,
 compatibility contract and runnable acceptance. For an assessment, deliver the
